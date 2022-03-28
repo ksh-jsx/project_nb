@@ -1,0 +1,13 @@
+{% extends 'baangbang/base.html' %}
+
+{% block content %}
+
+    <form method="post"  autocomplete="off">
+        {% csrf_token %}
+        {{form}}
+        {% if form.errors %}
+            <p>없는 정보입니다.</p>
+        {% endif %} 
+        <button type="submit" id="submitBtn">찾기</button>
+    </form>
+{% endblock %}

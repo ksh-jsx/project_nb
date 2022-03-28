@@ -1,0 +1,606 @@
+{% extends 'blog/test_base.html' %}
+
+{% block content %}
+    <div class="map_wrap">
+        <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+        <ul id="category">
+            <li id="BK9" data-order="0"> 
+                <span class="category_bg bank"></span>
+                은행
+            </li>       
+            <li id="MT1" data-order="1"> 
+                <span class="category_bg mart"></span>
+                마트
+            </li>  
+            <li id="PM9" data-order="2"> 
+                <span class="category_bg pharmacy"></span>
+                약국
+            </li>  
+            <li id="FD6" data-order="3"> 
+                <span class="category_bg food"></span>
+                음식점 
+            </li>  
+            <li id="CE7" data-order="4"> 
+                <span class="category_bg cafe"></span>
+                카페
+            </li>  
+            <li id="CS2" data-order="5"> 
+                <span class="category_bg store"></span>
+                편의점
+            </li>      
+        </ul>
+        <div id="search_wrap" style="height:30px;float:left;width:100%;">
+            <label for="univ">학교: </label>
+            <input id="univ">
+            <button id="univ_search">검색</button>
+        </div>
+    </div>
+    <script>
+        var drawingFlag = false; // 선이 그려지고 있는 상태를 가지고 있을 변수입니다
+        var moveLine; // 선이 그려지고 있을때 마우스 움직임에 따라 그려질 선 객체 입니다
+        var clickLine // 마우스로 클릭한 좌표로 그려질 선 객체입니다
+        var distanceOverlay; // 선의 거리정보를 표시할 커스텀오버레이 입니다
+        var dots = {}; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
+        
+        // 마커를 클릭했을 때 해당 장소의 상세정보를 보여줄 커스텀오버레이입니다
+        var placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}), 
+            contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다 
+            markers = [], // 마커를 담을 배열입니다
+            currCategory = ''; // 현재 선택된 카테고리를 가지고 있을 변수입니다
+        
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+            mapOption = {
+                center: new kakao.maps.LatLng(37.625046, 127.076600), // 지도의 중심좌표
+                level: 1 // 지도의 확대 레벨
+            };  
+        
+        // 지도를 생성합니다    
+        var map = new kakao.maps.Map(mapContainer, mapOption); 
+        
+        // 장소 검색 객체를 생성합니다
+        var ps = new kakao.maps.services.Places(map); 
+        
+        // 지도에 idle 이벤트를 등록합니다
+        kakao.maps.event.addListener(map, 'idle', searchPlaces);
+        
+        // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다 
+        contentNode.className = 'placeinfo_wrap';
+        
+        // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
+        // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다 
+        addEventHandle(contentNode, 'mousedown', kakao.maps.event.preventMap);
+        addEventHandle(contentNode, 'touchstart', kakao.maps.event.preventMap);
+        
+        // 커스텀 오버레이 컨텐츠를 설정합니다
+        placeOverlay.setContent(contentNode);  
+        
+        // 각 카테고리에 클릭 이벤트를 등록합니다
+        addCategoryClickEvent();
+        
+        // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
+        function addEventHandle(target, type, callback) {
+            if (target.addEventListener) {
+                target.addEventListener(type, callback);
+            } else {
+                target.attachEvent('on' + type, callback);
+            }
+        }
+        
+        // 카테고리 검색을 요청하는 함수입니다
+        function searchPlaces() {
+            if (!currCategory) {
+                return;
+            }
+            
+            // 커스텀 오버레이를 숨깁니다 
+            placeOverlay.setMap(null);
+        
+            // 지도에 표시되고 있는 마커를 제거합니다
+            removeMarker();
+            
+            ps.categorySearch(currCategory, placesSearchCB, {useMapBounds:true}); 
+        }
+        
+        // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+        function placesSearchCB(data, status, pagination) {
+            if (status === kakao.maps.services.Status.OK) {
+        
+                // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
+                displayPlaces(data);
+            } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+                // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
+        
+            } else if (status === kakao.maps.services.Status.ERROR) {
+                // 에러로 인해 검색결과가 나오지 않은 경우 해야할 처리가 있다면 이곳에 작성해 주세요
+                
+            }
+        }
+        
+        // 지도에 마커를 표출하는 함수입니다
+        function displayPlaces(places) {
+        
+            // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
+            // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
+            var order = document.getElementById(currCategory).getAttribute('data-order');
+        
+            
+        
+            for ( var i=0; i<places.length; i++ ) {
+        
+                    // 마커를 생성하고 지도에 표시합니다
+                    var marker = addMarker(new kakao.maps.LatLng(places[i].y, places[i].x), order);
+        
+                    // 마커와 검색결과 항목을 클릭 했을 때
+                    // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
+                    (function(marker, place) {
+                        kakao.maps.event.addListener(marker, 'click', function() {
+                            displayPlaceInfo(place);
+                        });
+                    })(marker, places[i]);
+            }
+        }
+        
+        // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+        function addMarker(position, order) {
+            var imageSrc = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+                imageSize = new kakao.maps.Size(27, 28),  // 마커 이미지의 크기
+                imgOptions =  {
+                    spriteSize : new kakao.maps.Size(72, 208), // 스프라이트 이미지의 크기
+                    spriteOrigin : new kakao.maps.Point(46, (order*36)), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+                    offset: new kakao.maps.Point(11, 28) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+                },
+                markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+                    marker = new kakao.maps.Marker({
+                    position: position, // 마커의 위치
+                    image: markerImage 
+                });
+        
+            marker.setMap(map); // 지도 위에 마커를 표출합니다
+            markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+        
+            return marker;
+        }
+        
+        // 지도 위에 표시되고 있는 마커를 모두 제거합니다
+        function removeMarker() {
+            for ( var i = 0; i < markers.length; i++ ) {
+                markers[i].setMap(null);
+            }   
+            markers = [];
+        }
+        
+        // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
+        function displayPlaceInfo (place) {
+            var content = '<div class="placeinfo">' +
+                            '   <a class="title" href="' + place.place_url + '" target="_blank" title="' + place.place_name + '">' + place.place_name + '</a>';   
+        
+            if (place.road_address_name) {
+                content += '    <span title="' + place.road_address_name + '">' + place.road_address_name + '</span>' +
+                            '  <span class="jibun" title="' + place.address_name + '">(지번 : ' + place.address_name + ')</span>';
+            }  else {
+                content += '    <span title="' + place.address_name + '">' + place.address_name + '</span>';
+            }                
+        
+            content += '    <span class="tel">' + place.phone + '</span>' + 
+                        '</div>' + 
+                        '<div class="after"></div>';
+        
+            contentNode.innerHTML = content;
+            placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
+            placeOverlay.setMap(map);  
+        }
+        
+        
+        // 각 카테고리에 클릭 이벤트를 등록합니다
+        function addCategoryClickEvent() {
+            var category = document.getElementById('category'),
+                children = category.children;
+        
+            for (var i=0; i<children.length; i++) {
+                children[i].onclick = onClickCategory;
+            }
+        }
+        
+        // 카테고리를 클릭했을 때 호출되는 함수입니다
+        function onClickCategory() {
+            var id = this.id,
+                className = this.className;
+        
+            placeOverlay.setMap(null);
+        
+            if (className === 'on') {
+                currCategory = '';
+                changeCategoryClass();
+                removeMarker();
+            } else {
+                currCategory = id;
+                changeCategoryClass(this);
+                searchPlaces();
+            }
+        }
+        
+        // 클릭된 카테고리에만 클릭된 스타일을 적용하는 함수입니다
+        function changeCategoryClass(el) {
+            var category = document.getElementById('category'),
+                children = category.children,
+                i;
+        
+            for ( i=0; i<children.length; i++ ) {
+                children[i].className = '';
+            }
+        
+            if (el) {
+                el.className = 'on';
+            } 
+        } 
+        
+        var marker = new kakao.maps.Marker({ 
+            position: map.getCenter()
+        });
+        
+        marker.setMap(map);
+        
+        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {        
+            
+            
+            // 클릭한 위도, 경도 정보를 가져옵니다 
+            var latlng = mouseEvent.latLng; 
+            
+            // 마커 위치를 클릭한 위치로 옮깁니다
+            //marker.setPosition(latlng);
+        
+            // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
+            deleteClickLine();
+        
+            // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
+            deleteDistnce();
+        
+            // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
+            deleteCircleDot();
+        
+            //미래관의 좌표정보입니다
+            var myPosition = new kakao.maps.LatLng(37.625046, 127.076600);
+        
+            clickLine = new kakao.maps.Polyline({
+                map: map, // 선을 표시할 지도입니다 
+                path: [myPosition,latlng], // 선을 구성하는 좌표 배열입니다 클릭한 위치를 넣어줍니다
+                strokeWeight: 3, // 선의 두께입니다 
+                strokeColor: '#db4040', // 선의 색깔입니다
+                strokeOpacity: 1, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+                strokeStyle: 'solid' // 선의 스타일입니다
+            });
+        
+            moveLine = new kakao.maps.Polyline({
+                strokeWeight: 3, // 선의 두께입니다 
+                strokeColor: '#db4040', // 선의 색깔입니다
+                strokeOpacity: 0.5, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+                strokeStyle: 'solid' // 선의 스타일입니다    
+            });
+        
+            //빨간색 원이 찍힐 위치
+            displayCircleDot(myPosition, 0);
+            displayCircleDot(latlng, 0);
+        
+            var distance = Math.round(clickLine.getLength()), // 선의 총 거리를 계산합니다
+            content = getTimeHTML(distance); // 커스텀오버레이에 추가될 내용입니다
+            
+            // 마우스 클릭으로 그린 선의 좌표 배열을 얻어옵니다
+            var path = clickLine.getPath();
+            // 그려진 선의 거리정보를 지도에 표시합니다
+            showDistance(content, path[path.length-1]);  
+        
+            var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
+            message += '경도는 ' + latlng.getLng() + ' 입니다';
+        
+            
+        
+        });
+        
+        kakao.maps.event.addListener(map, 'rightclick', function (mouseEvent) {
+            // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
+            deleteClickLine();
+        
+            // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
+            deleteDistnce();
+        
+            // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
+            deleteCircleDot();
+        
+            
+            
+        });
+        
+        function displayCircleDot(position, distance) {
+        
+            // 클릭 지점을 표시할 빨간 동그라미 커스텀오버레이를 생성합니다
+            var circleOverlay = new kakao.maps.CustomOverlay({
+                content: '<span class="dot"></span>',
+                position: position,
+                zIndex: 1
+            });
+        
+            // 지도에 표시합니다
+            circleOverlay.setMap(map);
+        
+            // 배열에 추가합니다
+            dots.push({circle:circleOverlay, distance: distanceOverlay});
+        }
+        
+        function getTimeHTML(distance) {
+        
+            // 도보의 시속은 평균 4km/h 이고 도보의 분속은 67m/min입니다
+            var walkkTime = distance / 67 | 0;
+            var walkHour = '', walkMin = '';
+        
+            // 계산한 도보 시간이 60분 보다 크면 시간으로 표시합니다
+            if (walkkTime > 60) {
+                walkHour = '<span class="number">' + Math.floor(walkkTime / 60) + '</span>시간 '
+            }
+            walkMin = '<span class="number">' + (walkkTime % 60+1) + '</span>분'
+        
+            // 자전거의 평균 시속은 16km/h 이고 이것을 기준으로 자전거의 분속은 267m/min입니다
+            var bycicleTime = distance / 227 | 0;
+            var bycicleHour = '', bycicleMin = '';
+        
+            // 계산한 자전거 시간이 60분 보다 크면 시간으로 표출합니다
+            if (bycicleTime > 60) {
+                bycicleHour = '<span class="number">' + Math.floor(bycicleTime / 60) + '</span>시간 '
+            }
+            bycicleMin = '<span class="number">' + bycicleTime % 60 + '</span>분'
+        
+            // 거리와 도보 시간, 자전거 시간을 가지고 HTML Content를 만들어 리턴합니다
+            var content = '<ul class="dotOverlay distanceInfo">';
+            content += '    <li>';
+            content += '        <span class="label">총거리</span><span class="number">' + distance + '</span>m';
+            content += '    </li>';
+            content += '    <li>';
+            content += '        <span class="label">도보</span>' + walkHour + walkMin+'<span style="font-size:5px;opacity:0.5">(거리가 멀수록 부정확합니다)</span>';
+            content += '    </li>';
+            content += '    <li>';
+            content += '        <span class="label">자전거</span>' + bycicleHour + bycicleMin + '<span style="font-size:5px;opacity:0.5">(거리가 멀수록 부정확합니다)</span>';
+            content += '    </li>';
+            content += '</ul>'
+        
+            return content;
+        }
+        
+        function showDistance(content, position) {
+        
+            if (distanceOverlay) { // 커스텀오버레이가 생성된 상태이면
+                
+                // 커스텀 오버레이의 위치와 표시할 내용을 설정합니다
+                distanceOverlay.setPosition(position);
+                distanceOverlay.setContent(content);
+                
+            } else { // 커스텀 오버레이가 생성되지 않은 상태이면
+                
+                // 커스텀 오버레이를 생성하고 지도에 표시합니다
+                distanceOverlay = new kakao.maps.CustomOverlay({
+                    map: map, // 커스텀오버레이를 표시할 지도입니다
+                    content: content,  // 커스텀오버레이에 표시할 내용입니다
+                    position: position, // 커스텀오버레이를 표시할 위치입니다.
+                    xAnchor: 0,
+                    yAnchor: 0,
+                    zIndex: 3  
+                });      
+            }
+        }
+        
+        // 클릭으로 그려진 선을 지도에서 제거하는 함수입니다
+        function deleteClickLine() {
+            if (clickLine) {
+                clickLine.setMap(null);    
+                clickLine = null;        
+            }
+        }
+        
+        function deleteCircleDot() {
+            var i;
+        
+            for ( i = 0; i < dots.length; i++ ){
+                if (dots[i].circle) { 
+                    dots[i].circle.setMap(null);
+                }
+        
+                if (dots[i].distance) {
+                    dots[i].distance.setMap(null);
+                }
+            }
+        
+            dots = [];
+        }
+
+        // 그려지고 있는 선의 총거리 정보와 
+        // 선 그리가 종료됐을 때 선의 정보를 표시하는 커스텀 오버레이를 삭제하는 함수입니다
+        function deleteDistnce () {
+            if (distanceOverlay) {
+                distanceOverlay.setMap(null);
+                distanceOverlay = null;
+            }
+        }
+        
+        $(function() {           
+            var availableUniv = /*서울*/ ["가톨릭대학교 성신교정","가톨릭대학교 성의교정","건국대학교 서울캠퍼스","경기대학교 서울캠퍼스","경희대학교 서울캠퍼스","고려대학교 서울캠퍼스","광운대학교","국민대학교","동국대학교 서울캠퍼스","명지대학교 인문캠퍼스","삼육대학교","상명대학교 서울캠퍼스","서강대학교","서경대학교","서울대학교 관악캠퍼스","서울대학교 연건캠퍼스","서울과학기술대학교","성균관대학교 인문사회캠퍼스","세종대학교","숭실대학교","연세대학교 신촌캠퍼스","중앙대학교 서울캠퍼스","한국외국어대학교 서울캠퍼스","한성대학교","한양대학교 서울캠퍼스","홍익대학교 서울캠퍼스",
+                                /*부산*/  "경성대학교","고신대학교","동명대학교","동서대학교","동아대학교 승학캠퍼스","동아대학교 부민캠퍼스","동아대학교 구덕캠퍼스","동의대학교 가야캠퍼스","동의대학교 양정캠퍼스","부경대학교 대연캠퍼스","부경대학교 용당캠퍼스","부산대학교 부산캠퍼스","부산대학교 아미캠퍼스","부산외국어대학교","신라대학교","영산대학교 해운대캠퍼스","인제대학교 부산캠퍼스","한국해양대학교",
+                                /*대구*/  "경북대학교 대구캠퍼스","계명대학교 성서캠퍼스","대구교육대학교",
+                                /*인천*/  "가천대학교 메디컬캠퍼스","안양대학교 강화캠퍼스","연세대학교 국제캠퍼스","인천대학교","인하대학교","청운대학교 인천캠퍼스",
+                                /*광주*/  "광주대학교","송원대학교","전남대학교 광주캠퍼스","조선대학교","호남대학교",
+                                /*대전*/  "건양대학교 메디컬캠퍼스","대전대학교","목원대학교","배재대학교","우송대학교","을지대학교 대전캠퍼스","충남대학교 대덕캠퍼스","충남대학교 보운캠퍼스","한남대학교 오정동캠퍼스","한남대학교 글로벌캠퍼스","한남대학교 대덕밸리캠퍼스","한밭대학교",
+                                /*울산*/  "울산대학교",
+                                /*세종*/  "고려대학교 세종캠퍼스","홍익대학교 세종캠퍼스",
+                                /*경기*/  "가천대학교 글로벌캠퍼스","가톨릭대학교 성심교정","강남대학교","경기대학교 수원캠퍼스","경동대학교 양주캠퍼스","경희대학교 국제캠퍼스","단국대학교 죽전캠퍼스","대진대학교","동국대학교 바이오메디캠퍼스","명지대학교","성균관대학교 자연과학캠퍼스","수원대학교","신경대학교","신한대학교","아주대학교","안양대학교 안양캠퍼스","예원예술대학교 양주캠퍼스","용인대학교","을지대학교 성남캠퍼스","중부대학교 고양캠퍼스","중앙대학교 안성캠퍼스","차의과학대학교","평택대학교","한경대학교","한국교통대학교 의왕캠퍼스","한국산업기술대학교","한국외국어대학교 글로벌캠퍼스","한국항공대학교","한세대학교","한신대학교","한양대학교 에리카","협성대학교",
+                                /*강원*/  "가톨릭관동대학교","강릉원주대학교 강릉캠퍼스","강원대학교 춘천캠퍼스","강원대학교 삼척캠퍼스","강원대학교 도계캠퍼스","경동대학교 글로벌캠퍼스","경동대학교 메디컬캠퍼스","상지대학교","연세대학교 매지캠퍼스","연세대학교 일산캠퍼스","한라대학교","한림대학교",
+                                /*충북*/  "건국대학교 글로벌캠퍼스","극동대학교","꽃동네대학교","서원대학교","세명대학교","순복음총회신학교","우석대학교 진천캠퍼스","중원대학교","청주대학교","유원대학교","청주교육대학교","충북대학교","한국교원대학교","한국교통대학교 충주캠퍼스","한국교통대학교 증평캠퍼스","공군사관학교",
+                                /*충남*/  "경찰대학","공주교육대학교","공주대학교 신관캠퍼스","고웆대학교 천안캠퍼스","공주대학교 예산컴퍼스","국방대학교","한국전통문화대학교","건양대학교 창의웅합캠퍼스","고신대학교 천안캠퍼스","금강대학교","나사렛대학교","남서울대학교","단국대학교 천안캠퍼스","백석대학교","상명대학교 천안캠퍼스","선문대학교","세한대학교 당진캠퍼스","순천향대학교","유원대학교 아산캠퍼스","중부대학교","청운대학교 홍성캠퍼스","한국기술교육대학교","한서대학교 서산캠퍼스","한서대학교 태안캠퍼스","호서대학교 아산캠퍼스","호서대학교 천안캠퍼스","호서대학교 당진 산업화학융합캠퍼스","백석문화대학교","신성대학교","아주자동차대학교","연암대학교","충남도립대학교"
+                            
+                            ];
+            $("#univ").autocomplete({
+                source: availableUniv,
+                select: function(event, ui) {
+                    console.log(ui.item);
+                },
+                focus: function(event, ui) {
+                    return false;
+                    //event.preventDefault();
+                    
+                }
+            });
+            $('#univ_search').click(function() 
+            {
+                var moveMap;
+                var moveMapOption;
+                var moveLatLon;
+                var getText = document.getElementById('univ').value;
+                
+    /*서울*/    if      (getText ==='가톨릭대학교 성신교정') moveLatLon= new kakao.maps.LatLng(37.5859218,127.0043275); 
+                else if(getText ==='가톨릭대학교 성의교정') moveLatLon = new kakao.maps.LatLng(37.4996227,127.0060653); 
+                else if(getText ==='건국대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5424738,127.0729708); 
+                else if(getText ==='경기대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(); 
+                else if(getText ==='경희대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='고려대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='광운대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='국민대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='동국대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='명지대학교 인문캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='삼육대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='상명대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='서강대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='서경대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='서울대학교 관악캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='서울대학교 연건캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='서울과학기술대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='성균관대학교 인문사회캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='세종대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='숭실대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='연세대학교 신촌캠퍼스') moveLatLon = new kakao.maps.LatLng();                
+                else if(getText ==='중앙대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한국외국어대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한성대학교') moveLatLon = new kakao.maps.LatLng(37.581759,127.010337)
+                else if(getText ==='한양대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='홍익대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng();
+            
+    /*부산*/    else if(getText ==='경성대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='고신대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='동명대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='동서대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='동아대학교 승학캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='동아대학교 부민캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='동아대학교 구덕캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='동의대학교 가야캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='동의대학교 양정캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='부경대학교 대연캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='부경대학교 용당캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='부산대학교 부산캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='부산대학교 아미캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='부산외국어대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='신라대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='영산대학교 해운대캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='인제대학교 부산캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한국해양대학교') moveLatLon = new kakao.maps.LatLng();
+
+    /*대구*/    else if(getText ==='경북대학교 대구캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='계명대학교 성서캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='대구교육대학교') moveLatLon = new kakao.maps.LatLng();
+
+    /*인천*/    else if(getText ==='가천대학교 메디컬캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='안양대학교 강화캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='연세대학교 국제캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='인천대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='인하대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='청운대학교 인천캠퍼스') moveLatLon = new kakao.maps.LatLng();
+
+    /*광주*/    else if(getText ==='광주대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='송원대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='전남대학교 광주캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='조선대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='호남대학교') moveLatLon = new kakao.maps.LatLng();
+
+    /*대전*/    else if(getText ==='건양대학교 메디컬캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='대전대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='목원대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='배재대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='우송대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='을지대학교 대전캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='충남대학교 대덕캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='충남대학교 보운캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한남대학교 오정동캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한남대학교 글로벌캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한남대학교 대덕밸리캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한밭대학교') moveLatLon = new kakao.maps.LatLng();
+
+    /*울산*/    else if(getText ==='울산대학교') moveLatLon = new kakao.maps.LatLng();
+    
+    /*세종*/    else if(getText ==='고려대학교 세종캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='홍익대학교 세종캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                
+    /*경기*/    else if(getText ==='가천대학교 글로벌캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='가톨릭대학교 성심교정') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='강남대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='경기대학교 수원캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='경동대학교 양주캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='경희대학교 국제캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='단국대학교 죽전캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='대진대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='동국대학교 바이오메디캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='명지대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='성균관대학교 자연과학캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='수원대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='신경대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='신한대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='아주대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='안양대학교 안양캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='예원예술대학교 양주캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='용인대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='을지대학교 성남캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='중부대학교 고양캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='중앙대학교 안성캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='차의과학대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='평택대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한경대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한국교통대학교 의왕캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한국산업기술대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한국외국어대학교 글로벌캠퍼스') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한국항공대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한세대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한신대학교') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='한양대학교 에리카') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='협성대학교') moveLatLon = new kakao.maps.LatLng();
+
+                else if(getText ==='') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='') moveLatLon = new kakao.maps.LatLng();
+                else if(getText ==='') moveLatLon = new kakao.maps.LatLng();
+        
+                // 지도 중심을 부드럽게 이동시킵니다
+                // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+                map.panTo(moveLatLon);   
+                map.setLevel(3); 
+            });
+        });
+    </script>
+    <div id="tag_wrap" style="width:1024px; margin: 0 auto;padding-top:20px;">
+        <div style="width:100%;margin: 0 auto;text-align:center;margin-bottom:20px;">입주자가 위치를 파악할 수 있을만한 장소를 입력해주세요</div>
+        <form method="POST" class="post-form" autocomplete="off">{% csrf_token %}
+            <div id="bar_wrap" style="width:400px;height:30px; margin: 0 auto;margin-bottom:20px;">                    
+                {{ form.tag.errors }}
+                {{ form.tag }}
+            </div>
+            
+            <div style="width:100%;margin:0 auto;height:20px;font-size:10px;color:#bdbdbd;text-align:center;">다른 사용자가 추가한 위치들</div> 
+            <div id="tags_wrap" style="width:500px;margin:0 auto;height:50px;padding-top:20px;">
+                {% for tags in test %}
+                    <div style="width:20%;margin: 0 auto;float:left">
+                        <a href="#" >{{ tags.tag }}</a>
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="btn_wrap" style="width:100px; margin: 0 auto;">
+                <button type="submit" class="save btn btn-default" style="width:100%;height:50px;">Save</button>
+            </div>  
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+<button id="sort">가격순 정렬</button>
+{% for items in item %}
+    
+    <div class="item_post" onmouseover="over_event('{{items.lat}}','{{items.lng}}')" onmouseout="out_event()"  style="cursor: pointer">
+        <form action="/search_univ/detail/" method="get">
+            <input type="hidden" value="{{items.auto_increment_id}}" readonly name="item_id">
+            <input type="submit" style="display:none" id="get_id{{items.auto_increment_id}}">
+        </form>
+        <div class="cost">가격 : {{ items.cost }}만원</div>
+        <div>태그 : {{ items.tag}}</div>
+        <li style="list-style:none;">
+                <input type="button" class="like" name="{{ items.auto_increment_id }}" value="♡">
+                
+            {% for like in like %}
+                {% if like.item.auto_increment_id == items.auto_increment_id %}
+                    <script>$('input[name={{ items.auto_increment_id }}]').val('♥')</script>
+                    {{ "<!--" }}
+                {% else %}
+                    <script>$('input[name={{ items.auto_increment_id }}]').val('♡')</script>
+                {% endif %}
+            {% endfor %}
+            <div style="display:none">{{ "-->" }}</div>
+            
+            </p>
+        </li>
+        <script>
+
+        </script>
+        <hr>
+    </div>
+{% endfor %}

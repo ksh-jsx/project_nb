@@ -1,0 +1,1226 @@
+{% extends 'baangbang/base.html' %}
+
+{% block content %}
+<div class="sale_wrap" style="width:1024px; margin: 0 auto;">
+    <div class="map_wrap">
+        <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+        <ul id="category">
+            <li id="BK9" data-order="0"> 
+                <span class="category_bg bank"></span>
+                은행
+            </li>       
+            <li id="MT1" data-order="1"> 
+                <span class="category_bg mart"></span>
+                마트
+            </li>  
+            <li id="PM9" data-order="2"> 
+                <span class="category_bg pharmacy"></span>
+                약국
+            </li>  
+            <li id="FD6" data-order="3"> 
+                <span class="category_bg food"></span>
+                음식점 
+            </li>  
+            <li id="CE7" data-order="4"> 
+                <span class="category_bg cafe"></span>
+                카페
+            </li>  
+            <li id="CS2" data-order="5"> 
+                <span class="category_bg store"></span>
+                편의점
+            </li>      
+        </ul>
+        <script>
+        </script>
+        <div class="search_wrap" >
+            <form action="/search_univ/" method="get">
+                <input type="text" placeholder="대학교 이름을 검색하세요" id="univ_list" name="q" value="{{info}}">    
+                <a href="" id="univ_search" style="display: none">검색</a>
+                <button id="search_btn" onclick="get_univ_name()">검색</button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <div class="items_wrap">
+        <div id="loading"></div>
+        <div id="items_scroll">
+        가격 : <input type="text" id="cost1"> ~ <input type="text" id="cost2">
+        <button id="sort">적용하기</button>
+        {% for items in item %}
+            <div class="item_post" onmouseover="over_event('{{items.lat}}','{{items.lng}}')" onmouseout="out_event()"  style="cursor: pointer">
+                <form action="/search_univ/detail/" method="get">
+                    <input type="hidden" value="{{items.auto_increment_id}}" readonly name="item_id">
+                    <input type="submit" style="display:none" id="get_id{{items.auto_increment_id}}">
+                </form>
+                <div class="cost">가격 : {{ items.cost }}만원</div>
+                <div>태그 : {{ items.tag}}</div>
+                <li style="list-style:none;">
+                        <input type="button" class="like" name="{{ items.auto_increment_id }}" value="♡">
+                        
+                    {% for like in like %}
+                        {% if like.item.auto_increment_id == items.auto_increment_id %}
+                            <script>$('input[name={{ items.auto_increment_id }}]').val('♥')</script>
+                            {{ "<!--" }}
+                        {% else %}
+                            <script>$('input[name={{ items.auto_increment_id }}]').val('♡')</script>
+                        {% endif %}
+                    {% endfor %}
+                    <div style="display:none">{{ "-->" }}</div>
+                    
+                    </p>
+                </li>
+                <script>
+
+                </script>
+                <hr>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+<script>
+//좋아요 ajax
+    $(".like").click(function(){
+        var clicked_heart = $(this).attr('value');
+        var clicked_heart2 = $(this).attr('name');
+        if(clicked_heart === '♥')
+        {
+            $(this).val('♡');
+        }
+        else
+        {
+            $(this).val('♥');
+        }
+        
+        var pk = $(this).attr('name')
+        $.ajax({ // .like 버튼을 클릭하면 <새로고침> 없이 ajax로 서버와 통신하겠다.
+            type: "POST", // 데이터를 전송하는 방법을 지정
+            url: "{% url 'post_like' %}", // 통신할 url을 지정
+            data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'}, // 서버로 데이터 전송시 옵션
+            dataType: "json", // 서버측에서 전송한 데이터를 어떤 형식의 데이터로서 해석할 것인가를 지정, 없으면 알아서 판단
+            // 서버측에서 전송한 Response 데이터 형식 (json)
+            // {'likes_count': post.like_count, 'message': message }
+            success: function(response){ // 통신 성공시 - 동적으로 좋아요 갯수 변경, 유저 목록 변경
+                alert(response.message);
+            },
+            error: function(request, status, error){ // 통신 실패시 - 로그인 페이지 리다이렉트
+                alert("로그인이 필요합니다.")
+                window.location.replace("/accounts/login/")
+                //alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            },
+        });
+    })
+
+    $("#sort").click(function(){
+        var pk = $(this).attr('name')
+        $.ajax({ // .like 버튼을 클릭하면 <새로고침> 없이 ajax로 서버와 통신하겠다.
+            type: "POST", // 데이터를 전송하는 방법을 지정
+            url: "{% url 'search_univ' %}", // 통신할 url을 지정
+            data: {'univ': '{{info}}','cost1':$("#cost1").val(),'cost2':$("#cost2").val(), 'csrfmiddlewaretoken': '{{ csrf_token }}'}, // 서버로 데이터 전송시 옵션
+            dataType: "text",
+            
+            success : function(data) {
+                $('.items_wrap').html(data);
+            },
+
+            error: function(request, status, error){ // 통신 실패시 - 로그인 페이지 리다이렉트
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            },
+        });
+    })
+
+    $("#univ_list").autocomplete({
+        source: availableUniv,
+        select: function(event, ui) {
+            console.log(ui.item);
+        },
+        focus: function(event, ui) {
+            return false;
+            //event.preventDefault();
+            
+        }
+    });
+    function get_univ_name()
+    {
+        var getText = document.getElementById('univ_list').value;
+        var is_listed = false;
+        for(var i=0; i<availableUniv.length;i++)
+        {
+            if(availableUniv[i] === getText)
+            {
+               is_listed = true;
+               break;
+            }
+        }
+        if(is_listed)
+        {
+            document.getElementById('univ_search').click();
+        }
+        else alert('대학명을 바르게 입력해주세요');
+    }
+
+    function over_event(lat,lng)
+    {
+        for ( var i = 0; i < over_markers.length; i++ ) {
+            over_markers[i].setMap(null);
+        }   
+        over_markers = [];
+        
+        var marker = new kakao.maps.Marker({
+            position: new kakao.maps.LatLng(lat, lng)
+        });
+        marker.setMap(map);
+        over_markers.push(marker);
+    }
+
+    function out_event()
+    {
+        for ( var i = 0; i < over_markers.length; i++ ) {
+            over_markers[i].setMap(null);
+        }   
+        over_markers = [];
+    }
+    function goto_detail(num)
+    {
+        input_id = 'get_id'+num;
+        document.getElementById(input_id).click();
+    }
+    var drawingFlag = false; // 선이 그려지고 있는 상태를 가지고 있을 변수입니다
+    var moveLine; // 선이 그려지고 있을때 마우스 움직임에 따라 그려질 선 객체 입니다
+    var clickLine // 마우스로 클릭한 좌표로 그려질 선 객체입니다
+    var distanceOverlay; // 선의 거리정보를 표시할 커스텀오버레이 입니다
+    var dots = {}; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
+    
+    // 마커를 클릭했을 때 해당 장소의 상세정보를 보여줄 커스텀오버레이입니다
+    var placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}), 
+        contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다 
+        markers = [], // 마커를 담을 배열입니다
+        over_markers = [], // mouseOver위치의 마커를 담을 배열입니다
+        circles = [];
+        currCategory = ''; // 현재 선택된 카테고리를 가지고 있을 변수입니다
+    
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+        mapOption = {
+            center: new kakao.maps.LatLng(37.6315409,127.0763521), // 지도의 중심좌표
+            level: 4 // 지도의 확대 레벨
+        };  
+    
+    // 지도를 생성합니다    
+    var map = new kakao.maps.Map(mapContainer, mapOption); 
+    // 클러스터 생성
+    var clusterer = new kakao.maps.MarkerClusterer({
+        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+        gridSize : 200, //클러스터링 범위
+        minLevel: 1, // 클러스터 할 최소 지도 레벨
+        minClusterSize: 1, //클러스터할 마커 최수 개수
+        disableClickZoom: true, // 클러스터 마커를 클릭했을 때 지도가 확대되지 않도록 설정한다
+        asdf: [{background: '#fffffff',}],
+        styles: [
+        {
+            width: '40px',
+            height: '35px',
+            background: '#326182',
+            color: '#ffffff',
+            paddingTop:'5px',
+            opacity: 0.95,
+            border: '2px solid white',
+            borderRadius: '100%',
+            textAlign: 'center',
+            lineHeight: '27px',
+            fontSize: '15px',
+            fontWeight: 'bold',
+        },
+        ],
+    });
+
+    $(function(){
+        // 데이터에서 좌표 값을 가지고 마커를 표시합니다
+        // 마커 클러스터러로 관리할 마커 객체는 생성할 때 지도 객체를 설정하지 않습니다
+        var get_loca= [];
+        "{% for items in item %}"
+            get_loca.push({lat: "{{items.lat}}" ,lng: "{{items.lng}}" })
+        "{% endfor %}"
+        var markers = $(get_loca).map(function(i, position) {
+            return new kakao.maps.Marker({
+                position : new kakao.maps.LatLng(position.lat, position.lng)
+            });
+        });
+
+        // 클러스터러에 마커들을 추가합니다
+        clusterer.addMarkers(markers);
+    });
+    
+    
+    // 마커 클러스터러에 클릭이벤트를 등록합니다
+    // 마커 클러스터러를 생성할 때 disableClickZoom을 true로 설정하지 않은 경우
+    // 이벤트 헨들러로 cluster 객체가 넘어오지 않을 수도 있습니다
+    kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
+        var mk = cluster.getMarkers();
+        var count = 0;
+        
+        removeCircles();
+        "{% for items in item %}"     
+            var get_lat = "{{items.lat}}"*1;
+            
+            var is_located = true;
+            var inverted_lat = get_lat.toFixed(10);
+            var get_lng = "{{items.lng}}"*1;
+            var inverted_lng = get_lng.toFixed(10);
+            for(var i=0; i < mk.length;i++)
+            {
+                if(mk[i].getPosition().getLat().toFixed(10) == inverted_lat && mk[i].getPosition().getLng().toFixed(10) == inverted_lng)
+                {
+                    is_located = true;
+                    break;
+                }
+                else
+                {
+                    is_located = false;
+                }
+            }
+            if(is_located)
+            {
+                document.getElementsByClassName('item_post')[count].style.display = "block"
+            } 
+            else
+            {
+                document.getElementsByClassName('item_post')[count].style.display = "none";
+            }
+            count++;
+        "{% endfor %}"
+
+        document.getElementById('loading').style.display = "block"
+        document.getElementById('items_scroll').style.display = "none"
+
+        setTimeout(function() {
+            document.getElementById('loading').style.display = "none"
+            document.getElementById('items_scroll').style.display = "block"
+        }, 700);
+    });
+
+    kakao.maps.event.addListener(map, 'zoom_changed', function() {        
+        removeCircles();
+    });
+
+    function removeCircles() {         
+        for (var i = 0; i < circles.length; i++) {
+            circles[i].setMap(null);    
+            circles[i].setMap(null);
+            circles[i].setMap(null);
+        }         
+        circles = [];
+    }
+    kakao.maps.event.addListener(clusterer, 'clusterover', function(cluster) {
+        var mk = cluster.getMarkers();
+        var grid_size = cluster.getBounds();
+        var count = 0;
+        
+        line = new kakao.maps.Polyline({
+            path: [grid_size.getSouthWest(),grid_size.getNorthEast()], // 선을 구성하는 좌표
+        });
+        var diameter = Math.floor(line.getLength());// 선의 총 거리를 계산합니다
+        
+        removeCircles();
+        "{% for items in item %}"     
+            var get_lat = "{{items.lat}}"*1;
+            var is_located = true;
+            var inverted_lat = get_lat.toFixed(10);
+            var get_lng = "{{items.lng}}"*1;
+            var inverted_lng = get_lng.toFixed(10);
+            for(var i=0; i < mk.length;i++)
+            {
+                if(mk[i].getPosition().getLat().toFixed(10) == inverted_lat && mk[i].getPosition().getLng().toFixed(10) == inverted_lng)
+                {
+                    is_located = true;
+                    break;
+                }
+                else
+                {
+                    is_located = false;
+                }
+            }
+            
+            count++;
+        "{% endfor %}"
+        var circle = new kakao.maps.Circle({ 
+            center : cluster.getCenter(), // 원의 중심좌표입니다
+            radius: diameter/2, // 원의 반지름입니다 m 단위 이며 선 객체를 이용해서 얻어옵니다
+            strokeWeight: 1, // 선의 두께입니다
+            strokeColor: '#00a0e9', // 선의 색깔입니다
+            strokeOpacity: 0.1, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+            strokeStyle: 'solid', // 선의 스타일입니다
+            fillColor: '#00a0e9', // 채우기 색깔입니다
+            fillOpacity: 0.2  // 채우기 불투명도입니다 
+        });
+
+        circle.setMap(map); 
+        circles.push(circle);
+    });
+
+    kakao.maps.event.addListener(clusterer, 'clusterout', function() { removeCircles();});
+
+    // 장소 검색 객체를 생성합니다
+    var ps = new kakao.maps.services.Places(map); 
+    
+    // 지도에 idle 이벤트를 등록합니다
+    kakao.maps.event.addListener(map, 'idle', searchPlaces);
+    
+    // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다 
+    contentNode.className = 'placeinfo_wrap';
+    
+    // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
+    // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다 
+    addEventHandle(contentNode, 'mousedown', kakao.maps.event.preventMap);
+    addEventHandle(contentNode, 'touchstart', kakao.maps.event.preventMap);
+    
+    // 커스텀 오버레이 컨텐츠를 설정합니다
+    placeOverlay.setContent(contentNode);  
+    
+    // 각 카테고리에 클릭 이벤트를 등록합니다
+    addCategoryClickEvent();
+    
+    // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
+    function addEventHandle(target, type, callback) {
+        if (target.addEventListener) {
+            target.addEventListener(type, callback);
+        } else {
+            target.attachEvent('on' + type, callback);
+        }
+    }
+    
+    // 카테고리 검색을 요청하는 함수입니다
+    function searchPlaces() {
+        if (!currCategory) {
+            return;
+        }
+        
+        // 커스텀 오버레이를 숨깁니다 
+        placeOverlay.setMap(null);
+    
+        // 지도에 표시되고 있는 마커를 제거합니다
+        removeMarker();
+        
+        ps.categorySearch(currCategory, placesSearchCB, {useMapBounds:true}); 
+    }
+    
+    // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+    function placesSearchCB(data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+    
+            // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
+            displayPlaces(data);
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+            // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
+    
+        } else if (status === kakao.maps.services.Status.ERROR) {
+            // 에러로 인해 검색결과가 나오지 않은 경우 해야할 처리가 있다면 이곳에 작성해 주세요
+            
+        }
+    }
+    
+    // 지도에 마커를 표출하는 함수입니다
+    function displayPlaces(places) {
+    
+        // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
+        // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
+        var order = document.getElementById(currCategory).getAttribute('data-order');
+    
+        
+    
+        for ( var i=0; i<places.length; i++ ) {
+    
+                // 마커를 생성하고 지도에 표시합니다
+                var marker = addMarker(new kakao.maps.LatLng(places[i].y, places[i].x), order);
+    
+                // 마커와 검색결과 항목을 클릭 했을 때
+                // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
+                (function(marker, place) {
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        displayPlaceInfo(place);
+                    });
+                })(marker, places[i]);
+        }
+    }
+    
+    // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+    function addMarker(position, order) {
+        var imageSrc = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+            imageSize = new kakao.maps.Size(27, 28),  // 마커 이미지의 크기
+            imgOptions =  {
+                spriteSize : new kakao.maps.Size(72, 208), // 스프라이트 이미지의 크기
+                spriteOrigin : new kakao.maps.Point(46, (order*36)), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+                offset: new kakao.maps.Point(11, 28) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+            },
+            markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+                marker = new kakao.maps.Marker({
+                position: position, // 마커의 위치
+                image: markerImage 
+            });
+    
+        marker.setMap(map); // 지도 위에 마커를 표출합니다
+        markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+    
+        return marker;
+    }
+    
+    // 지도 위에 표시되고 있는 마커를 모두 제거합니다
+    function removeMarker() {
+        for ( var i = 0; i < markers.length; i++ ) {
+            markers[i].setMap(null);
+        }   
+        markers = [];
+    }
+    
+    // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
+    function displayPlaceInfo (place) {
+        var content = '<div class="placeinfo">' +
+                        '   <a class="title" href="' + place.place_url + '" target="_blank" title="' + place.place_name + '">' + place.place_name + '</a>';   
+    
+        if (place.road_address_name) {
+            content += '    <span title="' + place.road_address_name + '">' + place.road_address_name + '</span>' +
+                        '  <span class="jibun" title="' + place.address_name + '">(지번 : ' + place.address_name + ')</span>';
+        }  else {
+            content += '    <span title="' + place.address_name + '">' + place.address_name + '</span>';
+        }                
+    
+        content += '    <span class="tel">' + place.phone + '</span>' + 
+                    '</div>' + 
+                    '<div class="after"></div>';
+    
+        contentNode.innerHTML = content;
+        placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
+        placeOverlay.setMap(map);  
+    }
+    
+    
+    // 각 카테고리에 클릭 이벤트를 등록합니다
+    function addCategoryClickEvent() {
+        var category = document.getElementById('category'),
+            children = category.children;
+    
+        for (var i=0; i<children.length; i++) {
+            children[i].onclick = onClickCategory;
+        }
+    }
+    
+    // 카테고리를 클릭했을 때 호출되는 함수입니다
+    function onClickCategory() {
+        var id = this.id,
+            className = this.className;
+    
+        placeOverlay.setMap(null);
+    
+        if (className === 'on') {
+            currCategory = '';
+            changeCategoryClass();
+            removeMarker();
+        } else {
+            currCategory = id;
+            changeCategoryClass(this);
+            searchPlaces();
+        }
+    }
+    
+    // 클릭된 카테고리에만 클릭된 스타일을 적용하는 함수입니다
+    function changeCategoryClass(el) {
+        var category = document.getElementById('category'),
+            children = category.children,
+            i;
+    
+        for ( i=0; i<children.length; i++ ) {
+            children[i].className = '';
+        }
+    
+        if (el) {
+            el.className = 'on';
+        } 
+    } 
+    
+    var marker = new kakao.maps.Marker({ 
+        
+    });
+    
+    marker.setMap(map);
+    var clickCount = 0;
+    var content;
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        
+        // 마우스로 클릭한 위치입니다 
+        var clickPosition = mouseEvent.latLng;
+        // 지도 클릭이벤트가 발생했는데 선을 그리고있는 상태가 아니면
+        if (!drawingFlag || clickCount === 1) {
+            if(clickCount ===1){
+                moveLine.setMap(null);
+                moveLine = null;  
+            }
+            clickCount =0;
+            // 상태를 true로, 선이 그리고있는 상태로 변경합니다
+            drawingFlag = true;
+            
+            // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
+            deleteClickLine();
+            
+            // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
+            deleteDistnce();
+
+            // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
+            deleteCircleDot();
+            
+            // 클릭한 위치를 기준으로 선을 생성하고 지도위에 표시합니다
+            clickLine = new kakao.maps.Polyline({
+                map: map, // 선을 표시할 지도입니다 
+                path: [clickPosition], // 선을 구성하는 좌표 배열입니다 클릭한 위치를 넣어줍니다
+                strokeWeight: 3, // 선의 두께입니다 
+                strokeColor: '#db4040', // 선의 색깔입니다
+                strokeOpacity: 1, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+                strokeStyle: 'solid' // 선의 스타일입니다
+            });
+            
+            // 선이 그려지고 있을 때 마우스 움직임에 따라 선이 그려질 위치를 표시할 선을 생성합니다
+            moveLine = new kakao.maps.Polyline({
+                strokeWeight: 3, // 선의 두께입니다 
+                strokeColor: '#db4040', // 선의 색깔입니다
+                strokeOpacity: 0.5, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+                strokeStyle: 'solid' // 선의 스타일입니다    
+            });
+
+            // 클릭한 지점에 대한 정보를 지도에 표시합니다
+            displayCircleDot(clickPosition, 0);
+
+                
+        } else if(clickCount < 1) { // 선이 그려지고 있는 상태이면
+            clickCount = 1;
+            // 그려지고 있는 선의 좌표 배열을 얻어옵니다
+            var path = clickLine.getPath();
+
+            // 좌표 배열에 클릭한 위치를 추가합니다
+            path.push(clickPosition);
+            
+            // 다시 선에 좌표 배열을 설정하여 클릭 위치까지 선을 그리도록 설정합니다
+            clickLine.setPath(path);
+
+            var distance = Math.round(clickLine.getLength());
+            displayCircleDot(clickPosition, distance);
+
+            var distance = Math.round(clickLine.getLength()); // 선의 총 거리를 계산합니다
+            content = getTimeHTML(distance); // 커스텀오버레이에 추가될 내용입니다
+                
+            // 그려진 선의 거리정보를 지도에 표시합니다
+            showDistance(content, path[path.length-1]);  
+            
+        }
+    
+    });
+
+    // 지도에 마우스무브 이벤트를 등록합니다
+    // 선을 그리고있는 상태에서 마우스무브 이벤트가 발생하면 그려질 선의 위치를 동적으로 보여주도록 합니다
+    kakao.maps.event.addListener(map, 'mousemove', function (mouseEvent) {
+    
+        // 지도 마우스무브 이벤트가 발생했는데 선을 그리고있는 상태이면
+        if (drawingFlag && clickCount<1){
+            
+            // 마우스 커서의 현재 위치를 얻어옵니다 
+            var mousePosition = mouseEvent.latLng; 
+
+            // 마우스 클릭으로 그려진 선의 좌표 배열을 얻어옵니다
+            var path = clickLine.getPath();
+            
+            // 마우스 클릭으로 그려진 마지막 좌표와 마우스 커서 위치의 좌표로 선을 표시합니다
+            var movepath = [path[path.length-1], mousePosition];
+            moveLine.setPath(movepath);    
+            moveLine.setMap(map);
+            
+            
+            
+            // 거리정보를 지도에 표시합니다
+            showDistance(content, mousePosition);   
+        }             
+    });                 
+
+    // 지도에 마우스 오른쪽 클릭 이벤트를 등록합니다
+    // 선을 그리고있는 상태에서 마우스 오른쪽 클릭 이벤트가 발생하면 선 그리기를 종료합니다
+    kakao.maps.event.addListener(map, 'rightclick', function (mouseEvent) {
+
+        clickCount = 0;
+            
+        // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
+        deleteClickLine();
+            
+        // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
+        deleteDistnce();
+
+        // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
+        deleteCircleDot();
+        
+        // 지도 오른쪽 클릭 이벤트가 발생했는데 선을 그리고있는 상태이면
+        if (drawingFlag) {
+            // 상태를 false로, 그리지 않고 있는 상태로 변경합니다
+            drawingFlag = false;    
+            // 마우스무브로 그려진 선은 지도에서 제거합니다
+            moveLine.setMap(null);
+            moveLine = null;  
+
+            // 선을 구성하는 좌표의 개수가 1개 이하이면 
+            // 지도에 표시되고 있는 선과 정보들을 지도에서 제거합니다.
+            deleteClickLine();
+            deleteCircleDot(); 
+            deleteDistnce();
+
+                
+        }  
+    });    
+
+    // 클릭으로 그려진 선을 지도에서 제거하는 함수입니다
+    function deleteClickLine() {
+        if (clickLine) {
+            clickLine.setMap(null);    
+            clickLine = null;        
+        }
+    }
+
+    // 마우스 드래그로 그려지고 있는 선의 총거리 정보를 표시하거
+    // 마우스 오른쪽 클릭으로 선 그리가 종료됐을 때 선의 정보를 표시하는 커스텀 오버레이를 생성하고 지도에 표시하는 함수입니다
+    function showDistance(content, position) {
+
+        if (distanceOverlay) { // 커스텀오버레이가 생성된 상태이면
+            
+            // 커스텀 오버레이의 위치와 표시할 내용을 설정합니다
+            distanceOverlay.setPosition(position);
+            distanceOverlay.setContent(content);
+            
+        } else { // 커스텀 오버레이가 생성되지 않은 상태이면
+            
+            // 커스텀 오버레이를 생성하고 지도에 표시합니다
+            distanceOverlay = new kakao.maps.CustomOverlay({
+                map: map, // 커스텀오버레이를 표시할 지도입니다
+                content: content,  // 커스텀오버레이에 표시할 내용입니다
+                position: position, // 커스텀오버레이를 표시할 위치입니다.
+                xAnchor: 0,
+                yAnchor: 0,
+                zIndex: 3  
+            });      
+        }
+    }
+
+    // 그려지고 있는 선의 총거리 정보와 
+    // 선 그리가 종료됐을 때 선의 정보를 표시하는 커스텀 오버레이를 삭제하는 함수입니다
+    function deleteDistnce () {
+        if (distanceOverlay) {
+            distanceOverlay.setMap(null);
+            distanceOverlay = null;
+        }
+    }
+
+    // 선이 그려지고 있는 상태일 때 지도를 클릭하면 호출하여 
+    // 클릭 지점에 대한 정보 (동그라미와 클릭 지점까지의 총거리)를 표출하는 함수입니다
+    function displayCircleDot(position, distance) {
+
+        // 클릭 지점을 표시할 빨간 동그라미 커스텀오버레이를 생성합니다
+        var circleOverlay = new kakao.maps.CustomOverlay({
+            content: '<span class="dot"></span>',
+            position: position,
+            zIndex: 1
+        });
+
+        // 지도에 표시합니다
+        circleOverlay.setMap(map);
+
+        
+
+        // 배열에 추가합니다
+        dots.push({circle:circleOverlay, distance: distanceOverlay});
+    }
+
+    // 클릭 지점에 대한 정보 (동그라미와 클릭 지점까지의 총거리)를 지도에서 모두 제거하는 함수입니다
+    function deleteCircleDot() {
+        var i;
+
+        for ( i = 0; i < dots.length; i++ ){
+            if (dots[i].circle) { 
+                dots[i].circle.setMap(null);
+            }
+
+            if (dots[i].distance) {
+                dots[i].distance.setMap(null);
+            }
+    }
+
+    dots = [];
+    }
+
+    // 마우스 우클릭 하여 선 그리기가 종료됐을 때 호출하여 
+    // 그려진 선의 총거리 정보와 거리에 대한 도보, 자전거 시간을 계산하여
+    // HTML Content를 만들어 리턴하는 함수입니다
+    function getTimeHTML(distance) {
+
+        // 도보의 시속은 평균 4km/h 이고 도보의 분속은 67m/min입니다
+        var walkkTime = distance / 67 | 0;
+        var walkHour = '', walkMin = '';
+
+        // 계산한 도보 시간이 60분 보다 크면 시간으로 표시합니다
+        if (walkkTime > 60) {
+            walkHour = '<span class="number">' + Math.floor(walkkTime / 60) + '</span>시간 '
+        }
+        walkMin = '<span class="number">' + walkkTime % 60 + '</span>분'
+
+        // 자전거의 평균 시속은 16km/h 이고 이것을 기준으로 자전거의 분속은 267m/min입니다
+        var bycicleTime = distance / 227 | 0;
+        var bycicleHour = '', bycicleMin = '';
+
+        // 계산한 자전거 시간이 60분 보다 크면 시간으로 표출합니다
+        if (bycicleTime > 60) {
+            bycicleHour = '<span class="number">' + Math.floor(bycicleTime / 60) + '</span>시간 '
+        }
+        bycicleMin = '<span class="number">' + bycicleTime % 60 + '</span>분'
+
+        // 거리와 도보 시간, 자전거 시간을 가지고 HTML Content를 만들어 리턴합니다
+        var content = '<ul class="dotOverlay distanceInfo">';
+        content += '    <li>';
+        content += '        <span class="label">총거리</span><span class="number">' + distance + '</span>m';
+        content += '    </li>';
+        content += '    <li>';
+        content += '        <span class="label">도보</span>'+' 약 ' + walkHour + walkMin+'(거리가 멀수록 부정확합니다)';
+        content += '    </li>';
+        content += '    <li>';
+        content += '        <span class="label">자전거</span>'+' 약 ' + bycicleHour + bycicleMin;
+        content += '    </li>';
+        content += '</ul>'
+
+        return content;
+    }
+
+    
+    window.onload = function()           
+    {    
+        
+            var moveMap;
+            var moveMapOption;
+            var moveLatLon;
+            var getText = document.getElementById('univ_list').value;
+            
+/*서울*/    if(getText ==='가톨릭대학교 성신교정') moveLatLon = new kakao.maps.LatLng(37.58592180000001,127.00432750000004);
+            else if(getText ==='가톨릭대학교 성의교정') moveLatLon = new kakao.maps.LatLng(37.4996227,127.00606530000005);
+            else if(getText ==='건국대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5431548,127.07611220000001);
+            else if(getText ==='경기대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5648332,126.96241129999999);
+            else if(getText ==='경희대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5961951,127.05254400000001);
+            else if(getText ==='고려대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.590799,127.02777730000003);
+            else if(getText ==='광운대학교') moveLatLon = new kakao.maps.LatLng(37.61949649999999,127.05969579999999);
+            else if(getText ==='국민대학교') moveLatLon = new kakao.maps.LatLng(37.6096409,126.99769700000002);
+            else if(getText ==='동국대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.55825400000001,127.00015000000008);
+            else if(getText ==='명지대학교 인문캠퍼스') moveLatLon = new kakao.maps.LatLng(37.58020460000001,126.92344509999998);
+            else if(getText ==='삼육대학교') moveLatLon = new kakao.maps.LatLng(37.6439443,127.10556599999995);
+            else if(getText ==='상명대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.60263799999999,126.95525199999997);
+            else if(getText ==='서강대학교') moveLatLon = new kakao.maps.LatLng(37.5509442,126.94100230000004);
+            else if(getText ==='서경대학교') moveLatLon = new kakao.maps.LatLng(37.61488550000001,127.01335080000001);
+            else if(getText ==='서울대학교 관악캠퍼스') moveLatLon = new kakao.maps.LatLng(37.4563272,126.95610409999995);
+            else if(getText ==='서울대학교 연건캠퍼스') moveLatLon = new kakao.maps.LatLng(37.58022589999999,126.99930919999997);
+            else if(getText ==='서울과학기술대학교') moveLatLon = new kakao.maps.LatLng(37.6316684,127.07748130000004);
+            else if(getText ==='서울시립대학교') moveLatLon = new kakao.maps.LatLng(37.5838699,127.0565884);
+            else if(getText ==='성균관대학교 인문사회캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5879413,126.99365749999993);
+            else if(getText ==='세종대학교') moveLatLon = new kakao.maps.LatLng(37.55025959999999,127.07313899999997);
+            else if(getText ==='숭실대학교') moveLatLon = new kakao.maps.LatLng(37.4963111,126.95745959999999);
+            else if(getText ==='연세대학교 신촌캠퍼스') moveLatLon = new kakao.maps.LatLng(37.565784,126.93857200000002);
+            else if(getText ==='중앙대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5666896,126.96712580000008);
+            else if(getText ==='한국외국어대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.597319,127.05784300000005);
+            else if(getText ==='한성대학교') moveLatLon = new kakao.maps.LatLng(37.5817849,127.01036899999997);
+            else if(getText ==='한양대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5572321,127.04532189999998);
+            else if(getText ==='홍익대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5514642,126.92501059999995);
+            else if(getText ==='케이씨대학교') moveLatLon = new kakao.maps.LatLng(37.5483449,126.85479740000005);
+            else if(getText ==='서울교육대학교') moveLatLon = new kakao.maps.LatLng(37.4899615,127.01641240000004);
+            else if(getText ==='추계예술대학교') moveLatLon = new kakao.maps.LatLng(37.5624515,126.9534165);
+            else if(getText ==='한국예술종합학교 석관캠퍼스') moveLatLon = new kakao.maps.LatLng(37.6049973,127.05673969999998);
+            else if(getText ==='한국예술종합학교 서초캠퍼스') moveLatLon = new kakao.maps.LatLng(37.4779073,127.01074659999995);
+            else if(getText ==='한국예술종합학교 대학로캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5824185,126.99688149999997);
+            else if(getText ==='한국체육대학교') moveLatLon = new kakao.maps.LatLng(37.5196266,127.1309837);
+            else if(getText ==='육군사관학교') moveLatLon = new kakao.maps.LatLng(37.6238188,127.09887830000002);
+            else if(getText ==='덕성여자대학교 쌍문캠퍼스') moveLatLon = new kakao.maps.LatLng(37.6511988,127.01616039999999);
+            else if(getText ==='덕성여자대학교 종로캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5753117,126.98738500000002);
+            else if(getText ==='동덕여자대학교') moveLatLon = new kakao.maps.LatLng(37.6063202,127.04180799999995);
+            else if(getText ==='서울여자대학교') moveLatLon = new kakao.maps.LatLng(37.62811260000001,127.09045679999997);
+            else if(getText ==='성신여자대학교 수정캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5913103,127.02213119999999);
+            else if(getText ==='성신여자대학교 운정그린캠퍼스') moveLatLon = new kakao.maps.LatLng(37.6319166,127.02735170000005);
+            else if(getText ==='숙명여자대학교') moveLatLon = new kakao.maps.LatLng(37.5463644,126.96483109999997);
+            else if(getText ==='이화여자대학교') moveLatLon = new kakao.maps.LatLng(37.5597476,126.94552279999994);
+            else if(getText ==='감리교신학대학교') moveLatLon = new kakao.maps.LatLng(37.5676455,126.96252660000005);
+            else if(getText ==='서울기독대학교') moveLatLon = new kakao.maps.LatLng(37.60092279999999,126.91238180000005);
+            else if(getText ==='장로회신학대학교') moveLatLon = new kakao.maps.LatLng(37.5505112,127.10345770000004);
+            else if(getText ==='한국성서대학교') moveLatLon = new kakao.maps.LatLng(37.6487485,127.06431989999999);
+            else if(getText ==='서울한영대학교') moveLatLon = new kakao.maps.LatLng(37.4965411,126.85126160000004);
+            else if(getText ==='동양미래대학교') moveLatLon = new kakao.maps.LatLng(37.5004101,126.86778060000006);
+            else if(getText ==='명지전문대학') moveLatLon = new kakao.maps.LatLng(37.58464649999999,126.92518740000003);
+            else if(getText ==='삼육보건대학교') moveLatLon = new kakao.maps.LatLng(37.588978,127.06570999999997);
+            else if(getText ==='서일대학교') moveLatLon = new kakao.maps.LatLng(37.5866169,127.09774370000002);
+            else if(getText ==='인덕대학교') moveLatLon = new kakao.maps.LatLng(37.6314191,127.05482489999997);
+            else if(getText ==='배화여자대학교') moveLatLon = new kakao.maps.LatLng(37.5793895,126.9653816);
+            else if(getText ==='서울여자간호대학교') moveLatLon = new kakao.maps.LatLng(37.597475,126.94741599999998);
+            else if(getText ==='숭의여자대학교') moveLatLon = new kakao.maps.LatLng(37.5563973,126.98749670000007);
+            else if(getText ==='한양여자대학교') moveLatLon = new kakao.maps.LatLng(37.5581482,127.0499072);
+            else if(getText ==='한국폴리텍대학교') moveLatLon = new kakao.maps.LatLng(37.007085,127.17454499999997);
+            else if(getText ==='국제예술대학교') moveLatLon = new kakao.maps.LatLng(37.5168752,127.03102130000002);
+            else if(getText ==='백석예술대학교') moveLatLon = new kakao.maps.LatLng(37.4803049,126.99678760000006);
+            else if(getText ==='정화예술대학교') moveLatLon = new kakao.maps.LatLng(37.5598413,126.98477460000004);
+            else if(getText ==='가천대학교 메디컬캠퍼스') moveLatLon = new kakao.maps.LatLng(37.422325,126.68797399999994);
+            else if(getText ==='경인교육대학교 인천캠퍼스') moveLatLon = new kakao.maps.LatLng(37.53841489999999,126.71645790000002);
+            else if(getText ==='안양대학교 강화캠퍼스') moveLatLon = new kakao.maps.LatLng(37.7115909,126.44529540000008);
+            else if(getText ==='연세대학교 국제캠퍼스') moveLatLon = new kakao.maps.LatLng(37.3813439,126.66749989999994);
+            else if(getText ==='인천대학교 송도캠퍼스') moveLatLon = new kakao.maps.LatLng(37.3750548,126.63289980000002);
+            else if(getText ==='인천대학교 미추홀캠퍼스') moveLatLon = new kakao.maps.LatLng(37.4717901,126.6544495);
+            else if(getText ==='인천대학교 제물포캠퍼스') moveLatLon = new kakao.maps.LatLng(37.4702688,126.65738950000002);
+            else if(getText ==='인천가톨릭대학교 송도국제캠퍼스') moveLatLon = new kakao.maps.LatLng(37.3831069,126.64459050000005);
+            else if(getText ==='인천가톨릭대학교 강화캠퍼스') moveLatLon = new kakao.maps.LatLng(37.6574865,126.44721340000001);
+            else if(getText ==='인하대학교') moveLatLon = new kakao.maps.LatLng(37.4495263,126.65313319999996);
+            else if(getText ==='청운대학교 인천캠퍼스') moveLatLon = new kakao.maps.LatLng(37.47166799999999,126.66064189999997);
+            else if(getText ==='경인여자대학교') moveLatLon = new kakao.maps.LatLng(37.54853250000001,126.72280049999995);
+            else if(getText ==='인하공업전문대학교') moveLatLon = new kakao.maps.LatLng(37.4480158,126.65750409999998);
+            else if(getText ==='인천재능대학교 재물포캠퍼스') moveLatLon = new kakao.maps.LatLng(37.4755274,126.65018680000003);
+            else if(getText ==='인천재능대학교 국제캠퍼스') moveLatLon = new kakao.maps.LatLng(37.3697852,126.6647696);
+            else if(getText ==='가천대학교 글로벌캠퍼스') moveLatLon = new kakao.maps.LatLng(37.4507452,127.12884740000004);
+            else if(getText ==='가톨릭대학교 성심교정') moveLatLon = new kakao.maps.LatLng(37.4864882,126.80167789999996);
+            else if(getText ==='강남대학교') moveLatLon = new kakao.maps.LatLng(37.27574,127.13248999999996);
+            else if(getText ==='경기대학교 수원캠퍼스') moveLatLon = new kakao.maps.LatLng(37.30048499999999,127.03583300000003);
+            else if(getText ==='경동대학교 양주캠퍼스') moveLatLon = new kakao.maps.LatLng(37.8104817,127.06968689999997);
+            else if(getText ==='경인교육대학교 경기캠퍼스') moveLatLon = new kakao.maps.LatLng(37.53841489999999,126.71645790000002);
+            else if(getText ==='경희대학교 국제캠퍼스') moveLatLon = new kakao.maps.LatLng(37.2429501,127.08009340000001);
+            else if(getText ==='단국대학교 죽전캠퍼스') moveLatLon = new kakao.maps.LatLng(37.3215984,127.12675030000003);
+            else if(getText ==='대진대학교') moveLatLon = new kakao.maps.LatLng(37.8731146,127.15679049999994);
+            else if(getText ==='동국대학교 바이오메디캠퍼스') moveLatLon = new kakao.maps.LatLng(37.6786196,126.80658440000002);
+            else if(getText ==='동양대학교 북서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.9333158,127.05498310000007);
+            else if(getText ==='루터대학교') moveLatLon = new kakao.maps.LatLng(37.2652684,127.1131593);
+            else if(getText ==='명지대학교 자연캠퍼스') moveLatLon = new kakao.maps.LatLng(37.221471,127.18413039999996);
+            else if(getText ==='서울신학대학교') moveLatLon = new kakao.maps.LatLng(37.4794588,126.78901819999999);
+            else if(getText ==='서울장신대학교') moveLatLon = new kakao.maps.LatLng(37.4096144,127.24630890000003);
+            else if(getText ==='성결대학교') moveLatLon = new kakao.maps.LatLng(37.3798345,126.92881290000003);
+            else if(getText ==='성균관대학교 자연과학캠퍼스') moveLatLon = new kakao.maps.LatLng(37.2939168,126.97539929999994);
+            else if(getText ==='성공회대학교') moveLatLon = new kakao.maps.LatLng(37.4872367,126.8231315);
+            else if(getText ==='수원대학교') moveLatLon = new kakao.maps.LatLng(37.2089969,126.9763977);
+            else if(getText ==='신경대학교') moveLatLon = new kakao.maps.LatLng(37.2026601,126.8394376);
+            else if(getText ==='신한대학교') moveLatLon = new kakao.maps.LatLng(37.70954529999999,127.04553529999998);
+            else if(getText ==='아세아연합신학대학교') moveLatLon = new kakao.maps.LatLng(37.51103570000001,127.42767309999999);
+            else if(getText ==='아주대학교') moveLatLon = new kakao.maps.LatLng(37.2828093,127.04636540000001);
+            else if(getText ==='안양대학교 안양캠퍼스') moveLatLon = new kakao.maps.LatLng(37.39188130000001,126.91966330000002);
+            else if(getText ==='예원예술대학교 양주캠퍼스') moveLatLon = new kakao.maps.LatLng(37.846411,127.036635);
+            else if(getText ==='용인대학교') moveLatLon = new kakao.maps.LatLng(37.226722,127.16784299999995);
+            else if(getText ==='을지대학교 성남캠퍼스') moveLatLon = new kakao.maps.LatLng(37.4604956,127.1650932);
+            else if(getText ==='중부대학교 고양캠퍼스') moveLatLon = new kakao.maps.LatLng(37.71180999999999,126.88879399999996);
+            else if(getText ==='중앙대학교 안성캠퍼스') moveLatLon = new kakao.maps.LatLng(37.0048341,127.2297777);
+            else if(getText ==='중앙승가대학교') moveLatLon = new kakao.maps.LatLng(37.604664,126.706051);
+            else if(getText ==='차의과학대학교') moveLatLon = new kakao.maps.LatLng(37.856752,127.13780700000007);
+            else if(getText ==='평택대학교') moveLatLon = new kakao.maps.LatLng(36.9950247,127.13335329999995);
+            else if(getText ==='한경대학교') moveLatLon = new kakao.maps.LatLng(37.0116353,127.26423509999995);
+            else if(getText ==='한국교통대학교 의왕캠퍼스') moveLatLon = new kakao.maps.LatLng(37.314732,126.954118);
+            else if(getText ==='한국산업기술대학교') moveLatLon = new kakao.maps.LatLng(37.3402849,126.73350759999994);
+            else if(getText ==='한국외국어대학교 글로벌캠퍼스') moveLatLon = new kakao.maps.LatLng(37.337576,127.26555200000007);
+            else if(getText ==='한국항공대학교') moveLatLon = new kakao.maps.LatLng(37.599397,126.86514269999998);
+            else if(getText ==='한세대학교') moveLatLon = new kakao.maps.LatLng(37.3468471,126.95245279999995);
+            else if(getText ==='한신대학교') moveLatLon = new kakao.maps.LatLng(37.1933281,127.0225987);
+            else if(getText ==='한양대학교 에리카') moveLatLon = new kakao.maps.LatLng(37.29693,126.83427849999998);
+            else if(getText ==='협성대학교') moveLatLon = new kakao.maps.LatLng(37.21293899999999,126.95278699999994);
+            else if(getText ==='칼빈대학교') moveLatLon = new kakao.maps.LatLng(37.3049583,127.12821229999997);
+            else if(getText ==='경기과학기술대학교') moveLatLon = new kakao.maps.LatLng(37.3390222,126.73580779999998);
+            else if(getText ==='경민대학교') moveLatLon = new kakao.maps.LatLng(37.746074,127.02389370000003);
+            else if(getText ==='경복대학교 포천캠퍼스') moveLatLon = new kakao.maps.LatLng(37.9481314,127.22271239999998);
+            else if(getText ==='경복대학교 남양주캠퍼스') moveLatLon = new kakao.maps.LatLng(37.7347659,127.21108189999995);
+            else if(getText ==='계원예술대학교') moveLatLon = new kakao.maps.LatLng(37.3789189,126.98066900000003);
+            else if(getText ==='국제대학교') moveLatLon = new kakao.maps.LatLng(37.06521429999999,127.08066359999998);
+            else if(getText ==='김포대학교') moveLatLon = new kakao.maps.LatLng(37.7299731,126.54648020000002);
+            else if(getText ==='농협대학교') moveLatLon = new kakao.maps.LatLng(37.6594055,126.87313210000002);
+            else if(getText ==='대림대학교') moveLatLon = new kakao.maps.LatLng(37.4036262,126.93033979999996);
+            else if(getText ==='동남보건대학교') moveLatLon = new kakao.maps.LatLng(37.2995984,126.98540419999995);
+            else if(getText ==='동서울대학교') moveLatLon = new kakao.maps.LatLng(37.459662,127.12954100000002);
+            else if(getText ==='동아방송예술대학교') moveLatLon = new kakao.maps.LatLng(37.0587654,127.35831710000002);
+            else if(getText ==='동원대학교') moveLatLon = new kakao.maps.LatLng(37.3285746,127.40184620000002);
+            else if(getText ==='두원공과대학교 안성캠퍼스') moveLatLon = new kakao.maps.LatLng(37.0654372,127.42221829999994);
+            else if(getText ==='두원공과대학교 파주캠퍼스') moveLatLon = new kakao.maps.LatLng(37.8153623,126.80117419999999);
+            else if(getText ==='부천대학교') moveLatLon = new kakao.maps.LatLng(37.48960599999999,126.77881300000001);
+            else if(getText ==='서영대학교 파주캠퍼스') moveLatLon = new kakao.maps.LatLng(37.82588500000001,126.77338199999997);
+            else if(getText ==='서울예술대학교') moveLatLon = new kakao.maps.LatLng(37.33408849999999,126.83626759999993);
+            else if(getText ==='서정대학교') moveLatLon = new kakao.maps.LatLng(37.8571392,127.03792759999999);
+            else if(getText ==='수원과학대학교') moveLatLon = new kakao.maps.LatLng(37.19382,126.98160370000005);
+            else if(getText ==='수원여자대학교') moveLatLon = new kakao.maps.LatLng(37.2522674,126.96361860000002);
+            else if(getText ==='신구대학교') moveLatLon = new kakao.maps.LatLng(37.4488075,127.16783720000001);
+            else if(getText ==='신안산대학교') moveLatLon = new kakao.maps.LatLng(37.3122018,126.80863199999999);
+            else if(getText ==='안산대학교') moveLatLon = new kakao.maps.LatLng(37.3102856,126.87561040000003);
+            else if(getText ==='연성대학교') moveLatLon = new kakao.maps.LatLng(37.396554,126.90778699999998);
+            else if(getText ==='여주대학교') moveLatLon = new kakao.maps.LatLng(37.26987949999999,127.63433220000002);
+            else if(getText ==='오산대학교') moveLatLon = new kakao.maps.LatLng(37.15580899999999,127.06122299999993);
+            else if(getText ==='용인송담대학교') moveLatLon = new kakao.maps.LatLng(37.228747,127.21826120000003);
+            else if(getText ==='웅지세무대학교') moveLatLon = new kakao.maps.LatLng(37.8177276,126.73733719999996);
+            else if(getText ==='유한대학교') moveLatLon = new kakao.maps.LatLng(37.4872361,126.82054270000003);
+            else if(getText ==='장안대학교') moveLatLon = new kakao.maps.LatLng(37.2122366,126.94661730000007);
+            else if(getText ==='청강문화산업대학교') moveLatLon = new kakao.maps.LatLng(37.2049954,127.35538139999994);
+            else if(getText ==='한국관광대학교') moveLatLon = new kakao.maps.LatLng(37.2826322,127.37660549999998);
+            else if(getText ==='한국복지대학교') moveLatLon = new kakao.maps.LatLng(37.0514886,127.09513919999995);
+            else if(getText ==='한국폴리텍I대학 성남캠퍼스') moveLatLon = new kakao.maps.LatLng(37.45919000000001,127.15395539999997);
+            else if(getText ==='한국폴리텍II대학 인천캠퍼스') moveLatLon = new kakao.maps.LatLng(37.47843200000001,126.75523780000003);
+            else if(getText ==='한국폴리텍II대학 남인천캠퍼스') moveLatLon = new kakao.maps.LatLng(37.4716767,126.67670739999994);
+            else if(getText ==='한국폴리텍II대학 화성캠퍼스') moveLatLon = new kakao.maps.LatLng(37.1309753,126.889407);
+            else if(getText ==='한국폴리텍II대학 안성캠퍼스') moveLatLon = new kakao.maps.LatLng(37.00819819999999,127.17638790000001);
+            else if(getText ==='가톨릭관동대학교') moveLatLon = new kakao.maps.LatLng(37.7360376,128.87379869999995);
+            else if(getText ==='강릉원주대학교 강릉캠퍼스') moveLatLon = new kakao.maps.LatLng(37.77013170000001,128.86907440000004);
+            else if(getText ==='강릉원주대학교 원주캠퍼스') moveLatLon = new kakao.maps.LatLng(37.3046967,127.92263530000002);
+            else if(getText ==='강원대학교 춘천캠퍼스') moveLatLon = new kakao.maps.LatLng(37.86945610000001,127.74447069999997);
+            else if(getText ==='강원대학교 삼척캠퍼스') moveLatLon = new kakao.maps.LatLng(37.4538118,129.16237249999995);
+            else if(getText ==='강원대학교 도계캠퍼스') moveLatLon = new kakao.maps.LatLng(37.225566,129.096949);
+            else if(getText ==='경동대학교 설악제2캠퍼스') moveLatLon = new kakao.maps.LatLng(38.1928753,128.55208819999996);
+            else if(getText ==='경동대학교 원주캠퍼스') moveLatLon = new kakao.maps.LatLng(37.26558459999999,127.79440679999993);
+            else if(getText ==='상지대학교') moveLatLon = new kakao.maps.LatLng(37.369965,127.92857700000002);
+            else if(getText ==='연세대학교 원주캠퍼스') moveLatLon = new kakao.maps.LatLng(37.2793643,127.90153529999998);
+            else if(getText ==='한라대학교') moveLatLon = new kakao.maps.LatLng(37.3028339,127.9081367);
+            else if(getText ==='한림대학교') moveLatLon = new kakao.maps.LatLng(37.8862292,127.7377722);
+            else if(getText ==='강릉영동대학교') moveLatLon = new kakao.maps.LatLng(37.7476424,128.85537499999998);
+            else if(getText ==='강원관광대학교') moveLatLon = new kakao.maps.LatLng(37.1618157,128.97445500000003);
+            else if(getText ==='강원도립대학교') moveLatLon = new kakao.maps.LatLng(37.8770593,128.82930809999993);
+            else if(getText ==='상지영서대학교') moveLatLon = new kakao.maps.LatLng(37.37196480000001,127.9306881);
+            else if(getText ==='세경대학교') moveLatLon = new kakao.maps.LatLng(37.174627,128.45297030000006);
+            else if(getText ==='송곡대학교') moveLatLon = new kakao.maps.LatLng(37.79176950000001,127.65211950000003);
+            else if(getText ==='송호대학교') moveLatLon = new kakao.maps.LatLng(37.4721206,128.002706);
+            else if(getText ==='한국골프대학교') moveLatLon = new kakao.maps.LatLng(37.4671226,128.07594900000004);
+            else if(getText ==='한림성심대학교') moveLatLon = new kakao.maps.LatLng(37.89934239999999,127.755764);
+            else if(getText ==='한국폴리텍III대학 춘천제1캠퍼스') moveLatLon = new kakao.maps.LatLng(37.7993153,127.77819950000003);
+            else if(getText ==='한국폴리텍III대학 춘천제2캠퍼스') moveLatLon = new kakao.maps.LatLng(37.9140063,127.74319029999992);
+            else if(getText ==='한국폴리텍III대학 원주캠퍼스') moveLatLon = new kakao.maps.LatLng(37.3630149,127.93438270000001);
+            else if(getText ==='한국폴리텍III대학 강릉캠퍼스') moveLatLon = new kakao.maps.LatLng(37.7372998,128.89025100000003);
+            else if(getText ==='건양대학교 메디컬캠퍼스') moveLatLon = new kakao.maps.LatLng(36.3071108,127.34324679999997);
+            else if(getText ==='건양사이버대학교') moveLatLon = new kakao.maps.LatLng(36.305951,127.341551);
+            else if(getText ==='대전과학기술대학교') moveLatLon = new kakao.maps.LatLng(36.3022517,127.37532520000002);
+            else if(getText ==='목원대학교') moveLatLon = new kakao.maps.LatLng(36.3260807,127.33860779999998);
+            else if(getText ==='배재대학교') moveLatLon = new kakao.maps.LatLng(36.3206145,127.36617569999999);
+            else if(getText ==='원광디지털대학교') moveLatLon = new kakao.maps.LatLng(36.3515305,127.38242930000001);
+            else if(getText ==='대전대학교') moveLatLon = new kakao.maps.LatLng(36.3351561,127.46073590000003);
+            else if(getText ==='대전보건대학교') moveLatLon = new kakao.maps.LatLng(36.3504856,127.45590170000003);
+            else if(getText ==='우송대학교') moveLatLon = new kakao.maps.LatLng(36.3378637,127.44603789999996);
+            else if(getText ==='우송정보대학교') moveLatLon = new kakao.maps.LatLng(36.336672, 127.444615);
+            else if(getText ==='솔브릿지국제경영대학교') moveLatLon = new kakao.maps.LatLng(36.33845,127.43233299999997);
+            else if(getText ==='한국폴리텍대학교 대전캠퍼스') moveLatLon = new kakao.maps.LatLng(36.35094549999999,127.45429000000001);
+            else if(getText ==='대전신학대학교') moveLatLon = new kakao.maps.LatLng(36.3505237,127.42351570000005);
+            else if(getText ==='한남대학교') moveLatLon = new kakao.maps.LatLng(36.3544548,127.42114459999993);
+            else if(getText ==='대덕대학교') moveLatLon = new kakao.maps.LatLng(36.3907123,127.3654646);
+            else if(getText ==='충남대학교') moveLatLon = new kakao.maps.LatLng(36.36277080000001,127.34482849999995);
+            else if(getText ==='침례신학대학교') moveLatLon = new kakao.maps.LatLng(36.3854483,127.3261953);
+            else if(getText ==='한밭대학교') moveLatLon = new kakao.maps.LatLng(36.35078000000001,127.30119809999997);
+            else if(getText ==='한국과학기술원(KAIST)') moveLatLon = new kakao.maps.LatLng(36.3721427,127.36039000000005);
+            else if(getText ==='한국방송통신대학교') moveLatLon = new kakao.maps.LatLng(37.5786127,127.00329050000005);
+            else if(getText ==='국군간호사관학교') moveLatLon = new kakao.maps.LatLng(36.3994133,127.35286180000003);
+            else if(getText ==='고려대학교 세종캠퍼스') moveLatLon = new kakao.maps.LatLng(36.6107518,127.28863249999995);
+            else if(getText ==='대전가톨릭대학교') moveLatLon = new kakao.maps.LatLng(36.6554092,127.19777380000005);
+            else if(getText ==='홍익대학교 세종캠퍼스') moveLatLon = new kakao.maps.LatLng(36.62084979999999,127.28716029999998);
+            else if(getText ==='한국영상대학교') moveLatLon = new kakao.maps.LatLng(36.4626731,127.20967210000003);
+            else if(getText ==='건국대학교 글로벌캠퍼스') moveLatLon = new kakao.maps.LatLng(36.9494546,127.9083146);
+            else if(getText ==='극동대학교') moveLatLon = new kakao.maps.LatLng(37.127461,127.64333399999998);
+            else if(getText ==='꽃동네대학교') moveLatLon = new kakao.maps.LatLng(36.523742,127.39952300000004);
+            else if(getText ==='서원대학교') moveLatLon = new kakao.maps.LatLng(36.6251583,127.48216920000004);
+            else if(getText ==='세명대학교') moveLatLon = new kakao.maps.LatLng(37.1780767,128.19544599999995);
+            else if(getText ==='순복음총회신학교') moveLatLon = new kakao.maps.LatLng(36.9042283,128.1675399);
+            else if(getText ==='우석대학교 진천캠퍼스') moveLatLon = new kakao.maps.LatLng(36.845209,127.43699859999992);
+            else if(getText ==='중원대학교') moveLatLon = new kakao.maps.LatLng(36.819585,127.79927220000002);
+            else if(getText ==='청주대학교') moveLatLon = new kakao.maps.LatLng(36.6521849,127.49541529999999);
+            else if(getText ==='유원대학교') moveLatLon = new kakao.maps.LatLng(36.19579900000001,127.79951200000005);
+            else if(getText ==='청주교육대학교') moveLatLon = new kakao.maps.LatLng(36.6160953,127.48461150000003);
+            else if(getText ==='충북대학교') moveLatLon = new kakao.maps.LatLng(36.629023, 127.456307);
+            else if(getText ==='한국교원대학교') moveLatLon = new kakao.maps.LatLng(36.6083563,127.35822089999999);
+            else if(getText ==='한국교통대학교 충주캠퍼스') moveLatLon = new kakao.maps.LatLng(36.9697366,127.87132309999993);
+            else if(getText ==='한국교통대학교 증평캠퍼스') moveLatLon = new kakao.maps.LatLng(36.769616,127.62412399999994);
+            else if(getText ==='공군사관학교') moveLatLon = new kakao.maps.LatLng(36.58111679999999,127.52671659999999);
+            else if(getText ==='한국폴리텍특성화대학교 바이오캠퍼스') moveLatLon = new kakao.maps.LatLng(36.14546909999999,127.02195469999992);
+            else if(getText ==='한국폴리텍Ⅳ대학교 대전캠퍼스') moveLatLon = new kakao.maps.LatLng(36.35094549999999,127.45429000000001);
+            else if(getText ==='한국폴리텍Ⅳ대학교 아산캠퍼스') moveLatLon = new kakao.maps.LatLng(36.77165889999999,126.95016090000001);
+            else if(getText ==='한국폴리텍Ⅳ대학교 청주캠퍼스') moveLatLon = new kakao.maps.LatLng(36.639017,127.44892200000004);
+            else if(getText ==='한국폴리텍Ⅳ대학교 충주캠퍼스') moveLatLon = new kakao.maps.LatLng(37.01670249999999,127.93755880000003);
+            else if(getText ==='한국폴리텍Ⅳ대학교 홍성캠퍼스') moveLatLon = new kakao.maps.LatLng(36.58300999999999,126.65705539999999);
+            else if(getText ==='경찰대학') moveLatLon = new kakao.maps.LatLng(37.298515,127.13604499999997);
+            else if(getText ==='공주교육대학교') moveLatLon = new kakao.maps.LatLng(36.4442848,127.11870909999993);
+            else if(getText ==='공주대학교 신관캠퍼스') moveLatLon = new kakao.maps.LatLng(36.46898239999999,127.1399993);
+            else if(getText ==='공주대학교 천안캠퍼스') moveLatLon = new kakao.maps.LatLng(36.850264,127.15005610000003);
+            else if(getText ==='공주대학교 예산컴퍼스') moveLatLon = new kakao.maps.LatLng(36.6696896,126.86069320000001);
+            else if(getText ==='공주대학교 옥룡컴퍼스') moveLatLon = new kakao.maps.LatLng(36.45167300000001,127.13276310000003);
+            else if(getText ==='국방대학교') moveLatLon = new kakao.maps.LatLng(36.17594649999999,127.2131412);
+            else if(getText ==='한국전통문화대학교') moveLatLon = new kakao.maps.LatLng(36.308186,126.89731699999993);
+            else if(getText ==='건양대학교 창의웅합캠퍼스') moveLatLon = new kakao.maps.LatLng(36.1826203,127.11140499999999);
+            else if(getText ==='고신대학교 천안캠퍼스') moveLatLon = new kakao.maps.LatLng(36.7769168,127.18084969999995);
+            else if(getText ==='금강대학교') moveLatLon = new kakao.maps.LatLng(36.3053862,127.19517769999993);
+            else if(getText ==='나사렛대학교') moveLatLon = new kakao.maps.LatLng(36.7951312,127.11900509999998);
+            else if(getText ==='남서울대학교') moveLatLon = new kakao.maps.LatLng(36.909155,127.14439500000003);
+            else if(getText ==='단국대학교 천안캠퍼스') moveLatLon = new kakao.maps.LatLng(36.8371837,127.16809480000006);
+            else if(getText ==='백석대학교') moveLatLon = new kakao.maps.LatLng(36.840238,127.18321990000004);
+            else if(getText ==='상명대학교 천안캠퍼스') moveLatLon = new kakao.maps.LatLng(36.8336012,127.1791657);
+            else if(getText ==='선문대학교') moveLatLon = new kakao.maps.LatLng(36.79895219999999,127.07493069999998);
+            else if(getText ==='세한대학교 당진캠퍼스') moveLatLon = new kakao.maps.LatLng(36.875981,126.78019500000005);
+            else if(getText ==='순천향대학교') moveLatLon = new kakao.maps.LatLng(36.769193,126.93226260000006);
+            else if(getText ==='유원대학교 아산캠퍼스') moveLatLon = new kakao.maps.LatLng(36.8543622,127.06202869999993);
+            else if(getText ==='중부대학교') moveLatLon = new kakao.maps.LatLng(36.192099,127.44851800000004);
+            else if(getText ==='청운대학교 홍성캠퍼스') moveLatLon = new kakao.maps.LatLng(36.58118319999999,126.66217499999993);
+            else if(getText ==='한국기술교육대학교 제1캠퍼스') moveLatLon = new kakao.maps.LatLng(36.7637768,127.2816014);
+            else if(getText ==='한국기술교육대학교 제2캠퍼스') moveLatLon = new kakao.maps.LatLng(36.841902,127.14346580000006);
+            else if(getText ==='한서대학교 서산캠퍼스') moveLatLon = new kakao.maps.LatLng(36.6907235,126.58469660000003);
+            else if(getText ==='한서대학교 태안캠퍼스') moveLatLon = new kakao.maps.LatLng(36.59431879999999,126.29414659999998);
+            else if(getText ==='호서대학교 아산캠퍼스') moveLatLon = new kakao.maps.LatLng(36.7361211,127.07436940000002);
+            else if(getText ==='호서대학교 천안캠퍼스') moveLatLon = new kakao.maps.LatLng(36.8279726,127.18343890000006);
+            else if(getText ==='호서대학교 당진 산업화학융합캠퍼스') moveLatLon = new kakao.maps.LatLng(37.0031144,126.58331390000001);
+            else if(getText ==='백석문화대학교') moveLatLon = new kakao.maps.LatLng(36.837905,127.18246999999997);
+            else if(getText ==='신성대학교') moveLatLon = new kakao.maps.LatLng(36.85242059999999,126.59333220000008);
+            else if(getText ==='아주자동차대학교') moveLatLon = new kakao.maps.LatLng(36.4040521,126.57919249999998);
+            else if(getText ==='연암대학교') moveLatLon = new kakao.maps.LatLng(36.9501075,127.15570290000005);
+            else if(getText ==='충남도립대학교') moveLatLon = new kakao.maps.LatLng(36.43693809999999,126.80118349999998);
+            else if(getText ==='경북대학교 대구캠퍼스') moveLatLon = new kakao.maps.LatLng(35.88883599999999,128.61029970000004);
+            else if(getText ==='대구가톨릭대학교 유스티노캠퍼스') moveLatLon = new kakao.maps.LatLng(35.8620119,128.58734890000005);
+            else if(getText ==='한국폴리텍대학 섬유패션캠퍼스') moveLatLon = new kakao.maps.LatLng(35.9196809,128.64246720000006);
+            else if(getText ==='한국폴리텍6대학 대구캠퍼스') moveLatLon = new kakao.maps.LatLng(35.8730459,128.5531158);
+            else if(getText ==='계명대학교 대명캠퍼스') moveLatLon = new kakao.maps.LatLng(35.854399,128.580031);
+            else if(getText ==='대구가톨릭대학교 루가캠퍼스') moveLatLon = new kakao.maps.LatLng(35.8437163,128.56800410000005);
+            else if(getText ==='대구교육대학교') moveLatLon = new kakao.maps.LatLng(35.8526417,128.5885005);
+            else if(getText ==='대구대학교 대명동캠퍼스') moveLatLon = new kakao.maps.LatLng(35.8560761,128.57569749999993);
+            else if(getText ==='영남이공대학교') moveLatLon = new kakao.maps.LatLng(35.8469137,128.5828285);
+            else if(getText ==='경북대학교 상주캠퍼스') moveLatLon = new kakao.maps.LatLng(36.37797789999999,128.14516819999994);
+            else if(getText ==='대구과학대학교') moveLatLon = new kakao.maps.LatLng(35.9294556,128.54317079999998);
+            else if(getText ==='대구보건대학교') moveLatLon = new kakao.maps.LatLng(35.9285673,128.5435311);
+            else if(getText ==='영진전문대학교') moveLatLon = new kakao.maps.LatLng(35.8963091,128.62205110000002);
+            else if(getText ==='영진사이버대학교') moveLatLon = new kakao.maps.LatLng(35.8954611,128.62130320000006);
+            else if(getText ==='수성대학교') moveLatLon = new kakao.maps.LatLng(35.8535689,128.6453902);
+            else if(getText ==='대구한의대학교 수성캠퍼스') moveLatLon = new kakao.maps.LatLng(35.8372328,128.6078751);
+            else if(getText ==='계명대학교 성서캠퍼스') moveLatLon = new kakao.maps.LatLng(35.85730400000001,128.48553419999996);
+            else if(getText ==='계명문화대학교') moveLatLon = new kakao.maps.LatLng(35.8596852,128.49092759999996);
+            else if(getText ==='대구공업대학교') moveLatLon = new kakao.maps.LatLng(35.8352472,128.54292740000005);
+            else if(getText ==='대구경북과학기술원') moveLatLon = new kakao.maps.LatLng(35.7003897,128.45889369999998);
+            else if(getText ==='한국폴리텍6대학 달성캠퍼스') moveLatLon = new kakao.maps.LatLng(35.7219788,128.45507369999996);
+            else if(getText ==='고신대학교 송도캠퍼스') moveLatLon = new kakao.maps.LatLng(35.0809553,129.01399049999998);
+            else if(getText ==='동아대학교 구덕캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1207271,129.01867619999996);
+            else if(getText ==='동아대학교 부민캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1047846,129.0190933);
+            else if(getText ==='경성대학교') moveLatLon = new kakao.maps.LatLng(35.1397716,129.09849659999998);
+            else if(getText ==='동명대학교') moveLatLon = new kakao.maps.LatLng(35.1223596,129.10172490000002);
+            else if(getText ==='부경대학교 대연캠퍼스') moveLatLon = new kakao.maps.LatLng(35.134032,129.10317350000003);
+            else if(getText ==='부경대학교 용당캠퍼스') moveLatLon = new kakao.maps.LatLng(35.11634000000001,129.08992);
+            else if(getText ==='부산예술대학교') moveLatLon = new kakao.maps.LatLng(35.1422536,129.0845862);
+            else if(getText ==='부산과학기술대학교') moveLatLon = new kakao.maps.LatLng(35.194938,129.00677099999996);
+            else if(getText ==='한국폴리텍대학교 부산캠퍼스') moveLatLon = new kakao.maps.LatLng(35.2187711,129.01903459999994);
+            else if(getText ==='대동대학교') moveLatLon = new kakao.maps.LatLng(35.2290147,129.09575110000003);
+            else if(getText ==='부산가톨릭대학교 지산교정') moveLatLon = new kakao.maps.LatLng(35.2463527,129.0993042);
+            else if(getText ==='부산가톨릭대학교 메리놀교정') moveLatLon = new kakao.maps.LatLng(35.24507500000001,129.09988750000002);
+            else if(getText ==='부산가톨릭대학교 신학교정') moveLatLon = new kakao.maps.LatLng(35.24075369999999,129.09670870000002);
+            else if(getText ==='부산대학교 부산캠퍼스') moveLatLon = new kakao.maps.LatLng(35.2335123,129.0810047);
+            else if(getText ==='부산외국어대학교') moveLatLon = new kakao.maps.LatLng(35.2673966,129.07875130000002);
+            else if(getText ==='동의과학대학교') moveLatLon = new kakao.maps.LatLng(35.1657709,129.07253230000003);
+            else if(getText ==='동의대학교 가야캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1429679,129.03409080000006);
+            else if(getText ==='동의대학교 양정캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1697738,129.07708839999998);
+            else if(getText ==='부산여자대학교') moveLatLon = new kakao.maps.LatLng(35.1686849,129.0728368);
+            else if(getText ==='인제대학교 부산캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1456131,129.02081429999998);
+            else if(getText ==='경남정보대학교') moveLatLon = new kakao.maps.LatLng(35.1473519,129.0121484);
+            else if(getText ==='동서대학교') moveLatLon = new kakao.maps.LatLng(35.14391560000001,129.0105595);
+            else if(getText ==='부산디지털대학교') moveLatLon = new kakao.maps.LatLng(35.1463906,129.00959309999996);
+            else if(getText ==='신라대학교') moveLatLon = new kakao.maps.LatLng(35.1681655,128.99587150000002);
+            else if(getText ==='동아대학교 승학캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1162735,128.96824979999997);
+            else if(getText ==='동주대학교') moveLatLon = new kakao.maps.LatLng(35.10524640000001,128.99676290000002);
+            else if(getText ==='부산경상대학교') moveLatLon = new kakao.maps.LatLng(35.18433219999999,129.09919479999996);
+            else if(getText ==='부산교육대학교') moveLatLon = new kakao.maps.LatLng(35.1958466,129.0750369);
+            else if(getText ==='화신사이버대학교') moveLatLon = new kakao.maps.LatLng(35.185616,129.103207);
+            else if(getText ==='고신대학교 영도캠퍼스') moveLatLon = new kakao.maps.LatLng(35.0796217,129.0630066);
+            else if(getText ==='한국해양대학교') moveLatLon = new kakao.maps.LatLng(35.0761944,129.08958840000003);
+            else if(getText ==='동부산대학교') moveLatLon = new kakao.maps.LatLng(35.2330011,129.14802020000002);
+            else if(getText ==='영산대학교 해운대캠퍼스') moveLatLon = new kakao.maps.LatLng(35.223992,129.15607810000006);
+            else if(getText ==='거제대학교') moveLatLon = new kakao.maps.LatLng(34.85047240000001,128.72739079999997);
+            else if(getText ==='경남도립거창대학') moveLatLon = new kakao.maps.LatLng(35.67444679999999,127.9123763);
+            else if(getText ==='한국승강기대학교') moveLatLon = new kakao.maps.LatLng(35.6752384,127.89640450000002);
+            else if(getText ==='가야대학교 김해캠퍼스') moveLatLon = new kakao.maps.LatLng(35.2700657,128.87199329999999);
+            else if(getText ==='부산장신대학교') moveLatLon = new kakao.maps.LatLng(35.2564026,128.86090949999993);
+            else if(getText ==='인제대학교 김해캠퍼스') moveLatLon = new kakao.maps.LatLng(35.248712,128.90269);
+            else if(getText ==='경남도립남해대학') moveLatLon = new kakao.maps.LatLng(34.8373363,127.89828299999999);
+            else if(getText ==='부산대학교 밀양캠퍼스') moveLatLon = new kakao.maps.LatLng(35.4540299,128.80843359999994);
+            else if(getText ==='한국폴리텍대학교 항공캠퍼스') moveLatLon = new kakao.maps.LatLng(34.94803660000001,128.10709940000004);
+            else if(getText ==='동원과학기술대학교') moveLatLon = new kakao.maps.LatLng(35.3431105,129.06774759999996);
+            else if(getText ==='부산대학교 양산캠퍼스') moveLatLon = new kakao.maps.LatLng(35.316841,129.014005);
+            else if(getText ==='영산대학교 양산캠퍼스') moveLatLon = new kakao.maps.LatLng(35.42883510000001,129.1482446);
+            else if(getText ==='경남과학기술대학교') moveLatLon = new kakao.maps.LatLng(35.1805921,128.09398340000007);
+            else if(getText ==='경상대학교 가좌캠퍼스') moveLatLon = new kakao.maps.LatLng(35.15316290000001,128.09944689999998);
+            else if(getText ==='경상대학교 칠암캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1764816,128.09567779999998);
+            else if(getText ==='연암공과대학교') moveLatLon = new kakao.maps.LatLng(35.1648163,128.09803899999997);
+            else if(getText ==='진주교육대학교') moveLatLon = new kakao.maps.LatLng(35.186391,128.0671797);
+            else if(getText ==='진주보건대학교') moveLatLon = new kakao.maps.LatLng(35.1979229,128.06642999999997);
+            else if(getText ==='한국국제대학교') moveLatLon = new kakao.maps.LatLng(35.17349970000001,128.20310310000002);
+            else if(getText ==='한국폴리텍대학 진주캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1898695,128.12712409999995);
+            else if(getText ==='군산대학교 미룡캠퍼스') moveLatLon = new kakao.maps.LatLng(35.9460546,126.6821658);
+            else if(getText ==='군산대학교 새만금캠퍼스') moveLatLon = new kakao.maps.LatLng(35.961609,126.558606);
+            else if(getText ==='예수대학교') moveLatLon = new kakao.maps.LatLng(35.8155829,127.13458530000003);
+            else if(getText ==='예원예술대학교 희망캠퍼스') moveLatLon = new kakao.maps.LatLng(35.6471012,127.27103020000004);
+            else if(getText ==='우석대학교 전주캠퍼스') moveLatLon = new kakao.maps.LatLng(35.9126534,127.06670039999995);
+            else if(getText ==='원광대학교 익산캠퍼스') moveLatLon = new kakao.maps.LatLng(35.9703446,126.95475629999999);
+            else if(getText ==='전북대학교 전주캠퍼스') moveLatLon = new kakao.maps.LatLng(35.8441821,127.12927769999999);
+            else if(getText ==='전북대학교 익산캠퍼스') moveLatLon = new kakao.maps.LatLng(35.9428127,126.9593797);
+            else if(getText ==='전북대학교 고창캠퍼스') moveLatLon = new kakao.maps.LatLng(35.43442599999999,126.65719609999996);
+            else if(getText ==='전북대학교 새만금캠퍼스') moveLatLon = new kakao.maps.LatLng(35.9599248,126.55963700000007);
+            else if(getText ==='전주교육대학교') moveLatLon = new kakao.maps.LatLng(35.8084175,127.15527799999995);
+            else if(getText ==='전주대학교 전주캠퍼스') moveLatLon = new kakao.maps.LatLng(35.81350740000001,127.08686399999999);
+            else if(getText ==='한일장신대학교') moveLatLon = new kakao.maps.LatLng(35.7636976,127.20636880000006);
+            else if(getText ==='호원대학교 군산캠퍼스') moveLatLon = new kakao.maps.LatLng(35.9660343,126.86488159999999);
+            else if(getText ==='군산간호대학교') moveLatLon = new kakao.maps.LatLng(35.9706234,126.7602243);
+            else if(getText ==='군장대학교') moveLatLon = new kakao.maps.LatLng(36.0003325,126.78464459999998);
+            else if(getText ==='백제예술대학교') moveLatLon = new kakao.maps.LatLng(35.99577379999999,127.1262835);
+            else if(getText ==='서해대학') moveLatLon = new kakao.maps.LatLng(35.9789559,126.7084089);
+            else if(getText ==='원광보건대학교') moveLatLon = new kakao.maps.LatLng(35.9714222,126.95515390000003);
+            else if(getText ==='전북과학대학교') moveLatLon = new kakao.maps.LatLng(35.5489747,126.86083340000005);
+            else if(getText ==='전주기전대학') moveLatLon = new kakao.maps.LatLng(35.81727720000001,127.13575179999998);
+            else if(getText ==='전주비전대학교') moveLatLon = new kakao.maps.LatLng(35.80890249999999,127.09013709999999);
+            else if(getText ==='한국농수산대학교') moveLatLon = new kakao.maps.LatLng(35.8260359,127.06572670000003);
+            else if(getText ==='한국폴리텍V대학 김제캠퍼스') moveLatLon = new kakao.maps.LatLng(35.8110266,126.94008250000002);
+            else if(getText ==='한국폴리텍V대학 익산캠퍼스') moveLatLon = new kakao.maps.LatLng(35.951759,126.99179000000004);
+            else if(getText ==='전남대학교 학동캠퍼스') moveLatLon = new kakao.maps.LatLng(35.142465,126.92312300000003);
+            else if(getText ==='조선대학교') moveLatLon = new kakao.maps.LatLng(35.1426749,126.93473670000003);
+            else if(getText ==='조선간호대학교') moveLatLon = new kakao.maps.LatLng(35.1377715,126.9288722);
+            else if(getText ==='조선이공대학교') moveLatLon = new kakao.maps.LatLng(35.1397758,126.9316887);
+            else if(getText ==='호남대학교 쌍촌캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1529123,126.86033509999993);
+            else if(getText ==='광주대학교') moveLatLon = new kakao.maps.LatLng(35.1063302,126.89515389999997);
+            else if(getText ==='기독간호대학교') moveLatLon = new kakao.maps.LatLng(35.1385212,126.91604000000007);
+            else if(getText ==='송원대학교') moveLatLon = new kakao.maps.LatLng(35.1087462,126.87440579999998);
+            else if(getText ==='광주교육대학교') moveLatLon = new kakao.maps.LatLng(35.1650513,126.9264048);
+            else if(getText ==='광신대학교') moveLatLon = new kakao.maps.LatLng(35.21577419999999,126.88525870000001);
+            else if(getText ==='동강대학교') moveLatLon = new kakao.maps.LatLng(35.1695366,126.92385949999993);
+            else if(getText ==='서영대학교 광주캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1759881,126.86957129999996);
+            else if(getText ==='전남대학교 용봉캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1761175,126.90581670000006);
+            else if(getText ==='한국폴리텍대학교 광주캠퍼스') moveLatLon = new kakao.maps.LatLng(35.1838485,126.8794868);
+            else if(getText ==='광주과학기술원') moveLatLon = new kakao.maps.LatLng(35.2265288,126.83998700000006);
+            else if(getText ==='광주보건대학교') moveLatLon = new kakao.maps.LatLng(35.1907768,126.84585340000001);
+            else if(getText ==='광주여자대학교') moveLatLon = new kakao.maps.LatLng(35.1636729,126.79749949999996);
+            else if(getText ==='남부대학교') moveLatLon = new kakao.maps.LatLng(35.207178,126.84121200000004);
+            else if(getText ==='호남대학교 광산캠퍼스') moveLatLon = new kakao.maps.LatLng(35.150795,126.76847040000007);
+            else if(getText ==='광양보건대학교') moveLatLon = new kakao.maps.LatLng(34.9732206,127.5810156);
+            else if(getText ==='한려대학교') moveLatLon = new kakao.maps.LatLng(34.9558873,127.56398349999995);
+            else if(getText ==='고구려대학교') moveLatLon = new kakao.maps.LatLng(35.0075601,126.64906859999996);
+            else if(getText ==='광주가톨릭대학교') moveLatLon = new kakao.maps.LatLng(35.0156113,126.86485790000006);
+            else if(getText ==='동신대학교') moveLatLon = new kakao.maps.LatLng(35.0485338,126.71747060000007);
+            else if(getText ==='한전공과대학교') moveLatLon = new kakao.maps.LatLng(35.0172473,126.8036333);
+            else if(getText ==='목포가톨릭대학교') moveLatLon = new kakao.maps.LatLng(34.8268,126.41920579999999);
+            else if(getText ==='목포과학대학교') moveLatLon = new kakao.maps.LatLng(34.80771960000001,126.40933180000002);
+            else if(getText ==='목포대학교 목포캠퍼스') moveLatLon = new kakao.maps.LatLng(34.80932960000001,126.40331889999993);
+            else if(getText ==='목포해양대학교') moveLatLon = new kakao.maps.LatLng(34.7918033,126.36510069999997);
+            else if(getText ==='한국폴리텍대학 목포캠퍼스') moveLatLon = new kakao.maps.LatLng(34.92239989999999,126.43023019999998);
+            else if(getText ==='순천대학교') moveLatLon = new kakao.maps.LatLng(34.9689585,127.48004730000002);
+            else if(getText ==='순천제일대학교') moveLatLon = new kakao.maps.LatLng(34.933333,127.48571370000002);
+            else if(getText ==='청암대학교') moveLatLon = new kakao.maps.LatLng(34.9263348,127.4892959);
+            else if(getText ==='전남대학교 여수캠퍼스') moveLatLon = new kakao.maps.LatLng(34.773237,127.70209699999998);
+            else if(getText ==='한영대학') moveLatLon = new kakao.maps.LatLng(34.7539422,127.71494719999998);
+            else if(getText ==='전남과학대학교') moveLatLon = new kakao.maps.LatLng(35.27589740000001,127.13171060000002);
+            else if(getText ==='전남도립대학교') moveLatLon = new kakao.maps.LatLng(35.327194,126.99066700000003);
+            else if(getText ==='목포대학교 도림캠퍼스') moveLatLon = new kakao.maps.LatLng(34.91041939999999,126.43608070000005);
+            else if(getText ==='목포대학교 남악캠퍼스') moveLatLon = new kakao.maps.LatLng(34.804456, 126.459791);
+            else if(getText ==='초당대학교') moveLatLon = new kakao.maps.LatLng(34.97788409999999,126.47288070000002);
+            else if(getText ==='영산선학대학교') moveLatLon = new kakao.maps.LatLng(35.328101,126.44125400000007);
+            else if(getText ==='동아보건대학교') moveLatLon = new kakao.maps.LatLng(34.730488,126.568261);
+            else if(getText ==='목포대학교 신해양산업단지캠퍼스') moveLatLon = new kakao.maps.LatLng(34.755852, 126.449051);
+            else if(getText ==='세한대학교 영암캠퍼스') moveLatLon = new kakao.maps.LatLng(34.747755,126.48442399999999);
+            else if(getText ==='제주국제대학교') moveLatLon = new kakao.maps.LatLng(33.44143779999999,126.569974);
+            else if(getText ==='제주대학교 아라캠퍼스') moveLatLon = new kakao.maps.LatLng(33.4558924,126.56203010000002);
+            else if(getText ==='제주대학교 사라캠퍼스') moveLatLon = new kakao.maps.LatLng(33.51484560000001,126.55230729999994);
+            else if(getText ==='제주관광대학교') moveLatLon = new kakao.maps.LatLng(33.4484626,126.43479189999994);
+            else if(getText ==='제주한라대학교') moveLatLon = new kakao.maps.LatLng(33.4766937,126.47505230000002);
+            else if(getText ==='한국폴리텍I대학 제주캠퍼스') moveLatLon = new kakao.maps.LatLng(33.4476036,126.56144689999996);
+
+
+    
+            // 지도 중심을 부드럽게 이동시킵니다
+            // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+            map.panTo(moveLatLon);   
+            map.setLevel(4); 
+            
+        }
+    </script>
+
+{% endblock %}

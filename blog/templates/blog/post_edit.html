@@ -1,0 +1,24 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <h1>New post</h1>
+    <form method="POST" class="post-form" autocomplete="off">{% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="fieldWrapper">
+            {{ form.title.errors }}
+            <label for="id_title">title:</label>
+            {{ form.title }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.text.errors }}
+            <label for="id_text">text:</label>
+            {{ form.text }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.age.errors }}
+            <label for="id_age">age:</label>
+            {{ form.age }}
+        </div>
+        <button type="submit" class="save btn btn-default">Save</button>
+    </form>
+{% endblock %}

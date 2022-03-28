@@ -1,0 +1,171 @@
+{% extends 'baangbang/base.html' %}
+
+{% block content %}
+<div class="main_bg_container">
+    <img src="../../static/img/main_bg.jpg" class="main_bg">
+</div>
+
+{% if user_info %}
+    
+{%else%}
+    <div class="alert_authenticate_container">
+        <div class="alert_authenticate">
+            이메일 인증을 마쳐야 사용가능합니다. <a href="{% url 'mail_authenticate' %}">가입한 메일로 인증메일 보내기</a>
+        </div>
+    </div>
+{%endif%}
+
+<div class="main_article_container1">
+    <div class="animations1">
+        <div class="animation_1"><span style="color:#218261">잠깐</span> 사는 방,</div>
+        <div class="animation_2"><span style="color:#218261">잠깐</span> 파는 방.</div>
+        <div class="animation_3">방방에서 거래하세요.</div>
+        <div class="animation_4">&nbsp;&nbsp;단기 방 구할 때도 나누방, 단기 방 팔 때도 나누방&nbsp;&nbsp;</div>
+    </div>
+    <div class="search_container">
+        <form action="/search_univ/" method="get" class="search_univ_form">
+            <div class="animation_5">
+                <label for="univ_list" class="univ_list_label">▶ 어느 지역 방을 찾으시나요?</label>
+                <br>
+                <div>
+                    <input type="text" placeholder="대학교 이름 검색" id="univ_list" name="q" autocomplete="off">    
+                    <img src="../../static/img/searcher.png" id="search_btn" value="  검색" onclick="get_univ_name()">
+                </div>
+            </div>
+            <input type="submit" id="univ_search" style="display: none">
+        </form>
+        <div class="animation_6">
+            <label for="univ_list" class="univ_list_label">▶ 내 방을 팔고싶어요!</label>
+            <br>
+            <div>내 방 등록하기</div>    
+            <input type="text" id="search_btn" value="  →" readonly onclick="is_active()">
+            <form method="post" id="get_username">
+                {% csrf_token %}
+                <input type="hidden" name="usern" value="{{user.username}}">
+                <input type="submit" style="display: none" id="get_username_submit">
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="main_article_container2">
+    <div class="slider_container">
+        <span>*지금 거래 가능한 방*</span>
+        <div class="slider" >
+            <div class="slider1">
+                <div class="slider2">
+                    <span>원룸</span>
+                    <img src="../../static/img/test_img1.jpg">
+                </div>
+                <div class="slider3" >공릉동 #철길 / 월세 40만원</div>
+            </div>    
+            <div class="slider1">
+                <div class="slider2" style="background: red">
+                    <span>원룸</span>
+                </div>
+                <div class="slider3" >공릉동 #철길 / 월세 40만원</div>
+            </div>
+            <div class="slider1">
+                <div class="slider2" style="background: orange">
+                    <span>원룸</span>
+                </div>
+                <div class="slider3" >공릉동 #철길 / 월세 40만원</div>
+            </div>
+            <div class="slider1">
+                <div class="slider2" style="background: yellow">
+                    <span>원룸</span>
+                </div>
+                <div class="slider3" >공릉동 #철길 / 월세 40만원</div>
+            </div>
+            <div class="slider1">
+                <div class="slider2" style="background: green">
+                    <span>원룸</span>
+                </div>
+                <div class="slider3" >공릉동 #철길 / 월세 40만원</div>
+            </div>
+            <div class="slider1">
+                <div class="slider2" style="background: blue">
+                    <span>원룸</span>
+                </div>
+                <div class="slider3">공릉동 #철길 / 월세 40만원</div>
+            </div>
+            <div class="slider1">
+                <div class="slider2" style="background: blueviolet">
+                    <span>원룸</span>
+                </div>
+                <div class="slider3" >공릉동 #철길 / 월세 40만원</div>
+            </div>
+            <div class="slider1">
+                <div class="slider2">
+                    <span>원룸</span>
+                    <img src="../../static/img/test_img2.jpg">
+                </div>
+                <div class="slider3" >공릉동 #철길 / 월세 40만원</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="../../static/slick/slick.min.js"></script>
+
+<script type="text/javascript">
+    
+    $(document).ready(function(){
+        $('.slider').slick({
+            slidesToShow: 5,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 500,
+        });
+    });
+
+    $("#univ_list").autocomplete({
+        source: availableUniv,
+        select: function(event, ui) {
+            console.log(ui.item);
+        },
+        focus: function(event, ui) {
+            return false;
+            //event.preventDefault();
+            
+        }
+    });
+
+    function get_univ_name()
+    {
+        var getText = document.getElementById('univ_list').value;
+        var is_listed = false;
+        for(var i=0; i<availableUniv.length;i++)
+        {
+            if(availableUniv[i] === getText)
+            {
+               is_listed = true;
+               break;
+            }
+        }
+        if(is_listed)
+        {
+            document.getElementById('univ_search').click();
+        }
+        else alert('대학명을 바르게 입력해주세요');
+    }
+
+    function is_active()
+    { 
+        var authenticated = '{{ user.is_authenticated }}';
+        if(authenticated == 'True')
+        {
+           document.getElementById('get_username_submit').click();
+        }
+        else
+        {
+            alert('이 기능을 이용하려면 로그인을 먼저 하세요')
+        }
+
+        
+    }
+
+    
+</script>
+{% endblock %}

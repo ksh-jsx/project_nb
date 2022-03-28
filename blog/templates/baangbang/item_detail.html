@@ -1,0 +1,17 @@
+{% extends 'baangbang/base.html' %}
+
+{% block content %}
+    {% for items in detail %}
+        <div class="item_post" onmouseover="over_event('{{items.lat}}','{{items.lng}}')" onmouseout="out_event()">
+            <div>좌표 : {{ items.lat }}, {{ items.lng }}</div>
+            <div class="cost">가격 : {{ items.cost }}만원</div>
+            <div>태그 : {{ items.tag}}</div>
+            <div> 주변 대학: {{items.loca}}</div>
+            <form action="/payment/" method="get">
+                <input type="hidden" value="{{items.auto_increment_id}}" readonly name="item_id">
+                <button>구매하기</button>
+            </form>
+            <hr>
+        </div>
+    {% endfor %}
+{% endblock %}

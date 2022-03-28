@@ -1,0 +1,15 @@
+{% load socialaccount %}
+{% providers_media_js %}
+
+<a href="{% provider_login_url 'naver' %}" class="social_btn">
+        <img src="../../static/img/naver_login.PNG"
+                onmouseover="this.src='../../static/img/naver_login_hover.PNG'"
+                onmouseleave="this.src='../../static/img/naver_login.PNG'"height="34">
+    </a>
+    
+        
+    <a href="{% provider_login_url 'google' %}" class="social_btn">
+        <img src="../../static/img/google_login.png"
+                onmouseover="this.src='../../static/img/google_login_hover.png'"
+                onmouseleave="this.src='../../static/img/google_login.png'"height="34">
+    </a>
