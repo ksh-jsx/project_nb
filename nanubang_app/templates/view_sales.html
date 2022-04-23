@@ -1,0 +1,1073 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+<div class="sale_wrap">
+    <div class="map_wrap">
+        <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+        <ul id="category">
+            <li id="BK9" data-order="0">
+                <span class="category_bg bank"></span>
+                은행
+            </li>
+            <li id="MT1" data-order="1">
+                <span class="category_bg mart"></span>
+                마트
+            </li>
+            <li id="PM9" data-order="2">
+                <span class="category_bg pharmacy"></span>
+                약국
+            </li>
+            <li id="CE7" data-order="3">
+                <span class="category_bg cafe"></span>
+                카페
+            </li>
+            <li id="CS2" data-order="4">
+                <span class="category_bg store"></span>
+                편의점
+            </li>
+            
+        </ul>
+        <script>
+        </script>
+    </div>
+    <div class="item_drawer">
+        <div class="sale_title">
+            <div class="university">
+                <span id="sale_count" style="float: left;"><strong>{{info}}</strong> 주변 자취방 {{count}}개</span>
+                <div class="search_wrap">
+                    <form action="/search_univ/" method="get">
+                        {% if info == '서울'%}
+                            <input type="text" placeholder="대학교 이름을 검색하세요" id="univ_list" name="q" value="" style="height:30px;width:180px;border:2px solid #bdbdbd;border-radius:5px;padding-left:10px;position: relative;top:-12px;">
+                        {% else %}
+                            <input type="text" placeholder="대학교 이름을 검색하세요" id="univ_list" name="q" value="{{info}}" style="height:30px;width:180px;border:2px solid #bdbdbd;border-radius:5px;padding-left:10px;position: relative;top:-12px;">
+                        {% endif %}    
+                        <input type="submit" id="univ_search" style="display: none">
+                        <button id="search_btn" onclick="get_univ_name()" style="height:100%;width:40px;background-color: #00000000;border: 0;"><img src="../static/img/searcher_green.png" style="width:100%;height:100%;position: relative;top:-3px"></button>
+                    </form>
+                </div>
+                <a href="#" class="filter-pc-btn" onclick="filter()"></a>
+            </div>
+            
+            <div class="filter folded">
+                <div class="box-wrap">
+                    <label class="box-title">보증금</label>
+                    <input class="filter-box" type="number" id="cost1" autocomplete="off" min="0" max="9999" placeholder="0">
+                    <span class="hypn"></span>
+                    <input class="filter-box" type="number" id="cost2" autocomplete="off" min="0" max="9999" placeholder="9999">
+                </div>
+                <div class="box-wrap">
+                    <label class="box-title">월세</label>
+                    <input class="filter-box" type="number" id="cost3" autocomplete="off" min="0" max="999" placeholder="0">
+                    <span class="hypn"></span>
+                    <input class="filter-box" type="number" id="cost4" autocomplete="off" min="0" max="999" placeholder="999">
+                </div>
+                <div class="box-wrap">
+                    <label class="box-title">기간</label>
+                    <input class="filter-box" type="text" id="datepicker_sort1" autocomplete="off" readonly>
+                    <span class="hypn"></span>
+                    <input class="filter-box" type="text" id="datepicker_sort2" autocomplete="off" readonly>
+                </div>
+                <div class="box-wrap">
+                    <script>
+                        var count_tag = 0;
+                    </script>                
+                    {% for tags in tags %}
+                    <span class="tag-radio-span">
+                        <input class="tag-input" type="checkbox" id="tag_type0" name="tag_type_group" value="{{tags.tag}}"><label class="tag-label0" for="tag_type0">{{tags.tag}}</label>
+                    </span>
+                    <input type="hidden" id="tags_temp">
+                    <script>
+                        var items_tmp=[];
+                        count_tag++;
+                        $('input[id=tag_type0]').attr('id', 'tag_type'+count_tag);
+                        $('label[for=tag_type0]').attr('for', 'tag_type'+count_tag);
+                        $('label[class=tag-label0]').attr('class', 'tag-label'+count_tag);
+                        items_tmp.push("{{tags.tag}}"); 
+                        var tmp = items_tmp.join(','); 
+                        document.getElementById('tags_temp').value = tmp;
+                    </script>
+                    {% endfor %}
+                    <input type="hidden" id="tags">
+                </div>
+                <button id="sort">적용하기</button>
+            </div>
+            <!-- 가격 : <input type="number" id="cost1" style="width:50px" autocomplete="off"> ~ <input type="number" id="cost2" style="width:50px" autocomplete="off">-->
+        </div>
+    </div>
+    <div class="items_wrap" id="items_wrap">
+        <div id="loading"></div>
+        <div id="items">
+            {% for item in item %}
+            <div class="item{{item.auto_increment_id}}" id="item">
+                <div class="item0">
+                    <form action="/room_detail" method="get" class="submit_detail_form">
+                        <input type="hidden" value="{{item.auto_increment_id}}" readonly name="item_id">
+                        <input type="submit" style="display:none" id="get_id{{item.auto_increment_id}}" class="submit_detail">
+                    </form>
+                    <div class="item-image">
+                        <img src="{{item.photo1.url}}" alt="">
+                    </div>
+                    <div class="item-info">
+                        <span class="room">{{item.room_type}}</span>
+                        <span class="cost">월세 {{item.desired_monthly}}만원</span>
+                        <div class="due">{{ item.start_date | date:"Y" }}.{{ item.start_date | date:"m" }}.{{ item.start_date | date:"d" }}~{{ item.end_date | date:"Y" }}.{{ item.end_date | date:"m"}}.{{ item.end_date | date:"d"}}</div>
+                        {% if item.deposit_necessity != 'False'  %}
+                            {% if item.management_cost_include != 'False'  %}
+                                <div class="attr">보증금 필요 | 관리비 포함 </div>
+                            {% else %}    
+                                <div class="attr">보증금 필요 | 관리비 미포함 </div>
+                            {% endif %}
+                        {% else %}
+                            {% if item.management_cost_include != 'False'  %}
+                                <div class="attr">보증금 불필요 | 관리비 포함 </div>
+                            {% else %}    
+                                <div class="attr">보증금 불필요 | 관리비 미포함 </div>
+                            {%endif%}
+                        {%endif%}
+                        <!--<div class="attr">{{item.floor}} |  {{item.room_type}}</div>-->
+                        <div class="tag">{{item.tag}}</div>
+                        <span class="like" name="{{ item.auto_increment_id }}"></span>
+                        {% for like in like %}
+                            {% if like.room_info.auto_increment_id == item.auto_increment_id %}
+                                <script>
+                                    $('span[name={{ item.auto_increment_id }}]').attr('class', 'like on');
+                                </script>
+                                {{ "<!--" }}
+                            {% else %}
+                                <script>
+                                    $('span[name={{ item.auto_increment_id }}]').attr('class', 'like');
+                                </script>
+                            {% endif %}
+                        {% endfor %}
+                        <span style="display:none">{{ "-->" }}</span>
+                    </div>
+            </div>
+            </div>
+            {%endfor%}
+        </div>
+    </div>
+    </div>
+</div>
+<script>
+    /*get today date*/
+    var d = new Date();
+
+    var month = d.getMonth()+1;
+    var day = d.getDate();
+
+    var output = d.getFullYear() + '-' +
+        (month<10 ? '0' : '') + month + '-' +
+        (day<10 ? '0' : '') + day;
+       
+    var items=[]; //누른 필터들
+    //좋아요 ajax
+    $(".like").click(function(){
+       
+        var pk = $(this).attr('name')
+        
+        $.ajax({ // .like 버튼을 클릭하면 <새로고침> 없이 ajax로 서버와 통신하겠다.
+            type: "POST", // 데이터를 전송하는 방법을 지정
+            url: "{% url 'post_like' %}", // 통신할 url을 지정
+            data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'}, // 서버로 데이터 전송시 옵션
+            dataType: "json", // 서버측에서 전송한 데이터를 어떤 형식의 데이터로서 해석할 것인가를 지정, 없으면 알아서 판단
+            // 서버측에서 전송한 Response 데이터 형식 (json)
+            // {'likes_count': post.like_count, 'message': message }
+            success: function(response){ // 통신 성공시 - 동적으로 좋아요 갯수 변경, 유저 목록 변경
+                //alert(response.message);
+            },
+            error: function(request, status, error){ // 통신 실패시 - 로그인 페이지 리다이렉트
+                //alert("로그인이 필요합니다.")
+                //$('.like').val('♡');
+                //window.location.replace("/accounts/login/")
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            },
+        });
+    })
+    //정렬 ajax
+    $("#sort").click(function(){
+        var pk = $(this).attr('name')
+        var do_ajax = true;
+        if($("#cost1").val() === '')
+            $("#cost1").val(0);
+        if($("#cost2").val() === '')
+            $("#cost2").val(9999);
+
+        if($("#cost3").val() === '')
+            $("#cost3").val(0);
+        if($("#cost4").val() === '')
+            $("#cost4").val(999);
+
+        if($("#datepicker_sort1").val() === '')
+            $("#datepicker_sort1").val(output);            
+        if($("#datepicker_sort2").val() === '')
+            $("#datepicker_sort2").val('2020-12-31');            
+        
+        if($("#tags").val() === ''){
+            var get_val = $('#tags_temp').val()
+            $("#tags").val(get_val);            
+        }
+
+        if($("#cost1").val() > $("#cost2").val())
+        {
+            alert('금액 설정이 잘못되었습니다')
+            $("#cost1").val('');
+            $("#cost2").val('');
+            do_ajax = false;
+        }
+        else if($("#cost3").val() > $("#cost4").val())
+        {
+            alert('금액 설정이 잘못되었습니다')
+            //$("#cost3").val('');
+            //$("#cost4").val('');
+            do_ajax = false;
+        }
+        if(do_ajax)
+        {
+            $.ajax({ 
+                type: "POST", 
+                url: "{% url 'search_univ' %}", 
+                data: {'univ': '{{info}}','sort1_1':$("#cost1").val(),'sort1_2':$("#cost2").val(),'sort2_1':$("#cost3").val(),'sort2_2':$("#cost4").val(),'sort3_1':$("#datepicker_sort1").val(),'sort3_2':$("#datepicker_sort2").val(),'tags':$("#tags").val(), 'csrfmiddlewaretoken': '{{ csrf_token }}'}, // 서버로 데이터 전송시 옵션
+                dataType: "text",
+                
+                success : function(data) {
+                    $('.items_wrap').html(data);
+                },
+                error: function(request, status, error){ // 통신 실패시 - 로그인 페이지 리다이렉트
+                    //alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                    alert('error')
+                },
+            });
+        }
+    })
+    $('.item0').click(function(e) { 
+        if(!$(e.target).hasClass("like") && !$(e.target).hasClass("like on") ) {
+            var get_parent = $(e.target).parent('div').context.offsetParent.className
+            var get_submit = $('.'+get_parent).children().children('form.submit_detail_form').children('.submit_detail').attr('id')
+            //console.log(get_submit)
+            var get_submit_id = $(e).attr('id');
+            goto_detail(get_submit);
+            
+        } 
+            
+    });
+    function goto_detail(id)
+    {
+        document.getElementById(id).click();
+    }
+
+    $("input:checkbox[class=tag-input]").click(function()
+    {
+        $('input[class="tag-input"]:checkbox:checked').each(function(){items.push($(this).val());}); 
+        var tmp = items.join(','); 
+        console.log(items)
+        document.getElementById('tags').value = tmp;
+        
+    })
+
+    //엔터 막기
+    $(document).keypress(function(e) { 
+        if (e.keyCode == 13){
+            e.preventDefault();
+            
+            var getText = document.getElementById('univ_list').value;
+            var is_listed = false;
+            for(var i=0; i<availableUniv.length;i++)
+            {
+                if(availableUniv[i] === getText)
+                {
+                    get_univ_name();
+                }
+            }
+            
+            
+        } 
+ 
+    });
+
+        
+    $('#datepicker_sort1').attr('placeholder',output);
+    $('#datepicker_sort2').attr('placeholder','2020-12-31');
+
+    $("#datepicker_sort1" ).datepicker({
+        dateFormat : 'yy-mm-dd',
+		maxDate : 90,
+        minDate : 0,
+        onSelect: function (date) {
+            var dt2 = $('#datepicker_sort2');
+            var startDate = $(this).datepicker('getDate');
+            var minDate = $(this).datepicker('getDate');
+            startDate.setDate(startDate.getDate() + 365);
+            minDate.setDate(minDate.getDate() + 1);
+            //sets dt2 maxDate to the last day of 30 days window
+            dt2.datepicker('option', 'maxDate', startDate);
+            dt2.datepicker('option', 'minDate', minDate);
+        }
+    });
+    $("#datepicker_sort2" ).datepicker({
+        dateFormat : 'yy-mm-dd',
+    });
+
+    var acc = document.getElementsByClassName("like");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("on");
+        });
+    }
+
+</script>
+<script>
+    function filter() {
+        var menus = document.getElementsByClassName("filter")[0];
+        if (menus.classList.contains('folded')) {
+            menus.classList.remove('folded');
+        } else {
+            menus.classList.add('folded');
+        }
+    }
+
+</script>
+<script>
+    function map_fold() {
+
+        var btn = document.getElementsByClassName("map-fold-btn")[0];
+        var map = document.getElementsByClassName("map_wrap")[0];
+        if (map.classList.contains('folded')) {
+            map.classList.remove('folded');
+            btn.classList.remove('want-open');
+            btn.classList.add('want-fold');
+        } else {
+            map.classList.add('folded');
+            btn.classList.add('want-open');
+            btn.classList.remove('want-fold');
+        }
+
+    }
+
+</script>
+
+<script>
+    $("#univ_list").autocomplete({
+        source: availableUniv,
+        select: function(event, ui) {
+            console.log(ui.item);
+        },
+        focus: function(event, ui) {
+            return false;
+            //event.preventDefault();
+        },
+        response: function( event, ui ) { 
+           
+            $(document).keypress(function(e) { 
+                if (e.keyCode == 13){
+                    console.log(ui.content[0].value)
+                    $('#univ_list').val(ui.content[0].value)
+                }  
+            });
+           
+        }
+    });
+    function get_univ_name()
+    {
+        
+        var getText = document.getElementById('univ_list').value;
+        var is_listed = false;
+        for(var i=0; i<availableUniv.length;i++)
+        {
+            if(availableUniv[i] === getText)
+            {
+               is_listed = true;
+               break;
+            }
+        }
+        if(is_listed)
+        {
+            document.getElementById('univ_search').click();
+        }
+        else alert('대학명을 바르게 입력해주세요');
+    }
+
+    function over_event(lat,lng)
+    {
+        for ( var i = 0; i < over_markers.length; i++ ) {
+            over_markers[i].setMap(null);
+        }   
+        over_markers = [];
+        
+        var marker = new kakao.maps.Marker({
+            position: new kakao.maps.LatLng(lat, lng)
+        });
+        marker.setMap(map);
+        over_markers.push(marker);
+    }
+
+    function out_event()
+    {
+        for ( var i = 0; i < over_markers.length; i++ ) {
+            over_markers[i].setMap(null);
+        }   
+        over_markers = [];
+    }
+    
+    var drawingFlag = false; // 선이 그려지고 있는 상태를 가지고 있을 변수입니다
+    var moveLine; // 선이 그려지고 있을때 마우스 움직임에 따라 그려질 선 객체 입니다
+    var clickLine // 마우스로 클릭한 좌표로 그려질 선 객체입니다
+    var distanceOverlay; // 선의 거리정보를 표시할 커스텀오버레이 입니다
+    var dots = {}; // 선이 그려지고 있을때 클릭할 때마다 클릭 지점과 거리를 표시하는 커스텀 오버레이 배열입니다.
+    
+    // 마커를 클릭했을 때 해당 장소의 상세정보를 보여줄 커스텀오버레이입니다
+    var placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}), 
+        contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다 
+        markers = [], // 마커를 담을 배열입니다
+        over_markers = [], // mouseOver위치의 마커를 담을 배열입니다
+        circles = [];
+        currCategory = ''; // 현재 선택된 카테고리를 가지고 있을 변수입니다
+    
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+        mapOption = {
+            center: new kakao.maps.LatLng(37.5650792,126.9693389), // 지도의 중심좌표
+            level: 8 // 지도의 확대 레벨
+        };  
+    
+    // 지도를 생성합니다    
+    var map = new kakao.maps.Map(mapContainer, mapOption); 
+    // 클러스터 생성
+    var clusterer = new kakao.maps.MarkerClusterer({
+        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+        gridSize : 200, //클러스터링 범위
+        minLevel: 1, // 클러스터 할 최소 지도 레벨
+        minClusterSize: 1, //클러스터할 마커 최수 개수
+        disableClickZoom: true, // 클러스터 마커를 클릭했을 때 지도가 확대되지 않도록 설정한다
+        asdf: [{background: '#fffffff',}],
+        styles: [
+        {
+            width: '40px',
+            height: '35px',
+            background: '#326182',
+            color: '#ffffff',
+            paddingTop:'5px',
+            opacity: 0.95,
+            border: '2px solid white',
+            borderRadius: '100%',
+            textAlign: 'center',
+            lineHeight: '27px',
+            fontSize: '15px',
+            fontWeight: 'bold',
+        },
+        ],
+    });
+
+    $(function(){
+        // 데이터에서 좌표 값을 가지고 마커를 표시합니다
+        // 마커 클러스터러로 관리할 마커 객체는 생성할 때 지도 객체를 설정하지 않습니다
+        var get_loca= [];
+        "{% for items in item %}"
+            get_loca.push({lat: "{{items.latitude}}" ,lng: "{{items.longitude}}" })
+        "{% endfor %}"
+        var markers = $(get_loca).map(function(i, position) {
+            return new kakao.maps.Marker({
+                position : new kakao.maps.LatLng(position.lat, position.lng)
+            });
+        });
+
+        // 클러스터러에 마커들을 추가합니다
+        clusterer.addMarkers(markers);
+    });
+    
+    
+    // 마커 클러스터러에 클릭이벤트를 등록합니다
+    // 마커 클러스터러를 생성할 때 disableClickZoom을 true로 설정하지 않은 경우
+    // 이벤트 헨들러로 cluster 객체가 넘어오지 않을 수도 있습니다
+    kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
+        var mk = cluster.getMarkers();
+        var count = 0;
+        
+        removeCircles();
+        "{% for items in item %}"     
+            var get_lat = "{{items.latitude}}"*1;
+            var is_located = true;
+            var inverted_lat = get_lat.toFixed(10);
+            var get_lng = "{{items.longitude}}"*1;
+            var inverted_lng = get_lng.toFixed(10);
+            for(var i=0; i < mk.length;i++)
+            {
+                if(mk[i].getPosition().getLat().toFixed(10) == inverted_lat && mk[i].getPosition().getLng().toFixed(10) == inverted_lng)
+                {
+                    is_located = true;
+                    break;
+                }
+                else
+                {
+                    is_located = false;
+                }
+            }
+            if(is_located)
+            {
+                $(".item{{items.auto_increment_id}}").css('display','block');
+                //document.getElementsByClassName('item')[count].style.display = "block"
+            } 
+            else
+            {
+                $(".item{{items.auto_increment_id}}").css('display','none');
+                //document.getElementsByClassName('item')[count].style.display = "none";
+            }
+            count++;
+        "{% endfor %}"
+
+        document.getElementById('loading').style.display = "block"
+        document.getElementById('items').style.display = "none"
+
+        setTimeout(function() {
+            document.getElementById('loading').style.display = "none"
+            document.getElementById('items').style.display = "block"
+        }, 3000);
+    });
+
+    kakao.maps.event.addListener(map, 'zoom_changed', function() {        
+        removeCircles();
+    });
+
+    function removeCircles() {         
+        for (var i = 0; i < circles.length; i++) {
+            circles[i].setMap(null);    
+            circles[i].setMap(null);
+            circles[i].setMap(null);
+        }         
+        circles = [];
+    }
+    kakao.maps.event.addListener(clusterer, 'clusterover', function(cluster) {
+        var mk = cluster.getMarkers();
+        var grid_size = cluster.getBounds();
+        var count = 0;
+        
+        line = new kakao.maps.Polyline({
+            path: [grid_size.getSouthWest(),grid_size.getNorthEast()], // 선을 구성하는 좌표
+        });
+        var diameter = Math.floor(line.getLength());// 선의 총 거리를 계산합니다
+        
+        removeCircles();
+        "{% for items in item %}"     
+            var get_lat = "{{items.latitude}}"*1;
+            var is_located = true;
+            var inverted_lat = get_lat.toFixed(10);
+            var get_lng = "{{items.longitude}}"*1;
+            var inverted_lng = get_lng.toFixed(10);
+            for(var i=0; i < mk.length;i++)
+            {
+                if(mk[i].getPosition().getLat().toFixed(10) == inverted_lat && mk[i].getPosition().getLng().toFixed(10) == inverted_lng)
+                {
+                    is_located = true;
+                    break;
+                }
+                else
+                {
+                    is_located = false;
+                }
+            }
+            
+            count++;
+        "{% endfor %}"
+        var circle = new kakao.maps.Circle({ 
+            center : cluster.getCenter(), // 원의 중심좌표입니다
+            radius: diameter/2, // 원의 반지름입니다 m 단위 이며 선 객체를 이용해서 얻어옵니다
+            strokeWeight: 1, // 선의 두께입니다
+            strokeColor: '#00a0e9', // 선의 색깔입니다
+            strokeOpacity: 0.1, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+            strokeStyle: 'solid', // 선의 스타일입니다
+            fillColor: '#00a0e9', // 채우기 색깔입니다
+            fillOpacity: 0.2  // 채우기 불투명도입니다 
+        });
+
+        circle.setMap(map); 
+        circles.push(circle);
+    });
+
+    kakao.maps.event.addListener(clusterer, 'clusterout', function() { removeCircles();});
+
+    // 장소 검색 객체를 생성합니다
+    var ps = new kakao.maps.services.Places(map); 
+    
+    // 지도에 idle 이벤트를 등록합니다
+    kakao.maps.event.addListener(map, 'idle', searchPlaces);
+    
+    // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다 
+    contentNode.className = 'placeinfo_wrap';
+    
+    // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
+    // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다 
+    addEventHandle(contentNode, 'mousedown', kakao.maps.event.preventMap);
+    addEventHandle(contentNode, 'touchstart', kakao.maps.event.preventMap);
+    
+    // 커스텀 오버레이 컨텐츠를 설정합니다
+    placeOverlay.setContent(contentNode);  
+    
+    // 각 카테고리에 클릭 이벤트를 등록합니다
+    addCategoryClickEvent();
+    
+    // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
+    function addEventHandle(target, type, callback) {
+        if (target.addEventListener) {
+            target.addEventListener(type, callback);
+        } else {
+            target.attachEvent('on' + type, callback);
+        }
+    }
+    
+    // 카테고리 검색을 요청하는 함수입니다
+    function searchPlaces() {
+        if (!currCategory) {
+            return;
+        }
+        
+        // 커스텀 오버레이를 숨깁니다 
+        placeOverlay.setMap(null);
+    
+        // 지도에 표시되고 있는 마커를 제거합니다
+        removeMarker();
+        
+        ps.categorySearch(currCategory, placesSearchCB, {useMapBounds:true}); 
+    }
+    
+    // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+    function placesSearchCB(data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+    
+            // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
+            displayPlaces(data);
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+            // 검색결과가 없는경우 해야할 처리가 있다면 이곳에 작성해 주세요
+    
+        } else if (status === kakao.maps.services.Status.ERROR) {
+            // 에러로 인해 검색결과가 나오지 않은 경우 해야할 처리가 있다면 이곳에 작성해 주세요
+            
+        }
+    }
+    
+    // 지도에 마커를 표출하는 함수입니다
+    function displayPlaces(places) {
+    
+        // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
+        // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
+        var order = document.getElementById(currCategory).getAttribute('data-order');
+    
+        
+    
+        for ( var i=0; i<places.length; i++ ) {
+    
+                // 마커를 생성하고 지도에 표시합니다
+                var marker = addMarker(new kakao.maps.LatLng(places[i].y, places[i].x), order);
+    
+                // 마커와 검색결과 항목을 클릭 했을 때
+                // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
+                (function(marker, place) {
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        displayPlaceInfo(place);
+                    });
+                })(marker, places[i]);
+        }
+    }
+    
+    // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+    function addMarker(position, order) {
+        var imageSrc = '../static/img/pick_img.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+            imageSize = new kakao.maps.Size(40, 40),  // 마커 이미지의 크기
+            imgOptions =  {
+                spriteSize : new kakao.maps.Size(80, 180), // 스프라이트 이미지의 크기
+                spriteOrigin : new kakao.maps.Point(46, (order*36)), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+                offset: new kakao.maps.Point(14, 37) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+            },
+            markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+                marker = new kakao.maps.Marker({
+                position: position, // 마커의 위치
+                image: markerImage 
+            });
+    
+        marker.setMap(map); // 지도 위에 마커를 표출합니다
+        markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+    
+        return marker;
+    }
+    
+    // 지도 위에 표시되고 있는 마커를 모두 제거합니다
+    function removeMarker() {
+        for ( var i = 0; i < markers.length; i++ ) {
+            markers[i].setMap(null);
+        }   
+        markers = [];
+    }
+    
+    // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
+    function displayPlaceInfo (place) {
+        var content = '<div class="placeinfo">' +
+                        '   <a class="title" href="' + place.place_url + '" target="_blank" title="' + place.place_name + '">' + place.place_name + '</a>';   
+    
+        if (place.road_address_name) {
+            content += '    <span title="' + place.road_address_name + '">' + place.road_address_name + '</span>' +
+                        '  <span class="jibun" title="' + place.address_name + '">(지번 : ' + place.address_name + ')</span>';
+        }  else {
+            content += '    <span title="' + place.address_name + '">' + place.address_name + '</span>';
+        }                
+    
+        content += '    <span class="tel">' + place.phone + '</span>' + 
+                    '</div>' + 
+                    '<div class="after"></div>';
+    
+        contentNode.innerHTML = content;
+        placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
+        placeOverlay.setMap(map);  
+    }
+    
+    
+    // 각 카테고리에 클릭 이벤트를 등록합니다
+    function addCategoryClickEvent() {
+        var category = document.getElementById('category'),
+            children = category.children;
+    
+        for (var i=0; i<children.length; i++) {
+            children[i].onclick = onClickCategory;
+        }
+    }
+    
+    // 카테고리를 클릭했을 때 호출되는 함수입니다
+    function onClickCategory() {
+        var id = this.id,
+            className = this.className;
+    
+        placeOverlay.setMap(null);
+    
+        if (className === 'on') {
+            currCategory = '';
+            changeCategoryClass();
+            removeMarker();
+        } else {
+            currCategory = id;
+            changeCategoryClass(this);
+            searchPlaces();
+        }
+    }
+    
+    // 클릭된 카테고리에만 클릭된 스타일을 적용하는 함수입니다
+    function changeCategoryClass(el) {
+        var category = document.getElementById('category'),
+            children = category.children,
+            i;
+    
+        for ( i=0; i<children.length; i++ ) {
+            children[i].className = '';
+        }
+    
+        if (el) {
+            el.className = 'on';
+        } 
+    } 
+    
+    var marker = new kakao.maps.Marker({ 
+        
+    });
+    
+    marker.setMap(map);
+    var clickCount = 0;
+    var content;
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        
+        // 마우스로 클릭한 위치입니다 
+        var clickPosition = mouseEvent.latLng;
+        // 지도 클릭이벤트가 발생했는데 선을 그리고있는 상태가 아니면
+        if (!drawingFlag || clickCount === 1) {
+            if(clickCount ===1){
+                moveLine.setMap(null);
+                moveLine = null;  
+            }
+            clickCount =0;
+            // 상태를 true로, 선이 그리고있는 상태로 변경합니다
+            drawingFlag = true;
+            
+            // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
+            deleteClickLine();
+            
+            // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
+            deleteDistnce();
+
+            // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
+            deleteCircleDot();
+            
+            // 클릭한 위치를 기준으로 선을 생성하고 지도위에 표시합니다
+            clickLine = new kakao.maps.Polyline({
+                map: map, // 선을 표시할 지도입니다 
+                path: [clickPosition], // 선을 구성하는 좌표 배열입니다 클릭한 위치를 넣어줍니다
+                strokeWeight: 3, // 선의 두께입니다 
+                strokeColor: '#db4040', // 선의 색깔입니다
+                strokeOpacity: 1, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+                strokeStyle: 'solid' // 선의 스타일입니다
+            });
+            
+            // 선이 그려지고 있을 때 마우스 움직임에 따라 선이 그려질 위치를 표시할 선을 생성합니다
+            moveLine = new kakao.maps.Polyline({
+                strokeWeight: 3, // 선의 두께입니다 
+                strokeColor: '#db4040', // 선의 색깔입니다
+                strokeOpacity: 0.5, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
+                strokeStyle: 'solid' // 선의 스타일입니다    
+            });
+
+            // 클릭한 지점에 대한 정보를 지도에 표시합니다
+            displayCircleDot(clickPosition, 0);
+
+                
+        } else if(clickCount < 1) { // 선이 그려지고 있는 상태이면
+            clickCount = 1;
+            // 그려지고 있는 선의 좌표 배열을 얻어옵니다
+            var path = clickLine.getPath();
+
+            // 좌표 배열에 클릭한 위치를 추가합니다
+            path.push(clickPosition);
+            
+            // 다시 선에 좌표 배열을 설정하여 클릭 위치까지 선을 그리도록 설정합니다
+            clickLine.setPath(path);
+
+            var distance = Math.round(clickLine.getLength());
+            displayCircleDot(clickPosition, distance);
+
+            var distance = Math.round(clickLine.getLength()); // 선의 총 거리를 계산합니다
+            content = getTimeHTML(distance); // 커스텀오버레이에 추가될 내용입니다
+                
+            // 그려진 선의 거리정보를 지도에 표시합니다
+            showDistance(content, path[path.length-1]);  
+            
+        }
+    
+    });
+
+    // 지도에 마우스무브 이벤트를 등록합니다
+    // 선을 그리고있는 상태에서 마우스무브 이벤트가 발생하면 그려질 선의 위치를 동적으로 보여주도록 합니다
+    kakao.maps.event.addListener(map, 'mousemove', function (mouseEvent) {
+    
+        // 지도 마우스무브 이벤트가 발생했는데 선을 그리고있는 상태이면
+        if (drawingFlag && clickCount<1){
+            
+            // 마우스 커서의 현재 위치를 얻어옵니다 
+            var mousePosition = mouseEvent.latLng; 
+
+            // 마우스 클릭으로 그려진 선의 좌표 배열을 얻어옵니다
+            var path = clickLine.getPath();
+            
+            // 마우스 클릭으로 그려진 마지막 좌표와 마우스 커서 위치의 좌표로 선을 표시합니다
+            var movepath = [path[path.length-1], mousePosition];
+            moveLine.setPath(movepath);    
+            moveLine.setMap(map);
+            
+            
+            
+            // 거리정보를 지도에 표시합니다
+            showDistance(content, mousePosition);   
+        }             
+    });                 
+
+    // 지도에 마우스 오른쪽 클릭 이벤트를 등록합니다
+    // 선을 그리고있는 상태에서 마우스 오른쪽 클릭 이벤트가 발생하면 선 그리기를 종료합니다
+    kakao.maps.event.addListener(map, 'rightclick', function (mouseEvent) {
+
+        clickCount = 0;
+            
+        // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
+        deleteClickLine();
+            
+        // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
+        deleteDistnce();
+
+        // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
+        deleteCircleDot();
+        
+        // 지도 오른쪽 클릭 이벤트가 발생했는데 선을 그리고있는 상태이면
+        if (drawingFlag) {
+            // 상태를 false로, 그리지 않고 있는 상태로 변경합니다
+            drawingFlag = false;    
+            // 마우스무브로 그려진 선은 지도에서 제거합니다
+            moveLine.setMap(null);
+            moveLine = null;  
+
+            // 선을 구성하는 좌표의 개수가 1개 이하이면 
+            // 지도에 표시되고 있는 선과 정보들을 지도에서 제거합니다.
+            deleteClickLine();
+            deleteCircleDot(); 
+            deleteDistnce();
+
+                
+        }  
+    });    
+
+    // 클릭으로 그려진 선을 지도에서 제거하는 함수입니다
+    function deleteClickLine() {
+        if (clickLine) {
+            clickLine.setMap(null);    
+            clickLine = null;        
+        }
+    }
+
+    // 마우스 드래그로 그려지고 있는 선의 총거리 정보를 표시하거
+    // 마우스 오른쪽 클릭으로 선 그리가 종료됐을 때 선의 정보를 표시하는 커스텀 오버레이를 생성하고 지도에 표시하는 함수입니다
+    function showDistance(content, position) {
+
+        if (distanceOverlay) { // 커스텀오버레이가 생성된 상태이면
+            
+            // 커스텀 오버레이의 위치와 표시할 내용을 설정합니다
+            distanceOverlay.setPosition(position);
+            distanceOverlay.setContent(content);
+            
+        } else { // 커스텀 오버레이가 생성되지 않은 상태이면
+            
+            // 커스텀 오버레이를 생성하고 지도에 표시합니다
+            distanceOverlay = new kakao.maps.CustomOverlay({
+                map: map, // 커스텀오버레이를 표시할 지도입니다
+                content: content,  // 커스텀오버레이에 표시할 내용입니다
+                position: position, // 커스텀오버레이를 표시할 위치입니다.
+                xAnchor: 0,
+                yAnchor: 0,
+                zIndex: 3  
+            });      
+        }
+    }
+
+    // 그려지고 있는 선의 총거리 정보와 
+    // 선 그리가 종료됐을 때 선의 정보를 표시하는 커스텀 오버레이를 삭제하는 함수입니다
+    function deleteDistnce () {
+        if (distanceOverlay) {
+            distanceOverlay.setMap(null);
+            distanceOverlay = null;
+        }
+    }
+
+    // 선이 그려지고 있는 상태일 때 지도를 클릭하면 호출하여 
+    // 클릭 지점에 대한 정보 (동그라미와 클릭 지점까지의 총거리)를 표출하는 함수입니다
+    function displayCircleDot(position, distance) {
+
+        // 클릭 지점을 표시할 빨간 동그라미 커스텀오버레이를 생성합니다
+        var circleOverlay = new kakao.maps.CustomOverlay({
+            content: '<span class="dot"></span>',
+            position: position,
+            zIndex: 1
+        });
+
+        // 지도에 표시합니다
+        circleOverlay.setMap(map);
+
+        
+
+        // 배열에 추가합니다
+        dots.push({circle:circleOverlay, distance: distanceOverlay});
+    }
+
+    // 클릭 지점에 대한 정보 (동그라미와 클릭 지점까지의 총거리)를 지도에서 모두 제거하는 함수입니다
+    function deleteCircleDot() {
+        var i;
+
+        for ( i = 0; i < dots.length; i++ ){
+            if (dots[i].circle) { 
+                dots[i].circle.setMap(null);
+            }
+
+            if (dots[i].distance) {
+                dots[i].distance.setMap(null);
+            }
+    }
+
+    dots = [];
+    }
+
+    // 마우스 우클릭 하여 선 그리기가 종료됐을 때 호출하여 
+    // 그려진 선의 총거리 정보와 거리에 대한 도보, 자전거 시간을 계산하여
+    // HTML Content를 만들어 리턴하는 함수입니다
+    function getTimeHTML(distance) {
+
+        // 도보의 시속은 평균 4km/h 이고 도보의 분속은 67m/min입니다
+        var walkkTime = distance / 67 | 0;
+        var walkHour = '', walkMin = '';
+
+        // 계산한 도보 시간이 60분 보다 크면 시간으로 표시합니다
+        if (walkkTime > 60) {
+            walkHour = '<span class="number">' + Math.floor(walkkTime / 60) + '</span>시간 '
+        }
+        walkMin = '<span class="number">' + walkkTime % 60 + '</span>분'
+
+        // 자전거의 평균 시속은 16km/h 이고 이것을 기준으로 자전거의 분속은 267m/min입니다
+        var bycicleTime = distance / 227 | 0;
+        var bycicleHour = '', bycicleMin = '';
+
+        // 계산한 자전거 시간이 60분 보다 크면 시간으로 표출합니다
+        if (bycicleTime > 60) {
+            bycicleHour = '<span class="number">' + Math.floor(bycicleTime / 60) + '</span>시간 '
+        }
+        bycicleMin = '<span class="number">' + bycicleTime % 60 + '</span>분'
+
+        // 거리와 도보 시간, 자전거 시간을 가지고 HTML Content를 만들어 리턴합니다
+        var content = '<ul class="dotOverlay distanceInfo">';
+        content += '    <li>';
+        content += '        <span class="label">총거리</span><span class="number">' + distance + '</span>m';
+        content += '    </li>';
+        content += '    <li>';
+        content += '        <span class="label">도보</span>'+' 약 ' + walkHour + walkMin+'(거리가 멀수록 부정확합니다)';
+        content += '    </li>';
+        content += '    <li>';
+        content += '        <span class="label">자전거</span>'+' 약 ' + bycicleHour + bycicleMin;
+        content += '    </li>';
+        content += '</ul>'
+
+        return content;
+    }
+
+    
+    window.onload = function()           
+    {    
+        
+            var moveMap;
+            var moveMapOption;
+            var moveLatLon;
+            var getText = document.getElementById('univ_list').value;            
+            /*서울*/    
+            if(getText ==='건국대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5431548,127.07611220000001);
+            else if(getText ==='경희대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5961951,127.05254400000001);
+            else if(getText ==='고려대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.590799,127.02777730000003);
+            else if(getText ==='광운대학교') moveLatLon = new kakao.maps.LatLng(37.61949649999999,127.05969579999999);
+            else if(getText ==='국민대학교') moveLatLon = new kakao.maps.LatLng(37.6096409,126.99769700000002);
+            else if(getText ==='동국대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.55825400000001,127.00015000000008);
+            else if(getText ==='삼육대학교') moveLatLon = new kakao.maps.LatLng(37.6439443,127.10556599999995);
+            else if(getText ==='상명대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.60263799999999,126.95525199999997);
+            else if(getText ==='서강대학교') moveLatLon = new kakao.maps.LatLng(37.5509442,126.94100230000004);
+            else if(getText ==='서경대학교') moveLatLon = new kakao.maps.LatLng(37.61488550000001,127.01335080000001);
+            else if(getText ==='서울대학교 관악캠퍼스') moveLatLon = new kakao.maps.LatLng(37.4563272,126.95610409999995);
+            else if(getText ==='서울대학교 연건캠퍼스') moveLatLon = new kakao.maps.LatLng(37.58022589999999,126.99930919999997);
+            else if(getText ==='서울과학기술대학교') moveLatLon = new kakao.maps.LatLng(37.6316684,127.07748130000004);
+            else if(getText ==='서울시립대학교') moveLatLon = new kakao.maps.LatLng(37.5838699,127.0565884);
+            else if(getText ==='성균관대학교 인문사회캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5879413,126.99365749999993);
+            else if(getText ==='세종대학교') moveLatLon = new kakao.maps.LatLng(37.55025959999999,127.07313899999997);
+            else if(getText ==='숭실대학교') moveLatLon = new kakao.maps.LatLng(37.4963111,126.95745959999999);
+            else if(getText ==='연세대학교 신촌캠퍼스') moveLatLon = new kakao.maps.LatLng(37.565784,126.93857200000002);
+            else if(getText ==='중앙대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5666896,126.96712580000008);
+            else if(getText ==='한국외국어대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.597319,127.05784300000005);
+            else if(getText ==='한성대학교') moveLatLon = new kakao.maps.LatLng(37.5817849,127.01036899999997);
+            else if(getText ==='한양대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5572321,127.04532189999998);
+            else if(getText ==='홍익대학교 서울캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5514642,126.92501059999995);
+            else if(getText ==='덕성여자대학교 쌍문캠퍼스') moveLatLon = new kakao.maps.LatLng(37.6511988,127.01616039999999);
+            else if(getText ==='덕성여자대학교 종로캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5753117,126.98738500000002);
+            else if(getText ==='동덕여자대학교') moveLatLon = new kakao.maps.LatLng(37.6063202,127.04180799999995);
+            else if(getText ==='서울여자대학교') moveLatLon = new kakao.maps.LatLng(37.62811260000001,127.09045679999997);
+            else if(getText ==='성신여자대학교 수정캠퍼스') moveLatLon = new kakao.maps.LatLng(37.5913103,127.02213119999999);
+            else if(getText ==='성신여자대학교 운정그린캠퍼스') moveLatLon = new kakao.maps.LatLng(37.6319166,127.02735170000005);
+            else if(getText ==='숙명여자대학교') moveLatLon = new kakao.maps.LatLng(37.5463644,126.96483109999997);
+            else if(getText ==='이화여자대학교') moveLatLon = new kakao.maps.LatLng(37.5597476,126.94552279999994);
+            else if(getText ==='성공회대학교') moveLatLon = new kakao.maps.LatLng(37.4872367,126.8231262);
+            else if(getText ==='한국성서대학교') moveLatLon = new kakao.maps.LatLng(37.6487485,127.06431989999999);
+            else if(getText ==='한국체육대학교') moveLatLon = new kakao.maps.LatLng(37.5196308,127.1287897);
+            map.setLevel(4);             
+
+            if (getText ===''){ moveLatLon = new kakao.maps.LatLng(37.5650792,126.9993389);map.setLevel(9); }
+            map.panTo(moveLatLon);
+    
+            // 지도 중심을 이동시킵니다
+            
+            
+        }
+    </script>
+
+{% endblock %}

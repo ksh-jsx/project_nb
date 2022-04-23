@@ -1,0 +1,303 @@
+{% load static %}
+
+<!DOCTYPE html>
+    <head>
+        <title>장고</title>
+        <meta name="viewport" content="width=device-width" content="initial-scale=1.0">
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="/static/slick/slick.css"/>
+        <link rel="stylesheet" type="text/css" href="/static/slick/slick-theme.css"/>
+        <link rel="stylesheet" href="{% static 'css/import.css' %}">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c32c1763e65921610b0b14021a17138f&libraries=services,clusterer"></script>
+        <script type="text/javascript" src="{% static 'js/register.js' %}"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link rel="stylesheet" href="https://cdn.pannellum.org/2.3/pannellum.css"/>
+        <script type="text/javascript" src="https://cdn.pannellum.org/2.3/pannellum.js"></script>
+        <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/univ_list.js' %}"></script>
+        <script>
+        </script>
+    </head>
+    <body>
+        <div class="alert_authenticate_container" style="display: none;" >
+            <div class="alert_authenticate">
+                이메일 인증을 마쳐야 사용가능합니다.<br><br><br>
+                <a href="{% url 'mail_authenticate' %}">가입한 메일로 인증메일을 받으시려면<br><span style="text-decoration: underline">여기</span>를 누르세요</a>
+                <div class="exit">닫기</div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function(){
+                $(".exit").click(function(){
+                    $(".alert_authenticate_container").fadeOut();
+                });
+            });
+        </script>
+        <nav>
+            <div class="nav_container" >
+                <a id="logo1" href="/">
+                    <img src="/static/img/main_logo.png">
+                </a>
+                <a id="logo2" href="">
+                    <img src="/static/img/forward-left-arrow-button.png">
+                </a>
+                <div id="web_nav">
+                    <ul class="ul1">
+                            <li>&nbsp;&nbsp;방방?</li>
+                            <li>&nbsp;&nbsp;이용방법</li>
+                            <li><a href="{% url 'cust_serv' %}">&nbsp;&nbsp;고객센터</a></li>
+                            {% if user.is_authenticated %}
+                            <li><a href="{% url 'mypage' %}">&nbsp;&nbsp;내정보</a></li>
+                                <li><a href="{% url 'logout' %}">&nbsp;&nbsp;로그아웃</a></li>
+                            {% else %}
+                                <li><a href="{% url 'signup' %}">&nbsp;&nbsp;회원가입</a></li>
+                                <li><a href="{% url 'login' %}">&nbsp;&nbsp;로그인</a></li>
+                            {% endif %}
+                        </ul>
+
+                    <ul class="ul2">
+                        <li onclick="is_active()">&nbsp;&nbsp;방 내놓기</li>
+                        <li>&nbsp;·&nbsp;</li>
+                        <li onclick="location.href='/search_univ'">&nbsp;&nbsp;매물보기</li>
+                        <li>&nbsp;·&nbsp;</li>
+                        <li onclick="location.href='/nanubang'">&nbsp;&nbsp;나누방 안전계약</li>
+                    </ul>
+                </div>
+                <div id="wrapper" onclick="setTime1()">
+                    <div id="line-wrapper">
+                        <!-- 추가된 부분 -->
+                        <div id="line-top" class="line init top-reverse"></div>
+                        <div id="line-mid" class="line init mid-reverse"></div>
+                        <div id="line-bot" class="line init bot-reverse"></div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="overlay"></div>
+        <div id="sideBar" style="display: none;overflow: auto">
+            <div style="min-height:100%">
+                <div class="side_top">
+                    <div>
+                        <img src="/static/img/main_logo2.png" style="position: relative;top:10px;left:10px;max-width:100px;width:50%;height:48px;">
+                        <span onclick="document.getElementById('wrapper').click();"><img src="/static/img/close-button.png" width="30" height="30"></span>
+                        {% if user.is_authenticated %}
+                        
+                        {% else %}
+                        <div style="height: 0;padding:0"></div>
+                        {% endif %}
+                    </div>
+                    {% if user.is_authenticated %}
+                    <div class="user_info">
+                        <div class="user_img">
+                            <img src="../static/img/user.png" width="100%" height="100%">
+                            <div class="right"><a href="{% url 'logout' %}">로그아웃</a></div>
+                        </div>
+                        <div class="user_name">{{user.name}} | {{user.username}}</div>
+                    </div>
+                    {% else %}
+                    <div class="not_authen">
+                        <div class="left"><img src="/static/img/login.png" width="30" height="30"><a href="{% url 'login' %}?next={{request.path}}">&nbsp;로그인</a></div>
+                        <div class="right"><img src="/static/img/join.png" width="30" height="30"><a href="{% url 'signup' %}">&nbsp;회원가입</a></div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div id="sideBarList">
+                    <div style="border-top:1px solid #7a7a7a"><a href="/search_univ">매물보기</a></div>
+                    <div><span onclick="is_active()">방내놓기</span></div>
+                    <div id="mainDiv1" onclick="openSide(1)"><a id="main_a1">고객센터</a></div>
+                    <div id="sideDiv1" style="display: none;height: 92px">
+                        <div onclick="location.href='/cust_service1/'"> - <a>FAQ</a></div>
+                        <div onclick="location.href='/cust_service1/'"> - <a>고객의 소리</a></div>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <div id="mainDiv2" onclick="openSide(2)"><a id="main_a2">내 정보 & 방 관리</a></div>
+                    <div id="sideDiv2" style="display: none;height: 138px">
+                        <div> - <a href="/mypage/">내정보 보기</a></div>
+                        <div> - <a href="/mypage?page=3">내가 찜한 방</a></div>
+                        <div> - <a href="/mypage?page=2">내가 올린 방</a></div>
+                    </div>
+                    {% else %}
+                    <div id="mainDiv2"><a href="#">로그인 후 이용해주세요</a></div>
+                    {% endif %}
+                    <div id="mainDiv3" onclick="openSide(3)"><a id="main_a3">계약관리</a></div>
+                    <div id="sideDiv3" style="display: none;height: 92px">
+                        <div> - <a href="/nanubang">나누방 안전계약이란?</a></div>
+                        <div> - <a href="/mypage?page=4">나의 계약 관리</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container" id="container">
+            {% block content %}
+            {% endblock %}
+            <div class="push"></div>
+        </div>
+        <footer>
+            <div class="footer_wrap">
+                <br>
+                <div>Copyright Nanubang Inc. All right reserved.</div>
+                <br>
+                <div>상호 : 나누방 | 대표 : 임상욱 | 사업자등록번호 : 000-00-000000</div>
+                <div> 주소 : 서울특별시 노원구 공릉로 232 수연관 207호 | 전화번호 : 02)000-0000 | 카카오톡 : 나누방</div>
+                <br>
+            </div>
+        </footer>
+        <script>
+            var count = 0;
+            var client_width = document.body.clientWidth;
+            var this_url = window.location.href;
+            if(client_width<800)
+            {
+                document.getElementById('web_nav').style.display = "none";
+                document.getElementById('wrapper').style.display = "block";
+                if(this_url.indexOf('room_detail') != -1){
+                    $('#logo1').css('display','none')
+                    $('#logo2').css('display','inline-block')
+                    $('#logo2').attr('href','/search_univ')
+                }
+                
+            }
+            else
+            {
+                document.getElementById('web_nav').style.display = "block";
+                document.getElementById('wrapper').style.display = "none";
+                $('#logo1').css('display','inline-block')
+                $('#logo2').css('display','none')
+                
+            }
+       
+
+
+        $(window).resize(function()
+        {
+            var client_width = document.body.clientWidth;
+            var this_url = window.location.href;            
+            if(client_width<800)
+            {
+                document.getElementById('web_nav').style.display = "none";
+                document.getElementById('wrapper').style.display = "block";
+                if(this_url.indexOf('room_detail') != -1){
+                    $('#logo1').css('display','none')
+                    $('#logo2').css('display','inline-block')
+                    $('#logo2').attr('href','/search_univ')
+                }
+            }
+            else
+            {
+                document.getElementById('web_nav').style.display = "block";
+                document.getElementById('wrapper').style.display = "none";
+                $('#logo1').css('display','inline-block')
+                $('#logo2').css('display','none')
+            }
+
+        });
+
+        $('#line-wrapper').click(function(){
+            /* 추가된 부분 */
+            $('.line').removeClass('init');
+            $('#line-top').toggleClass('line-top').toggleClass('top-reverse');
+            $('#line-mid').toggleClass('line-mid').toggleClass('mid-reverse');
+            $('#line-bot').toggleClass('line-bot').toggleClass('bot-reverse');
+        });
+        function visibleside()
+            {
+                document.getElementById("sideBar").style.display = "block";
+                document.body.style.overflow = "hidden";
+                document.getElementById('wrapper').style.opacity = '0'
+                $("body").show();
+            }
+            function invisibleside()
+            {
+                document.getElementById("sideBar").style.display = "none";
+                document.body.style.overflow = "auto";
+                document.getElementById('wrapper').style.opacity = '1'
+                
+            }
+            function setTime1()
+            {
+                if(document.getElementById('sideBar').style.display === 'none')
+                {
+                    setTimeout("visibleside()",300);
+                    document.getElementById('sideBar').style.animationName = 'sideOpen';
+                    document.getElementById('wrapper').style.animationName = 'opacityDown';
+                    document.getElementById('line-top').style.animationName = 'line-top1';
+                    document.getElementById('line-mid').style.animationName = 'line-mid1';
+                    document.getElementById('line-bot').style.animationName = 'line-bot1';
+                }
+                else
+                {
+                    setTimeout("invisibleside()",400);
+                    document.getElementById('sideBar').style.animationName = 'sideClose';
+                    document.getElementById('wrapper').style.animationName = 'opacityUp';
+                    document.getElementById('line-top').style.animationName = 'line-top2';
+                    document.getElementById('line-mid').style.animationName = 'line-mid2';
+                    document.getElementById('line-bot').style.animationName = 'line-bot2';
+                }
+            }
+        function openSide(n)
+		{
+            var sideName = 'sideDiv'+n;
+            var mainName = 'mainDiv'+n;
+            var aName = 'main_a'+n;
+            var sideInfo = document.getElementById(sideName);
+            var mainInfo = document.getElementById(mainName);
+            var aInfo = document.getElementById(aName);
+            if(sideInfo.style.display === 'none')
+            {
+                sideInfo.style.display = 'block';
+                mainInfo.style.backgroundColor = "#218261";
+                aInfo.style.color = "#ffffff";
+            }
+
+            else
+            {
+                sideInfo.style.display = 'none';
+                mainInfo.style.backgroundColor = "#ffffff";
+                aInfo.style.color = "#676767";
+            }
+
+        }
+        $("#wrapper").click(function() {
+            count++;
+            if(count % 2 ===1)
+                $(".overlay").fadeIn();
+            else
+                $(".overlay").fadeOut();
+        });
+        
+        function is_active()
+        {
+            var authenticated = '{{ user.is_authenticated }}';
+            if(authenticated == 'True')
+            {
+                $.ajax({ 
+                    type: "GET", // 데이터를 전송하는 방법을 지정
+                    url: "{% url 'check' %}", // 통신할 url을 지정
+                    data: "", // 서버로 데이터 전송시 옵션
+                    dataType: "json", // 서버측에서 전송한 데이터를 어떤 형식의 데이터로서 해석할 것인가를 지정, 없으면 알아서 판단
+                    
+                    success: function(response){ 
+                        if(response.message == 'True')
+                            location.href = '/register/index'
+                        else
+                            $(".alert_authenticate_container").fadeIn();
+                    },
+                    error: function(request, status, error){ // 통신 실패시 
+                        
+                        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                    },
+                });
+               
+            }
+            else
+            {
+                alert('이 기능을 이용하려면 로그인을 먼저 하세요')
+            }
+        }
+        </script>
+    </body>
+</html>

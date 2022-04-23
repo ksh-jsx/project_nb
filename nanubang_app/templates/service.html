@@ -1,0 +1,176 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+
+  {% if not page %}
+    <div class="service_top_container">
+      <div class="top">
+          <h2>&lt;고객센터&gt;</h2>
+          <br>
+          <div>
+              <div><a href="#service1">FAQ</a></div>
+              <div><a href="#service2">고객의 소리</a></div>
+              <div><div style="cursor: pointer;"><a href="javascript:void chatChannel()"><img src="../static/img/kakao_icon.PNG">카카오톡으로 문의하기</a></div></div>
+          </div>
+      </div>
+    </div>    
+    <script type='text/javascript'>
+      //<![CDATA[
+          // 사용할 앱의 JavaScript 키를 설정해 주세요.
+          Kakao.init('c32c1763e65921610b0b14021a17138f');
+          function chatChannel() {
+          Kakao.Channel.chat({
+              channelPublicId: '_zFxmfT' // 카카오톡 채널 홈 URL에 명시된 id로 설정합니다.
+          });
+          }
+      //]]>
+      </script>
+  {% endif %}
+  
+  <div class="service_article_container">
+    {% if page is 1 %}
+    <span><a name="service1">FAQ<span style="font-size:10px"> 자주 묻는 질문</span></a></span>
+    <div class="FAQ_container" id="FAQ_container">
+        <div class="Q" id="Q1" onclick="display_answer(1)">Q. ~~~인가요?<span id="Q_span1">▼</span></div>
+        <div class="A" id="A1" ><div class="parent1" id="parent1_1"><div class="parent2"><div class="parent3" id="parent3_1"><p>A. ㅇㅇ1</p><br>으어어어어어</div></div></div></div>
+        <div class="Q" id="Q2" onclick="display_answer(2)">Q. ~~~인가요?<span id="Q_span2">▼</span></div>
+        <div class="A" id="A2" ><div class="parent1" id="parent1_2"><div class="parent2"><div class="parent3" id="parent3_2"><p>A. ㅇㅇ2</p><br>으어어어어어</div></div></div></div>
+        <div class="Q" id="Q3" onclick="display_answer(3)">Q. ~~~인가요?<span id="Q_span3">▼</span></div>
+        <div class="A" id="A3" ><div class="parent1" id="parent1_3"><div class="parent2"><div class="parent3" id="parent3_3"><p>A. ㅇㅇ3</p><br>으어어어어어</div></div></div></div>
+        <div class="Q" id="Q4" onclick="display_answer(4)">Q. ~~~인가요?<span id="Q_span4">▼</span></div>
+        <div class="A" id="A4" style="border-bottom: 0"><div class="parent1" id="parent1_4"><div class="parent2"><div class="parent3" id="parent3_4"><p>A. ㅇㅇ4</p><br>으어어어어어</div></div></div></div>
+    </div>
+    <br>
+    <br>
+    <div style="width:200px;margin: 0 auto;text-align: center;font-weight: bold"><img src="../static/img/kakao_icon.PNG" style="width:30px;height:30px"><br>카카오톡으로 문의하기</div>
+    {% elif page is 2 %}
+    <span><a name="service2">고객의 소리</a></span>
+    <p>
+        방방을 사용하면서 불편하셨던 점이나 개선사항 혹은 문의사항 등을 작성해주세요.<br>
+        여러분들의 의견을 최대한 빠르게 반영하는 나누방이 되겠습니다 :)
+      </p>
+    
+    <form id="gform" method="POST" class="pure-form pure-form-stacked" data-email="nanubangcs@gmail.com"
+    action="https://script.google.com/macros/s/AKfycbzgsTBEKeg4ZsEpB8Jybhmy5Iggb7vBFXSkT3NZCg/exec" autocomplete="off">
+      
+      <fieldset class="mail_container" style="height:40">
+        <input id="name" name="name" placeholder="제목" />
+      </fieldset>
+      <fieldset class="mail_container" style="height:150">
+        <textarea id="message" name="message" rows="10"
+        placeholder="내용을 입력해주세요."></textarea>
+      </fieldset>
+      <fieldset class="mail_container" style="height:40;border-bottom:1px solid #676767">
+        <input id="email" name="email" type="email" value=""
+        required placeholder="답변을 윈하시면 이메일을 적어주세요" value="example@example.com"/>
+        <span id="email-invalid" style="display:none">
+          Must be a valid email address</span>
+      </fieldset>
+      <div>
+          <div id="gform_btn">제출하기</div>
+      </div>
+    </form>
+    {% else %}
+    <span><a name="service1">FAQ</a></span>
+    <div class="FAQ_container" id="FAQ_container">
+        <div class="Q" id="Q1" onclick="display_answer(1)">Q. ~~~인가요?<span id="Q_span1">▼</span></div>
+        <div class="A" id="A1"><div class="parent1" id="parent1_1"><div class="parent2"><div class="parent3" id="parent3_1"><p>A. ㅇㅇ1</p><br>으어어어어어</div></div></div></div>
+        <div class="Q" id="Q2" onclick="display_answer(2)">Q. ~~~인가요?<span id="Q_span2">▼</span></div>
+        <div class="A" id="A2"><div class="parent1" id="parent1_2"><div class="parent2"><div class="parent3" id="parent3_2"><p>A. ㅇㅇ2</p><br>으어어어어어</div></div></div></div>
+        <div class="Q" id="Q3" onclick="display_answer(3)">Q. ~~~인가요?<span id="Q_span3">▼</span></div>
+        <div class="A" id="A3"><div class="parent1" id="parent1_3"><div class="parent2"><div class="parent3" id="parent3_3"><p>A. ㅇㅇ3</p><br>으어어어어어</div></div></div></div>
+        <div class="Q" id="Q4" onclick="display_answer(4)">Q. ~~~인가요?<span id="Q_span4">▼</span></div>
+        <div class="A" id="A4" style="border-bottom: 0"><div class="parent1" id="parent1_4"><div class="parent2"><div class="parent3" id="parent3_4"><p>A. ㅇㅇ4</p><br>으어어어어어</div></div></div></div>
+    </div>
+    <br>
+    <br>
+    <span><a name="service2">고객의 소리</a></span>
+    <p>
+        방방을 사용하면서 불편하셨던 점이나 개선사항 혹은 문의사항 등을 작성해주세요.<br>
+        여러분들의 의견을 최대한 빠르게 반영하는 나누방이 되겠습니다 :)
+      </p>
+    <form id="gform" method="POST" class="pure-form pure-form-stacked" data-email="nanubangcs@gmail.com"
+    action="https://script.google.com/macros/s/AKfycbzgsTBEKeg4ZsEpB8Jybhmy5Iggb7vBFXSkT3NZCg/exec" autocomplete="off">
+      
+      <fieldset class="mail_container" style="height:40">
+        <input id="name" name="name" placeholder="제목" />
+      </fieldset>
+      <fieldset class="mail_container" style="height:150">
+        <textarea id="message" name="message" rows="10"
+        placeholder="내용을 입력해주세요."></textarea>
+      </fieldset>
+      <fieldset class="mail_container" style="height:40;border-bottom:1px solid #676767">
+        <input id="email" name="email" type="email"
+        required placeholder="답변을 윈하시면 이메일을 적어주세요" value="{{request.user.email}}"/>
+        <span id="email-invalid" style="display:none">
+          Must be a valid email address</span>
+      </fieldset>
+      <div>
+          <div id="gform_btn">제출하기</div>
+      </div>
+      <div style="display:none" class="thankyou_message">
+        <!-- You can customize the thankyou message by editing the code below -->
+        <h2><em>Thanks</em> for contacting us! We will get back to you soon!
+        </h2>
+      </div>
+    </form>
+    {% endif %}
+
+  <script>
+     $("#gform_btn").click(function(){
+      $("#gform_btn").css('display','none')
+       $.ajax({ 
+           type: "POST", 
+           url: "https://script.google.com/macros/s/AKfycbzgsTBEKeg4ZsEpB8Jybhmy5Iggb7vBFXSkT3NZCg/exec", // 통신할 url을 지정
+           data: {'name': $('#name').val(),'message':$('#message').val(),'email':$('#email').val(), 'csrfmiddlewaretoken': '{{ csrf_token }}'}, // 서버로 데이터 전송시 옵션
+           dataType: "json", 
+           success: function(response){ 
+               alert('전송되었습니다.');
+               $('#name').val('');
+               $('#message').val('');
+               $("#gform_btn").css('display','block')
+           },
+           error: function(request, status, error){ // 통신 실패시 - 로그인 페이지 리다이렉트
+               
+               
+               
+               alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+           },
+       });
+   })
+  </script>
+  </div>
+  <div></div>
+  <script>
+      function display_answer(num)
+      {
+          var id1 = 'Q'+num;
+          var id2 = 'A'+num;
+          var id3 = 'Q_span'+num;
+          var id4 = 'parent1_'+num;
+          var id5 = 'parent3_'+num;
+          for(var i=0; i<4;i++)
+          {
+              document.getElementsByClassName('Q')[i].style.background = '#ffffff';
+              document.getElementsByClassName('Q')[i].style.color = '#218261';
+          }
+          document.getElementById(id1).style.background = '#218261';
+          document.getElementById(id1).style.color = '#ffffff';
+          document.getElementById(id2).style.height = '100px';
+          document.getElementById(id2).style.borderBottom = '2px solid #a4a4a4';
+          document.getElementById(id2).style.animationName = 'ani_unfold';
+          document.getElementById(id2).style.color = '#ffffff';
+          document.getElementById(id3).innerText = ' ';
+          document.getElementById(id4).style.height = '111px';
+          document.getElementById(id5).style.height = '111px';
+          document.getElementById(id5).style.transform = 'rotateX(0deg)';
+          
+          if(num === 4)
+            document.getElementById('FAQ_container').style.borderBottom = '0px';
+          
+          
+      }
+
+  </script>
+{% endblock %}
+

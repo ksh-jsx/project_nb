@@ -1,0 +1,14 @@
+{% load socialaccount %}
+{% providers_media_js %}
+
+<a href="{% provider_login_url 'naver' %}" class="social_btn" style="background-color: #03cd5d">
+    <img src="../../static/img/naver_icon.png" height="34">
+    <div>네이버 아이디로 로그인하기</div>
+</a>
+
+    
+<a href="{% provider_login_url 'google' %}" class="social_btn" style="background-color: #4285f4;">
+    <img src="../../static/img/google_icon.png" height="34">
+    <div>구글 아이디로 로그인하기</div>
+</a>
+      

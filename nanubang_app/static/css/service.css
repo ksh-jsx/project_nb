@@ -1,0 +1,88 @@
+.service_top_container{width:100%;height:200px; background: #e6e6e6;}
+.service_top_container .top{width:95%;max-width:700px;height:100%;padding-top:20px;;margin: 0 auto;padding-left:2.5%;padding-right: 2.5%}
+.service_top_container .top h2{text-align: center; color:#218261}
+.service_top_container .top > div{width:100%;max-width:600px;text-align: center;font-weight: bold;color:#676767;margin: 0 auto}
+.service_top_container .top > div > div{width:22%;max-width:150px;float:left;text-align: center;border-right: 1px solid #676767;margin: 0 auto}
+.service_top_container .top > div > div:last-child{width:56%;max-width:230px;border-right:0}
+.service_top_container .top > div img{width:100%;max-width:20px;height:20px;float: left;margin-left:10px}
+
+.service_article_container{width:90%;max-width:700px;margin: 0 auto;margin-top:50px;padding-left:2.5%;padding-right: 2.5%}
+.service_article_container > span{font-weight:bold;border-bottom: 2px solid #218261;font-size:20px}
+.service_article_container .FAQ_container{margin-top:10px;border: 2px solid #a4a4a4;margin-bottom: 10px}
+
+.service_article_container .FAQ_container > div{padding: 10px; padding-left: 30px;border-bottom: 2px solid #a4a4a4;font-weight: bold;animation: tmp;animation-duration: 1s;}
+.service_article_container .FAQ_container > .A{display: block;height:0px;padding-top:0;padding-bottom:0;border-bottom:0}
+.service_article_container .FAQ_container > div:last-child,#Q4{border-bottom: 0px}
+.service_article_container .FAQ_container > div > span{float:right;color:#218261;margin-right:30px;}
+.service_article_container .FAQ_container > div > p{color:#218261}
+.service_article_container form{width:100%; height:400px}
+.service_article_container form fieldset{border: 2px solid #a4a4a4;margin-top:10px}
+
+.service_article_container form fieldset > input{width:100%;height:100%;border:0;padding-top:10px}
+.service_article_container form fieldset > textarea{width:99%;height:100%;border:0;padding-top:70px}
+.service_article_container form fieldset > input::placeholder{font-weight: bold;text-align: center;font-size:20px;color:#a4a4a4}
+.service_article_container form fieldset > textarea::placeholder{font-weight: bold;text-align: center;font-size:20px;color:#a4a4a4}
+.service_article_container form div {width:150px;;height:60px;margin: 0 auto; margin-top:30px;}
+.service_article_container form div div{width:100%;height:43px;padding-top:17px;background: #218261;color:#ffffff;font-weight:bold;outline: 0;border: 0;font-size:18px;text-align: center;cursor: pointer;}
+
+@media (max-width:500px)
+{
+	.service_top_container{width:100%;height:250px; background: #e6e6e6;}
+    .service_top_container .top > div > div{width:100%;max-width:100%;float:left;text-align: center;border-right: 0;padding-top:10px;border-bottom: 1px solid;padding-bottom: 10px}
+    .service_top_container .top > div > div:last-child{width:100%;max-width:100%;border:0}
+    .service_top_container .top > div > div:last-child > div{width:68%;margin:0 auto;}
+	.service_top_container .top > div img{width:100%;max-width:20px;height:20px;float: center;margin-left:10px}
+	
+	.service_article_container{margin-top:80px}
+	.service_article_container .FAQ_container{margin-bottom: 60px;border: 0}
+	.service_article_container .FAQ_container > div{margin-top:10px;border: 2px solid #a4a4a4}
+	.service_article_container .FAQ_container > #Q4{border-bottom: 2px solid #a4a4a4}
+	.service_article_container .FAQ_container > .A{margin-top:0;border-top:0}
+	.service_article_container .FAQ_container > #A4{border-top:0;border-bottom: 2px solid #a4a4a4}
+	.service_article_container > p {font-size:10px;margin-top:10px}
+	.service_article_container > span{border: 0; position: absolute;left: 50%;transform:translate(-50%, -170%)  }
+	.service_article_container form fieldset > textarea::placeholder{font-size:15px;}
+	.service_article_container form fieldset > input::placeholder{font-size:15px}
+}
+
+@keyframes ani_unfold {
+    0% {height: 0;}
+    50%{height:100px;}
+    100% {height: 100px;opacity:1;}
+}
+
+@keyframes ani_fold {
+    0% {height: 100px;opacity:1;}
+    100% {height: 0px;opacity:0;}
+}
+
+.parent1 	{ 
+	/* overall animation container */
+	height: 0; 
+	overflow: hidden;
+
+	transition-property: height;
+	transition-duration: 1s;
+	perspective: 1000px;
+	transform-style: preserve-3d;
+}
+.parent2	{ 
+	/* full content during animation *can* go here */ 
+}
+.parent3	{ 
+	/* animated, "folded" block */
+	height: 56px; 
+	transition-property: all; 
+	transition-duration: 1s;
+	transform: rotateX(-90deg);
+	transform-origin: top; 
+}
+
+/* Hover states to trigger animations */
+.A:hover .parent1	{ 
+	height: 100px; 
+}
+.A:hover .parent3	{
+	transform: rotateX(0deg); 
+	height: 100px; 
+}

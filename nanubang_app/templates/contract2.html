@@ -1,0 +1,73 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+{% for info in user_info %}
+<div class="contract_container2">
+    <div>
+        <img src="../static/img/payment_character.jpg">
+    </div>
+    <div class="contract2_info" style="text-align: center;">나누방 안전계약은 서로가 모두 결제를 완료해야 시작됩니다!<br>'{{info.name}}'님께 어서 결제를 요청해보세요 :)</div>
+    <div class="user_info">
+      <div>
+        <input type="text" value="    {{info.phone1}}-{{info.phone2}}-{{info.phone3}}" readonly>
+      </div>
+        <a id="kakao-link-btn" href="javascript:;"></a>
+      <div>
+        <img src="//developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"/>
+      </div>
+    </div>
+</div>
+
+        
+        </a>
+        <script type='text/javascript'>
+          //<![CDATA[
+            // // 사용할 앱의 JavaScript 키를 설정해 주세요.
+            Kakao.init('c32c1763e65921610b0b14021a17138f');
+            // // 카카오링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
+            Kakao.Link.createDefaultButton({
+              container: '#kakao-link-btn',
+              objectType: 'feed',
+              content: {
+                title: '나누방 ~~~~~',
+                description: '결제를 진행해주세요~~',
+                imageUrl: 'http://www.nanubang.com/static/img/main_logo.png',
+                link: {
+                  mobileWebUrl: 'https://nanubang.com',
+                  webUrl: 'https://nanubang.com'
+                }
+              },
+              social: {
+                likeCount: 286,
+                commentCount: 45,
+                sharedCount: 845
+              },
+              buttons: [
+                {
+                  title: '웹으로 보기',
+                  link: {
+                    mobileWebUrl: 'https://nanubang.com',
+                    webUrl: 'https://nanubang.com'
+                  }
+                },
+                {
+                  title: '앱으로 보기',
+                  link: {
+                    mobileWebUrl: 'https://nanubang.com',
+                    webUrl: 'https://nanubang.com'
+                  }
+                }
+              ]
+            });
+          //]]>
+        </script>
+
+{% endfor %}
+
+
+
+
+
+
+
+{% endblock %}

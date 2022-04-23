@@ -1,0 +1,267 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+<div class="main_bg_container">
+    <img src="../static/img/none.png" class="main_bg" id="main_bg_img">
+</div>
+
+<div class="main_article_container1">
+    <div class="animations1">
+        <div class="animation_1"><span style="color:#218261;font-family:'nanum_gothic',sans-serif !important;">잠깐</span><span style="font-family:'nanum_gothic',sans-serif !important;letter-spacing:-2px;font-weight:lighter"> 사는 방,</span></div>
+        <div class="animation_2"><span style="color:#218261;font-family:'nanum_gothic',sans-serif !important;">잠깐</span><span style="font-family:'nanum_gothic',sans-serif !important;letter-spacing:-2px;font-weight:lighter"> 파는 방.</span></div>
+        <div class="animation_3"><span style="font-family:'nanum_gothic',sans-serif !important;"> 나누방에서 거래하세요.</span></div>
+        <div class="animation_4"><span style="font-family:'gyeonggi-font',sans-serif !important;color:#218261">&nbsp;단기 방 구할 때도 나누방, 단기 방 팔 때도 나누방&nbsp;</span></div>
+    </div>
+    <div class="search_container">
+        <form action="/search_univ/" method="get" class="search_univ_form">
+            <div class="animation_5" id="animation_5">
+                <label for="univ_list" class="univ_list_label"><span style="color:#218261;font-family:'nanum_gothic',sans-serif !important;letter-spacing:-1px">▶ 어느 지역 방을 찾으시나요?</span></label>
+                <br>
+                <div>
+                    <input hidden="hidden">
+                    <input type="text" placeholder="대학교 이름 검색" id="univ_list" name="q" autocomplete="off">
+                    <img src="../../static/img/searcher.png" 
+                    width="40%;" id="search_btn" value="  검색" onclick="get_univ_name()">
+                </div>
+            </div>
+            <input type="submit" id="univ_search" style="display: none">
+        </form>
+        <div class="animation_6" id="animation_6">
+            <label for="univ_list" class="univ_list_label"><span style="color:#218261;font-family:'nanum_gothic',sans-serif !important;letter-spacing:-1px">▶ 내 방을 팔고싶어요!</span></label>
+            <br>
+            <div><span style="color:#FFFF;font-family:'gyeonggi-font',sans-serif !important;font-weight:lighter">내 방 등록하기</span></div>
+            <img src="../static/img/forward-right-arrow-button.png" id="search_btn" onclick="is_active1()">
+            <form method="post" id="get_username">
+                {% csrf_token %}
+                <input type="hidden" name="usern" value="{{user.username}}">
+                <input type="submit" style="display: none" id="get_username_submit1">
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="main_article_container2" id="main_article_container2">
+    <div class="slider_container" id="slider_container">
+        <span>새로 등록된 방</span>
+        <!---pc용--->
+        <div class="web_slider" id="web_slider">
+            {% for i in current_sales %}
+            <div class="slider1">
+                <div class="slider2">
+                    <div>{{i.room_type}}</div>
+                    <img src="{{i.photo1.url}}">
+                </div>
+                <div class="slider3" >{{i.univ}} {{i.tag}} / 월세 {{i.desired_monthly}}만원</div>
+            </div>
+            {% endfor %}
+        </div>
+        <!---mobile용--->
+        <div class="mobile_slider" id="mobile_slider">
+            {% for x,y in range %}
+                <div class="slider1" id="slider1">
+                    <div class="slider2">
+                        <div>{{x.room_type}}</div>
+                        <img src="{{x.photo1.url}}">
+                    </div>
+                    <div class="slider3" >{{x.univ}} {{x.tag}} / 월세 {{x.desired_monthly}}만원</div>
+
+                    <div class="slider2">
+                        <div>{{y.room_type}}</div>
+                        <img src="{{y.photo1.url}}">
+                    </div>
+                    <div class="slider3" >{{y.univ}} {{y.tag}} / 월세 {{y.desired_monthly}}만원</div>
+                </div>
+            {% endfor %}
+        </div>
+        <p class="more_room">더 많은 방 보러가기</p>
+    </div>
+</div>
+
+<script type="text/javascript" src="../../static/slick/slick.min.js"></script>
+
+<script type="text/javascript">
+    var client_width = document.body.clientWidth;
+    var slideAmount = parseInt(client_width / 250);
+    var count_enter = 0
+    window.onload = function()
+    {
+        
+        if(client_width<1000)
+        {
+            $('#main_article_container2').css('height') = document.getElementById('slider1').offsetHeight+60+"px";
+            document.getElementById('main_bg_img').src = "../../static/img/main_bg.jpg";
+            document.getElementById('main_bg_img').style.width = "1600px";
+            if(client_width < 1380)
+                document.getElementById('main_bg_img').style.left = -230+"px";
+            else if(client_width > 1600)
+                document.getElementById('main_bg_img').style.left = -0+"px";                  
+            else
+                document.getElementById('main_bg_img').style.left = -(1600-client_width)+"px";
+        }
+        else if(client_width<700)
+        {
+            document.getElementById('main_article_container2').style.height = document.getElementById('slider1').offsetHeight+60+"px";
+            document.getElementById('main_bg_img').src = "../../static/img/mobile_main_bg.jpg";
+            document.getElementById('main_bg_img').style.width = "100%";
+            document.getElementById('main_bg_img').style.left = 0+"px";
+        }
+        else
+        {
+            document.getElementById('main_article_container2').style.height = "300px";
+            document.getElementById('main_bg_img').src = "../../static/img/main_bg.jpg";
+            document.getElementById('main_bg_img').style.width = "1600px";
+            if(client_width < 1380)
+                document.getElementById('main_bg_img').style.left = -230+"px";
+            else if(client_width > 1600)
+                document.getElementById('main_bg_img').style.left = -0+"px";     
+            else
+                document.getElementById('main_bg_img').style.left = -(1600-client_width)+"px";
+        }
+
+        
+    }
+
+
+    $(window).resize(function()
+    {
+        var client_width = document.body.clientWidth;
+        
+        if(client_width<1000 && client_width>700)
+        {
+            document.getElementById('main_article_container2').style.height = document.getElementById('slider1').offsetHeight+60+"px";
+            document.getElementById('main_bg_img').src = "../../static/img/main_bg.jpg";
+            document.getElementById('animation_5').style.animationName = "null";
+            document.getElementById('animation_6').style.animationName = "null";
+            document.getElementById('main_bg_img').style.width = "1600px";
+            document.getElementById('main_bg_img').style.left = -(1600-client_width)+"px";
+            if(client_width < 1380)
+                document.getElementById('main_bg_img').style.left = -230+"px";
+            else if(client_width > 1600)
+                document.getElementById('main_bg_img').style.left = -0+"px";                
+            else
+                document.getElementById('main_bg_img').style.left = -(1600-client_width)+"px";
+        }
+        else if(client_width<700)
+        {
+            document.getElementById('main_article_container2').style.height = document.getElementById('slider1').offsetHeight+60+"px";
+            document.getElementById('main_bg_img').src = "../../static/img/mobile_main_bg.jpg";
+            document.getElementById('main_bg_img').style.width = "100%";
+            document.getElementById('animation_5').style.animationName = "null";
+            document.getElementById('animation_6').style.animationName = "null";
+            document.getElementById('main_bg_img').style.left = 0+"px";
+        }
+        else
+        {
+            document.getElementById('main_article_container2').style.height = "300px";
+            document.getElementById('main_bg_img').src = "../../static/img/main_bg.jpg";
+            document.getElementById('animation_5').style.animationName = "null";
+            document.getElementById('animation_6').style.animationName = "null";
+            document.getElementById('main_bg_img').style.width = "1600px";
+            if(client_width < 1380)
+                document.getElementById('main_bg_img').style.left = -230+"px";
+            else if(client_width > 1600)
+                document.getElementById('main_bg_img').style.left = -0+"px";
+            else
+                document.getElementById('main_bg_img').style.left = -(1600-client_width)+"px";
+        }
+
+    });
+    //엔터 막기
+    $(document).keypress(function(e) { 
+        if (e.keyCode == 13){
+            e.preventDefault();
+            
+            var getText = document.getElementById('univ_list').value;
+            var is_listed = false;
+            for(var i=0; i<availableUniv.length;i++)
+            {
+                if(availableUniv[i] === getText)
+                {
+                    get_univ_name();
+                }
+            }
+            
+            
+        } 
+ 
+    });
+
+
+    $(document).ready(function(){
+        $('.web_slider').slick({
+            slidesToShow: 5,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 3500,
+        });
+    });
+    
+    $(document).ready(function(){
+        $('.mobile_slider').slick({
+            slidesToShow: 2,
+            slidesToScroll: 1,
+            autoplay: true,
+            autoplaySpeed: 3500,
+        });
+        
+    });
+    
+    $("#univ_list").autocomplete({
+        source: availableUniv,
+        select: function(event, ui) {
+            console.log(ui.item);
+        },
+        focus: function(event, ui) {
+            return false;
+            //event.preventDefault();
+        },
+        response: function( event, ui ) { 
+           
+            $(document).keypress(function(e) { 
+                if (e.keyCode == 13){
+                    console.log(ui.content[0].value)
+                    $('#univ_list').val(ui.content[0].value)
+                }  
+            });
+           
+        }
+    });
+
+    function get_univ_name()
+    {
+        var getText = document.getElementById('univ_list').value;
+        var is_listed = false;
+        for(var i=0; i<availableUniv.length;i++)
+        {
+            if(availableUniv[i] === getText)
+            {
+               is_listed = true;
+               break;
+            }
+        }
+        if(is_listed)
+        {
+            document.getElementById('univ_search').click();
+        }
+        else alert('대학명을 바르게 입력해주세요');
+    }
+
+    function is_active1()
+    {
+        var authenticated = '{{ user.is_authenticated }}';
+        if(authenticated == 'True')
+        {
+           document.getElementById('get_username_submit1').click();
+        }
+        else
+        {
+            alert('이 기능을 이용하려면 로그인을 먼저 하세요')
+        }
+
+
+    }
+
+
+</script>
+
+{% endblock %}

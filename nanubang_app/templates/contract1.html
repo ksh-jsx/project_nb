@@ -1,0 +1,315 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+<div class="contract_container">
+    <div id="desc1">
+        <div class="contract_top">
+            <ul>
+                <li><div>전대차 거래에서는 <span>① 전대차의 동의</span>와<span> ② 전대차 계약서가 필요합니다.</span></div></li>
+                <li><div>나누방에서는 이러한 것들을 온라인으로도 쉽게 작성할 수 있도록 온라인 작성 틀을 제공하고 있습니다.</div></li>
+                <li><div>집주인, 전차인과 충분히 어떻게 계약할 지 상의 후에 다음으로 넘어가주세요!</div></li>
+                <br>
+                <li><div><span>결제 이후엔 환불이 불가합니다.</span>둘 중 한가지 방법으로 선택 후 다른 방법으로 교환하는 것은 불가능하니, <br><span style="color: #ed1e79;">집주인에 전대 동의 및 전대차 동의서 작성 가능 여부를 충분히 물어보시고 진행해주세요.</span></div></li>
+                <br>
+                <li><div>나누방은 방을 중계하는 서비스가 아닙니다. 따라서<span>계약의 책임은 거래 당사자 간에 있습니다.</span></div></li>
+            </ul>
+            <div>
+                <div id="desc_div1">용어 안내</div>
+                <div id="desc_div2"> &nbsp; 전대인 : 단기간 방을 빌려주는 사람  &nbsp;  <span>/</span>  &nbsp;  전차인 : 단기간 방을 빌리는 사람  &nbsp;  <span>/</span>  &nbsp;  전대 : 단기간 방을 빌려주는 것</div>
+            </div>
+        </div>
+        <div class="contract_mid">
+            <div class="contract_img1">
+                <img src="../static/img/contract_desc1.png">
+                <form>
+                    <button type="button" class="safety-deal-btn1" onclick="">이 방식으로 진행하기&nbsp; > </button>
+                </form>
+            </div>
+            <div class="middle_line"></div>
+            <div  class="contract_img2">
+                <img src="../static/img/contract_desc2.png">
+                <form>
+                    <button type="button" class="safety-deal-btn2" onclick="">이 방식으로 진행하기&nbsp; > </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="type">
+    <script>
+        var type= '';
+        $(".safety-deal-btn1").click(function(){
+            if(confirm('정말로 수락하시겠습니까?'))
+            {
+                $.ajax({ 
+                    type: "POST", 
+                    url: "{% url 'contract_type' %}", 
+                    data: {'item_id':'{{id}}', 'contract_type': 'type1','csrfmiddlewaretoken': '{{ csrf_token }}'}, 
+                    dataType: "json", 
+                    
+                    success: function(response){ 
+                        $('#type').val(response.message)
+                        $("#desc1").css('display','none')
+                        $("#desc2").css('display','block')
+                        $('html').scrollTop(0);
+                    },
+                    error: function(request, status, error){ 
+                        console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                    },
+                });
+            } 
+        });  
+        $(".safety-deal-btn2").click(function(){
+            if(confirm('정말로 수락하시겠습니까?'))
+            {
+                $.ajax({ 
+                    type: "POST", 
+                    url: "{% url 'contract_type' %}", 
+                    data: {'item_id':'{{id}}', 'contract_type': 'type2','csrfmiddlewaretoken': '{{ csrf_token }}'}, 
+                    dataType: "json", 
+                    
+                    success: function(response){ 
+                        $('#type').val(response.message)
+                        $("#desc1").css('display','none')
+                        $("#desc2").css('display','block')
+                        $('html').scrollTop(0);
+                    },
+                    error: function(request, status, error){ 
+                        console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                    },
+                });
+            } 
+        });
+
+    </script>
+    <div id="desc2" style="display: none;">
+        <div class="contract_top">
+            <div>
+                <span>결제 후에는 환불이 불가능합니다.</span><br class="tag_br"> &nbsp;세가지 체크리스트를 확인하세요
+            </div>
+        </div>
+        <div class="contract_check">
+            <div class="line"></div>
+            <div class="lines">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+            <div class="boxes">
+                <div class="box2" id="box2_1"></div>
+                <div class="box2" id="box2_2"></div>
+                <div class="box2" id="box2_3"></div>
+            </div>
+            <div class="labels">
+                <label for="box1" class="label">전차인과 충분히 대화를 나누었는지</label>
+                <label for="box1" class="label">전차인에게 집을 보여줬는지</label>
+                <label for="box1" class="label">집주인에게 전대동의서 작성에 대해<br class="tag_br"> 이야기를 하였는지</label>
+            </div>
+        </div>
+        <div class="btns">
+            <div id="btn1">이전</div>
+            <div id="btn2">다음</div>
+        </div>
+    </div>
+    <script>
+        $("#box2_1").click(function(){
+            if($(this).css('background-color') === 'rgb(46, 174, 125)')
+            {
+                $(this).css('background','#ffffff')
+                $(this).css('border','1.5px solid #b3b3b3')    
+            }
+            else{
+                $(this).css('background','#2eae7d')
+                $(this).css('border','1.5px solid #2eae7d')
+            }
+        });
+        $("#box2_2").click(function(){
+            if($(this).css('background-color') === 'rgb(46, 174, 125)')
+            {
+                $(this).css('background','#ffffff')
+                $(this).css('border','1.5px solid #b3b3b3')    
+            }
+            else{
+                $(this).css('background','#2eae7d')
+                $(this).css('border','1.5px solid #2eae7d')
+            }
+        });
+        $("#box2_3").click(function(){
+            if($(this).css('background-color') === 'rgb(46, 174, 125)')
+            {
+                $(this).css('background','#ffffff')
+                $(this).css('border','1.5px solid #b3b3b3')    
+            }
+            else{
+                $(this).css('background','#2eae7d')
+                $(this).css('border','1.5px solid #2eae7d')
+            }
+        });
+        $("#btn2").click(function(){
+            if(($("#box2_1").css('background-color') === 'rgb(46, 174, 125)') && ($("#box2_2").css('background-color') === 'rgb(46, 174, 125)') && ($("#box2_3").css('background-color') === 'rgb(46, 174, 125)') )
+            {
+                $("#desc2").css('display','none')
+                $("#desc3").css('display','block')
+                $('#id_contract_type').val($('#type').val())
+                "{% for get_type in get_type%}"
+                var user_type = "{{get_type.user_type}}"
+                "{% endfor %}"
+                user_type = user_type.split(',')[1]
+                
+                if(user_type.trim() === 'type2')
+                {
+                    $('.type_name').text('전대차 전자계약')
+                    $('.type_cost').text('결제금액 : 9,900원')
+                }
+                else
+                {
+                    $('.type_name').html('전대차 동의서 전자계약<br class="tag_br"> + 전대차 전자계약')
+                    $('.type_cost').text('결제금액 : 12,900원')
+                }
+            }
+            else
+                alert('체크박스를 모두 체크해주세요')
+            
+        });
+    </script>
+    <div id="desc3" style="display: none;">
+        <div class="type_name">전대차 동의서 전자계약 <br class="tag_br">+ 전대차 전자계약</div>
+        <div class="type_cost">결제금액 : 12,900원</div>
+        <div class="btns">
+            <div id="btn1" onclick="document.getElementById('submit_btn').click();">카드로 결제</div>
+            <div id="btn1" onclick="document.getElementById('submit_btn').click();"><span style="color:#35b081">N</span>&nbsp;네이버페이</div>
+        </div>
+        <form action="/payment" method="get">
+            {%csrf_token%}
+            <input type="hidden" value="{{id}}" readonly name="item_id">
+            <input type="hidden" value="" readonly name="contract_type" id="id_contract_type">
+            <input type="submit" id="submit_btn" style="display: none;">
+        </form>
+    </div>
+    <script>
+        "{% for get_type in get_type%}"
+            var user_type = "{{get_type.user_type}}"
+            if(user_type.split(',')[1] != ' type0')
+            {   
+                if(user_type.split(',')[0] == '구매자')
+                {
+                    $("#desc1").css('display','none')
+                    $("#desc1").html('')
+                    $("#desc2").html('')
+                    $("#desc3").css('display','block')
+                }
+                else
+                {
+                    $("#desc1").css('display','none')
+                    $("#desc1").html('')
+                    $("#desc2").css('display','block')
+                }
+            }
+        "{% endfor %}"
+    </script>
+</div>
+<script>
+    
+
+    var client_width = document.body.clientWidth;
+    var height = $(".contract_img2").css('height');
+
+    
+
+    if(client_width > 950) //desc1 상단 설명
+    {
+        $('.contract_desc ul').css('font-size','15px')
+        $('#desc_div1').css('font-size','15px')
+        $('#desc_div2').css('font-size','14px')
+    }
+    else
+    {
+        var num = (1050-client_width)/100;
+        $('.contract_desc ul').css('font-size',(15-num)+'px')
+        $('#desc_div1').css('font-size',(15-num)+'px')
+        $('#desc_div2').css('font-size',(14-num)+'px')    
+    }
+    if(client_width > 800) //desc1 이미지
+    {
+        $(".middle_line").css('height',height);
+        $(".contract_mid").css('height',height);
+    }
+    else
+    {
+        var num = height.replace(/[^0-9]/g,"");
+        $(".contract_mid").css('height',num*2+'px');
+    }
+    if(client_width > 650) //desc1 상단 용어안내
+    {
+        $('#desc_div2 span').text('/')
+        $('#desc_div2 span').html('')
+    }
+    else
+    {
+        $('#desc_div2 span').text('')
+        $('#desc_div2 span').html('<br>')
+        $('#desc_div1').css('font-size','12px')
+        $('#desc_div2').css('font-size','11px')
+    }
+    $(window).resize(function()
+    {
+        client_width = document.body.clientWidth;
+        height = $(".contract_img2").css('height');
+
+        if(client_width > 800)
+        {
+            $(".middle_line").css('height',height);
+            $(".contract_mid").css('height',height);
+        }
+        else
+        {
+            var num = height.replace(/[^0-9]/g,"");
+            $(".contract_mid").css('height',num*2+'px');
+        }
+
+        if(client_width > 950)
+        {
+            $('.contract_desc ul').css('font-size','15px')
+            $('#desc_div1').css('font-size','15px')
+            $('#desc_div2').css('font-size','14px')
+        }
+        else
+        {
+            var num = (1050-client_width)/100;
+            $('.contract_desc ul').css('font-size',(15-num)+'px')
+            $('#desc_div1').css('font-size',(15-num)+'px')
+            $('#desc_div2').css('font-size',(14-num)+'px')
+        }
+        if(client_width > 650) //desc1 상단 용어안내
+        {
+            $('#desc_div2 span').text('/')
+            $('#desc_div2 span').html('')
+        }
+        else
+        {
+            $('#desc_div2 span').text('')
+            $('#desc_div2 span').html('<br>')
+            $('#desc_div1').css('font-size','12px')
+            $('#desc_div2').css('font-size','11px')
+
+        }
+    });
+</script>
+
+<a href="javascript:void chatChannel()" style="position: fixed;right: 30px;bottom:50px">
+    <img src="https://developers.kakao.com/assets/img/about/logos/channel/consult_small_yellow_pc.png"/>
+</a>
+<script type='text/javascript'>
+//<![CDATA[
+    // 사용할 앱의 JavaScript 키를 설정해 주세요.
+    Kakao.init('c32c1763e65921610b0b14021a17138f');
+    function chatChannel() {
+    Kakao.Channel.chat({
+        channelPublicId: '_zFxmfT' // 카카오톡 채널 홈 URL에 명시된 id로 설정합니다.
+    });
+    }
+//]]>
+</script>
+
+
+
+{% endblock %}

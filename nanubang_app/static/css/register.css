@@ -1,0 +1,1009 @@
+.register_container{width:100%;max-width: 1440px;margin: 0 auto;margin-top:50px}
+/*register_index*/
+.container ._container_right{background:orange;width:50%;height:100%;margin:0 auto;position:relative;float:right;}
+._container_main {width:100%;text-align: center;}
+._container_main img{width:160px;height:150px;margin: 0 auto;}
+._container_main ._img_comtainer {width:100%;height:300px;margin:0 auto;text-align: center;padding-top:30px}
+._container_main ._img_comtainer > div {width:33.3%;font-size: 11pt; float :left; color:#4D4D4D}
+._container_main ._img_comtainer > div .div1{font-size:11pt;line-height: 150%;padding-top:10px;font-style: ;}
+._container_main ._img_comtainer > div > div > span {color:#1A1A1A; font-weight: bold;}
+._container_main ._img_comtainer > div .img1_1 {color:#208060; font-size:17pt;}
+._container_main > div:first-child {width:133px; height:24px;margin:0 auto;font-size: 19px; color:#333333;border-bottom: 2pt solid #2EAE7D;margin-top:20px}
+._container_main ._container_main_bottom {font-size:15pt; color:#333333;padding-top:50px}
+._container_main ._container_main_bottom .bottom2 {font-size:17pt; background-color: #E6E6E6; width:225px; height:30px; margin:0 auto; border-radius:15px;padding:15px;padding-top:17px}
+
+#text .text1 li{display: inline;}
+#text .text1 li a{color:#218261;font-size:20px}
+
+@media (max-width:1250px)
+{   ._container_main ._img_comtainer > div {width:100%}
+    ._container_main ._img_comtainer > div .div1{font-size: 8pt;}
+
+}
+
+/*register*/
+.register_container .register_img_form .images_container{display: inline-block;width: 100%;margin: 20px 0;}
+.register_container .register_img_form .images_container .img-type1 {
+    position: relative;
+    float: left;
+    width: 50%;
+    margin-top: -1px;
+}/*
+.register_container .register_img_form .images_container .img-type1 > div > img {
+    display: block;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+}*/
+.register_container .register_img_form .images_container .img-type2 {
+    position: relative;
+    width: 100%;
+}
+.register_container .register_img_form .images_container .img-type2 > div > img {
+    display: block;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+}
+.register_container .register_img_form .images_container > div > div {
+    width: 100%;
+    border: 1px solid;
+    background-color: white;
+}
+.register_container .register_img_form .images_container > div > input {
+    display: none;
+}
+
+.register_container .register_form #upload_desc{width:300px;margin:0 auto;margin-bottom:30px;text-align: center}
+.register_container .register_form .reset_img{width:300px;margin:0 auto;margin-bottom:30px;text-align: center;text-decoration: underline;cursor: pointer;}
+.register_container .register_form .file_input_labels{width:150px;margin:0 auto}
+.register_container .register_form .file_input_labels label, .img-register-btn > label{position: relative;display: inline-block;width:150px;height:55px;background-color: #bdbdbd;text-align: center;padding-top:5px;cursor: pointer;}
+.register_container .register_form #upload_div{width:300px;height:35px;padding-top:15px;margin:0 auto;background-color: #bdbdbd;text-align: center;cursor: pointer;border-radius: 8px;font-size:18px}
+
+/****************************************/
+
+.blind {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip: rect(0, 0, 0, 0);
+    margin: -1px;
+    overflow: hidden;
+}
+.slash {
+    margin: 0 6px;
+    color: #ccc;
+}
+.folded {
+    display: none;
+}
+
+.register_container form .next-btn {
+    text-align: center;
+}
+.register_container form .next-btn button {
+    color: #4d4d4d;display:none;
+    padding: 4px 40px;
+    border: 0;
+    background-color: #e6e6e6;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.register_container form .next-btn div  {
+    width: 260px;margin:0 auto;
+    color: #4d4d4d;
+    padding: 15px 40px;
+    border: 0;
+    background-color: #e6e6e6;
+    border-radius: 8px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.register_container > h2 {
+    text-align: center;
+}
+.head-box {
+    width: 178px;
+    font-size: 25px;
+    color: #333;
+    padding: 8px 0;
+    border-bottom: 2px solid #ccc;
+    text-align: center;
+}
+
+.head-guide {
+    color: #333;
+    padding: 20px 10px 35px 10px;
+    text-align: center;
+}
+.head-guide strong {
+    font-weight: 600;
+    color: #208060;
+}
+.head-guide::before {
+    content: '*';
+    color: #208060;
+    margin-right: 6px;
+}
+.head-guide::after {
+    content: '*';
+    color: #208060;
+    margin-left: 6px;
+}
+.register_form {
+    margin: 0 auto;
+}
+.register_container form fieldset {
+    border: 0;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+.register_container form legend {
+    color: #4d4d4d;
+    font-size: 23px;
+    margin-bottom: 16px;
+}
+.register_container form legend::before {
+    display: inline-block;
+    content: '';
+    width: 12px;
+    height: 12px;
+    margin: 0 10px 4px 0;
+    background-color: #4d4d4d;
+    border-radius: 50%;
+}
+.register_container form .required::after {
+    content: ' *';
+    color: #208060;
+}
+
+.register_form .map-wrap {
+    width: 354px;
+}
+.register_form #map {
+    width: 350px;
+    height: 350px;
+    border: 2px solid #ccc;
+    margin-bottom: 12px;
+}
+
+.map-guide strong {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #208060;
+    margin-left: 30px;
+}
+.map-guide strong::before {
+    display: inline-block;
+    content: '';
+    width: 22px;
+    height: 22px;
+    background-image: url(../img/icon/alert.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin: 0 8px -4px -30px;
+}
+
+.map-guide span {
+    display: inline-block;
+    line-height: 1.5;
+    margin: 4px 0 0 30px;
+}
+
+.room-info { 
+    float: right;
+}
+.room-info .form-guide {
+    display: inline-block;
+    line-height: 32px;
+    width: 76%;
+}
+.room-info .address-wrap {
+/*    width: 380px;*/
+    overflow: hidden;
+}
+.room-info #id_address {
+    width: 276px;
+    height: 32px;
+    font-size: 14.5px;
+    color: #4d4d4d;
+    border: 2px solid #ccc;
+    padding: 0 0 0 12px;
+    box-sizing: border-box;
+}
+.room-info .address-btn {
+    width: 126px;
+    height: 32px;
+    background-color: #e6e6e6;
+    font-size: 14.5px;
+    color: #4d4d4d;
+    border: 2px solid #ccc;
+    padding: 1px;
+}
+.room-info #id_address {
+    width: 100%;
+    height: 100px;
+    margin: 10px 0 0 0;
+}
+.room-info #id_address_detail {
+    height: 32px;
+    font-size: 14.5px;
+    color: #4d4d4d;
+    border: 2px solid #ccc;
+    padding: 0 0 0 12px;
+    box-sizing: border-box;
+}
+
+.room-info #id_univ {
+    height: 32px;
+    font-size: 14.5px;
+    color: #4d4d4d;
+    border: 2px solid #ccc;
+    padding: 0 0 0 12px;
+    box-sizing: border-box;
+    margin-left: 100px;
+}
+.room-info .label-title {
+    float: left;
+    line-height: 32px;
+    color: #4d4d4d;
+    padding-right: 11px;
+    box-sizing: border-box;
+}
+
+.room-info .box-wrap {
+    margin: 14px 0;
+}
+
+.box-wrap .map-guide {
+    margin: 14px 0 0 100px; 
+}
+.room-info .hr-mobile {
+    width: 100%;
+    background-color: #ccc;
+}
+.room-info .hr,
+.deal-field .hr,
+.additional-field .hr {
+    width: 100%;
+    background-color: #ccc;
+}
+
+.additional-field .additional-field-btn {
+    border: 0;
+    background: inherit;
+    box-shadow: none;
+    color: #4d4d4d;
+    font-size: 24px;
+    background-color: #fff;
+}
+
+.additional-field .additional-field-btn img {
+    margin-left: 10px;
+}
+
+.room-info .tag-input {
+    height: 37px;
+    border-radius: 3px;
+    padding: 4px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+}
+
+.room-info .tag-radio-span {
+    position: relative;
+}
+.room-info .tag-input[type="radio"]:not(:checked),
+.room-info .tag-input[type="radio"]:checked {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.room-info .tag-input[type="radio"]:not(:checked) + label,
+.room-info .tag-input[type="radio"]:checked + label {
+    position: relative;
+    cursor: pointer;
+    border: 2px solid #ccc;
+}
+
+.room-info .tag-input[type="radio"]:checked + label  {
+    color: white;
+}
+.room-info .tag-radio-span {
+    display: inline-block;
+    margin: 4px 4px 4px 0;
+}
+.room-info .tag-radio-span .tag-label {
+    display: inline-block;
+    padding: 7px 15px;
+    border-radius: 5px;
+    color: #333;
+    z-index: 1;
+}
+.room-info .tag-input[type="radio"]:checked + label:before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    bottom: -2px;
+    left: -2px;
+    background-color: #aaa;
+    border-radius: 5px;
+    box-sizing: border-box;
+    z-index: -1;
+}
+.room-info .room-radio-wrap {
+    display: inline-block;
+/*    width: 76%;*/
+    overflow: hidden;
+}
+.room-info .room-radio-span {
+    display: inline-block;
+    position: relative;
+    line-height: 32px;
+}
+.room-info .room-radio-span .room-label {
+    color: #666;
+}
+.room-info .room-radio-span [type="radio"] + label{
+    margin-right: 32px;
+}
+.room-info .room-radio-span [type="radio"]:not(:checked),
+.room-info .room-radio-span [type="radio"]:checked {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+.room-info .room-radio-span [type="radio"]:not(:checked) + label,
+.room-info .room-radio-span [type="radio"]:checked + label {
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+}
+.room-info .room-radio-span [type="radio"]:not(:checked) + label:before,
+.room-info .room-radio-span [type="radio"]:checked + label:before {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 1px;
+    left: 0;
+    content: '';
+    border: 2px solid #ccc;
+    background: #fff;
+    border-radius: 50%;
+}
+.room-info .room-radio-span [type="radio"]:not(:checked) + label:after,
+.room-info .room-radio-span [type="radio"]:checked + label:after {
+    position: absolute;
+    top: 1px;
+    left: 0;
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-color: #aaa;
+    border-radius: 50%;
+}
+.room-info .room-radio-span [type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+}
+.room-info .room-radio-span [type="radio"]:checked + label:after {
+    display: block;
+}
+.deal-field .box-wrap .management-cost-wrap {
+    display: block;
+    overflow: hidden;
+}
+.deal-field .box-wrap .deposit-wrap {
+    display: inline-block;
+    width: 76%;
+}
+.deal-field .box-wrap .management-cost-wrap .expense {
+    display: inline-block; 
+}
+
+.deal-field .box-wrap,
+.additional-field .box-wrap {
+    overflow: hidden;
+}
+.deal-field .box-wrap .label-title,
+.additional-field .box-wrap .label-title {
+    float: left;
+    color: #4d4d4d;
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+.deal-field #id_deposit,
+.deal-field #id_monthly_cost,
+.deal-field #id_deposit_take,
+.deal-field #id_monthly_cost_take,
+.deal-field #id_management_cost_include,
+.deal-field #id_floor,
+.additional-field #id_room_size,
+.additional-field #id_window {
+    border: 2px solid #ccc;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.deal-field #id_start_date, 
+.deal-field #id_end_date {
+    border: 2px solid #ccc;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.deal-field #id_kakaotalk {
+    width: 200px;
+    height: 32px;
+    border: 2px solid #ccc;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.deal-field .term-guide {
+    display: inline-block;
+    margin: 10px 0 0 0;
+}
+
+.radio-span {
+    position: relative;
+    line-height: 32px;
+}
+.radio-span .deal-label {
+    display: inline-block;
+    box-sizing: border-box;
+}
+.radio-span .room-label {
+    color: #666;
+}
+.radio-span [type="radio"] + label {
+    margin-right: 30px;
+}
+.radio-span [type="radio"]:not(:checked),
+.radio-span [type="radio"]:checked {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+.radio-span [type="radio"]:not(:checked) + label,
+.radio-span [type="radio"]:checked + label {
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+}
+.radio-span [type="radio"]:not(:checked) + label:before,
+.radio-span [type="radio"]:checked + label:before {
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 1px;
+    left: 0;
+    content: '';
+    border: 2px solid #ccc;
+    background: #fff;
+    border-radius: 50%;
+}
+.radio-span [type="radio"]:not(:checked) + label:after,
+.radio-span [type="radio"]:checked + label:after {
+    position: absolute;
+    top: 1px;
+    left: 0;
+    content: '';
+    width: 16px;
+    height: 16px;
+    background-color: #aaa;
+    border-radius: 50%;
+}
+.radio-span [type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+}
+.radio-span[type="radio"]:checked + label:after {
+    display: block;
+}
+
+.deal-field .checkbox-span {
+    position: relative;
+    line-height: 32px;
+}
+.deal-field .checkbox-span .deal-label {
+    display: inline-block;
+    box-sizing: border-box;
+    color: #666;
+}
+.deal-field .checkbox-span [type="checkbox"] + label {
+    margin-right: 30px;
+}
+.deal-field .checkbox-span [type="checkbox"]:not(:checked),
+.deal-field .checkbox-span [type="checkbox"]:checked {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+.deal-field .checkbox-span [type="checkbox"]:not(:checked) + label,
+.deal-field .checkbox-span [type="checkbox"]:checked + label {
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+}
+.deal-field .checkbox-span [type="checkbox"]:not(:checked) + label:before,
+.deal-field .checkbox-span [type="checkbox"]:checked + label:before {
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    top: 1px;
+    left: 0;
+    content: '';
+    border: 2px solid #ccc;
+    background: #fff;
+    border-radius: 4px;
+/*    opacity: 1;*/
+}
+.deal-field .checkbox-span [type="checkbox"]:not(:checked) + label:after,
+.deal-field .checkbox-span [type="checkbox"]:checked + label:after {
+    position: absolute;
+    top: 1px;
+    left: 0;
+    content: '';
+    width: 16px;
+    height: 16px;
+    background-color: #aaa;
+    border-radius: 4px;
+}
+.deal-field .checkbox-span [type="checkbox"]:not(:checked) + label:after {
+    opacity: 0;
+}
+.deal-field .checkbox-span [type="checkbox"]:checked + label:after {
+    opacity: 1;
+}
+.deal-field .checkbox-span[type="checkbox"]:checked + label:after {
+    display: block;
+}
+.deal-field .option,
+.deal-field .term,
+.deal-field .radio-span-wrap {
+    display: inline-block;
+/*    width: 80%;*/
+}
+
+.radio-span-wrap .hr-light {
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    margin: 10px 0;
+}
+.detail-field .detail {
+    width: 100%;
+    height: 190px;
+    padding: 20px;
+    box-sizing: border-box;
+    resize: none;
+    border: 2px solid #ccc;
+}
+
+.register_img_form .tab {
+    display: inline-block;
+    list-style: none;
+    font-size: 16px;
+    padding: 0;
+}
+.register_img_form .tab li {
+    border: 2px solid #ccc;
+    display: inline-block;
+    margin-right: -6px;
+}
+.register_img_form .tab li a{
+    display: block;
+    padding: 10px 30px;
+}
+.register_img_form .tab .selected{
+    background-color: #e6e6e6;
+}
+.tab-content .tab-guide {
+    color: #4d4d4d;
+    font-size: 18px;
+    line-height: 1.8;
+}
+.tab-guide ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.tab-guide ul li::before {
+    display: inline-block;
+    content: '-';
+    margin-right: 4px;
+}
+.tab-guide ul li {
+    color: #4d4d4d;
+    font-size: 14px;
+    margin-bottom: 4px;
+    line-height: 1.6;
+}
+.tab-guide dt {
+    color: #4d4d4d;
+    font-size: 14px;
+    margin: 4px 0;
+}
+.tab-guide dd {
+    margin: 0 0 10px 0;
+    padding: 0;
+    color: #4d4d4d;
+    font-size: 14px;
+    line-height: 1.6;
+}
+.tab-guide ol {
+    margin: 0;
+    padding: 0 0 0 15px;
+}
+.tab-guide ol li {
+    color: #4d4d4d;
+    font-size: 14px;
+    margin-bottom: 4px;
+    line-height: 1.6;
+}
+
+.img-register-btn {
+    text-align: center;
+}
+.img-register-btn button{
+    margin: 16px;
+    padding: 0;
+    border: 0;
+    width: 148px;
+    height: 52px;
+    background-color: #e6e6e6;
+    color: #4d4d4d;
+    box-shadow: none;
+    border-radius: 5px;
+    font-size: 20px;
+}
+
+/****************************************/
+
+
+/* register.html (Mobile) */
+@media screen and (min-width: 0px), screen and (min-height: 0px) and (orientation: landscape)  {
+    .room-info .hr-mobile {
+        height: 1px;
+    }
+    .room-info .hr,
+    .deal-field .hr,
+    .additional-field .hr {
+        height: 1px;
+    }
+    .head-guide {
+        opacity: 0;
+        height: 0;
+        font-size: 14px;
+    }
+    .register_container {
+        width: 100%;
+    }
+    .register_container .register_img_form .images_container > .img-type1 > div {
+        height: 144px;
+    }
+    .register_container .register_img_form .images_container > .img-type2 > div {
+        height: 210px;
+    }
+    /*.register_container .register_img_form .images_container .img-type1 > div > img {
+        max-width: 100%;
+        max-height: 140px;
+    }*/
+    .register_container .register_img_form .images_container .img-type2 > div > img {
+        max-width: 100%;
+        max-height: 206px;
+    }
+    .register_container form .next-btn button {
+        height: 60px;
+        font-size: 20px;
+    }
+
+    .register_container form .next-btn div {
+        height: 60px;
+        font-size: 20px;
+    }
+    .register_form {
+        width: 100%;
+        font-size: 14px;
+    }
+    .register_form .map-wrap {
+        display: none;
+        
+    }
+    .register_form .room-info {
+        float: none;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .box-wrap .map-guide {
+        display: inline-block;
+        margin: 14px 0 0 24%;
+    }
+    
+    .room-info .label-title {
+        width: 24%;
+        font-size: 14px;
+    }
+    .room-info #id_address_detail {
+        width: 76%;
+    }
+    .room-info #id_univ {
+        width: 76%;
+        margin-left: 24%;
+    }
+    .room-info .tag-wrap {
+        margin-left: 24%;
+    }
+    .room-info .form-guide {
+        font-size: 14px;
+    }
+    .room-info .room-radio-wrap {
+        width: 76%;
+    }
+    .room-info .address-wrap {
+        width: auto;
+    }
+    
+    .deal-field .option,
+    .deal-field .term,
+    .deal-field .radio-span-wrap {
+        width: 76%;
+    }
+    .deal-field .box-wrap .label-title,
+    .additional-field .box-wrap .label-title {
+        width: 24%;
+        font-size: 14px;
+        line-height: 24px;
+    }
+    .deal-field .box-wrap,
+    .additional-field .box-wrap {
+        padding: 14px 0;
+    }
+    .deal-field #id_deposit,
+    .deal-field #id_monthly_cost,
+    .deal-field #id_deposit_take,
+    .deal-field #id_monthly_cost_take,
+    .deal-field #id_management_cost_include,
+    .deal-field #id_floor,
+    .additional-field #id_room_size,
+    .additional-field #id_window {
+        width: 98px;
+        height: 32px
+    }
+    
+    .deal-field #id_start_date, 
+    .deal-field #id_end_date {
+        width: 130px;
+        height: 32px;
+    }
+    
+    .radio-span .deal-label {
+        width: 116px;
+    }
+    .deal-field .checkbox-span .deal-label {
+        width: 116px;
+    }
+        
+    .monthly1 {
+        display: none;
+    }
+    .monthly2 {
+        display: inline-block;
+    }
+    .deposit1 {
+        display: none;
+    }
+    .deposit2 {
+        display: inline-block;
+    }
+    .mancost1 {
+        display: none;
+    }
+    .mancost2 {
+        display: inline-block;
+    }
+    .due1 {
+        display: none;
+    }
+    .due2 {
+        display: inline-block;
+    }
+    .preference1 {
+        display: none;
+    }
+    .preference2 {
+        display: inline-block;
+    }
+    .seller-view-type1 {
+        display: none;
+    }
+    .seller-view-type2 {
+        display: inline-block;
+    }
+    .kakao-pc {
+        display: none;
+    }
+    .kakao-mobile {
+        display: inline-block;
+    }
+}
+
+
+/* register.html (Tablet) */
+@media screen and (min-width: 800px),
+screen and (min-height: 800px) and (orientation: landscape) {
+    
+    .room-info .hr-mobile {
+        height: 0px;
+    }
+    .room-info .hr,
+    .deal-field .hr,
+    .additional-field .hr {
+        height: 2px;
+    }
+    .head-guide {
+        display: block;
+        font-size: 18px;
+    }
+    .register_container {
+        width: 900px;
+    }
+    .register_container .register_img_form .images_container > .img-type1 > div {
+        height: 262px;
+    }
+    .register_container .register_img_form .images_container > .img-type2 > div {
+        height: 300px;
+    }
+    /*
+    .register_container .register_img_form .images_container .img-type1 > div > img {
+        max-width: 440px;
+        max-height: 230px;
+    }*/
+    .register_container .register_img_form .images_container .img-type2 > div > img {
+        max-height: 260px;
+    }
+    .register_container form .next-btn button {
+        height: 70px;
+        font-size: 24px;
+    }
+
+    .register_container form .next-btn div {
+        height: 55px;
+        font-size: 23px;
+    }
+    .register_form .map-wrap {
+        display: inline-block;
+    }
+    .register_form .room-info {
+        float: right;
+        width: 500px;
+        box-sizing: inherit;
+    }
+    .box-wrap .map-guide {
+        display: none;
+        margin: 14px 0 0 100px;
+    }
+    
+    .room-info .label-title {
+        width: 100px;
+        font-size: 16px;
+    }
+    .room-info #id_univ {
+        margin-left: 100px;
+    }
+    .room-info .address-btn {
+        float: right;
+    }
+    
+    .room-info .tag-wrap {
+        margin-left: 100px;
+    }
+    
+    .room-info .form-guide {
+        font-size: 16px;
+    }
+    .room-info .room-radio-wrap {
+        width: 80%;
+    }
+    .room-info .address-wrap {
+        width: 380px;
+    }
+    .deal-field .option,
+    .deal-field .term,
+    .deal-field .radio-span-wrap {
+        width: 80%;
+    }
+    .deal-field .box-wrap .label-title,
+    .additional-field .box-wrap .label-title {
+        font-size: 16px;
+        width: 20%;
+        line-height: 32px;
+    }
+    .deal-field .box-wrap,
+    .additional-field .box-wrap {
+        padding: 14px;
+    }
+    .deal-field #id_deposit,
+    .deal-field #id_monthly_cost,
+    .deal-field #id_deposit_take,
+    .deal-field #id_monthly_cost_take,
+    .deal-field #id_management_cost_include,
+    .deal-field #id_floor,
+    .additional-field #id_room_size,
+    .additional-field #id_window {
+        width: 118px;
+        height: 32px
+    }
+    
+    .deal-field #id_start_date, 
+    .deal-field #id_end_date {
+        width: 170px;
+        height: 32px;
+    }
+    
+    .radio-span .deal-label {
+        width: 135px;
+    }
+    .deal-field .checkbox-span .deal-label {
+        width: 135px;
+    }
+    
+    .monthly1 {
+        display: inline-block;
+    }
+    .monthly2 {
+        display: none;
+    }
+    .deposit1 {
+        display: inline-block;
+    }
+    .deposit2 {
+        display: none;
+    }
+    .mancost1 {
+        display: inline-block;
+    }
+    .mancost2 {
+        display: none;
+    }
+    .due1 {
+        display: inline-block;
+    }
+    .due2 {
+        display: none;
+    }
+    .preference1 {
+        display: inline-block;
+    }
+    .preference2 {
+        display: none;
+    }
+    .seller-view-type1 {
+        display: inline-block;
+    }
+    .seller-view-type2 {
+        display: none;
+    }
+    .kakao-pc {
+        display: inline-block;
+    }
+    .kakao-mobile {
+        display: none;
+    }
+}

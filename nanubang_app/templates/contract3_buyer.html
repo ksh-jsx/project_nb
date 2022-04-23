@@ -1,0 +1,319 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+{% for type in users %}
+<div class="contract_container3">
+    <div id="desc1">
+        <div class="contract_top">
+            <p>계약 <span>안내</span></p>
+            <p>계약은 총 4단계에 걸쳐 진행됩니다.</p>
+            <div class="circles">
+                <div>계약 전 <br> 주의사항 및 <br> 계약 절차 안내</div>
+                <div class="circle_2">전대 동의서 <br> 작성 혹은 <br> 전대 동의 증거 <br> 업로드</div>
+                <div>전대인의 <br> 전대차 계약서 <br> 온라인 작성</div>
+                <div>전차인의 <br> 전대차 계약서 <br> 온라인 작성</div>
+            </div>
+            <br>
+            <div>
+                <div id="desc_div1">용어 안내</div>
+                <div id="desc_div2"> &nbsp; 전대인 : 단기간 방을 빌려주는 사람  &nbsp;  <span>/</span>  &nbsp;  전차인 : 단기간 방을 빌리는 사람  &nbsp;  <span>/</span>  &nbsp;  전대 : 단기간 방을 빌려주는 것</div>
+            </div>
+        </div>
+        <div class="contract_mid">
+            <div>
+                <p>1. 계약 <span>주의사항</span></p>
+                <div class="contract_pc">                    
+                    <img src="../static/img/contract_desc3_1.png">
+                    <img src="../static/img/contract_desc3_2.png">
+                </div>
+                <div class="contract_mobile">                    
+                    <div>
+                        <img src="../static/img/contract_desc3_1m.png">
+                        <div>
+                            <div>전대차 거래는 <span>집주인의 동의가 있어야</span><br>합법적인 계약이 가능합니다!</div>
+                            <div>집주인과의 연락을 통해 구두로 허락을 받은 경우도 가능하지만 동의 내용이 담긴 메시지나 동의서 등 기록이 남는 형태가 훨씬 안전합니다. 따라서 나누방 전자계약은 집주인의 동의를 명시적으로 확인할 수 있는 문자메세지, 통화  녹음, 사인 등을 함께 업로드 해야 전대차계약 서비스 이용이 가능합니다.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="../static/img/contract_desc3_2m.png">
+                        <div>
+                            <div>계약 내용에 대해<br><span>전대인과 전차인 간 협의</span>가 필요합니다.</div>
+                            <div>계약서 작성을 시작하기 전, 계약에 대한 상호 협의가 필요합니다.<br>반드시 금약이나 기간 등에 대해 자세히 이야기한 후 완전한 합의가 이루어졌을 때 계약서를 작성하세요.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contract_bot">
+            <p>나누방 전자계약은 사용자들이 간편하게 계약서를<br class="tag_br"> 작성할 수 있도록 정보와 게약서를 제공하는 서비스입니다.</p>
+            <p>이는 중계에 해당하지 않으며 따라서 <br class="tag_br"><span style="color:#000000;border: 0;">거래에 관련된 모든 책임은 계약당사자들에게 있습니다.</span></p>
+            <br>
+            <p>아래에 "다음" 버튼을 누르면 <span>나누방 약관</span>과 위와 같은 <br class="tag_br">내용에 대해 동의하는 것으로 간주됩니다.</p>
+        </div>
+        <div class="contract_btn">
+            <div id="btn3_1">다음 ></div>
+        </div>
+    </div>
+    <script>
+        $("#btn3_1").click(function(){
+            $("#desc1").css('display','none')
+            $("#desc2").css('display','block')
+            $('html').scrollTop(0);
+        });
+    </script>
+    <div id="desc2" style="display: none;">
+        <div class="contract_top">
+            <p>2. 전자 계약 <span>절차</span></p>
+            <p>어려워 보이지만 따라가다보면 쉽게 진행할 수 있도록 저희가 도와드릴 거예요!</p>
+            <p>계약서를 작성할 때 마자 어디에 무엇을 작성해야 하는지, 그 다음 해야할 것은 무엇인지 저희가 다 알려드릴게요!</p>
+            <br>
+            <div>다음의 단계로 진행됩니다.</div>
+        </div>
+        <div class="contract_mid">
+            <div id="type1">
+                <img src="../static/img/contract_desc3_3.jpg" id="contract_img3">
+                <img src="../static/img/contract_desc3_4.jpg" id="contract_img4">
+                <img src="../static/img/contract_desc3_6.jpg" id="contract_img6">
+                <img src="../static/img/contract_desc3_5.jpg" id="contract_img5">
+            </div>
+            <div id="type2">
+                <img src="../static/img/contract_desc3_3v2.jpg" id="contract_img3">
+                <img src="../static/img/contract_desc3_4.jpg" id="contract_img4">
+                <img src="../static/img/contract_desc3_6.jpg" id="contract_img6">
+                <img src="../static/img/contract_desc3_6v2.jpg" id="contract_img6v2">
+                <img src="../static/img/contract_desc3_5v2.jpg" id="contract_img5v2">
+            </div>
+            <div id="type2_2">
+                <img src="../static/img/contract_desc3_3v2.jpg" id="contract_img3">
+                <img src="../static/img/contract_desc3_6v3.jpg" id="contract_img6v2">
+                <img src="../static/img/contract_desc3_4.jpg" id="contract_img4">
+                <img src="../static/img/contract_desc3_6.jpg" id="contract_img6">
+                <img src="../static/img/contract_desc3_5v2.jpg" id="contract_img5v2">
+            </div>
+            <div>*각 계약 별 세부 작성 방법은 전자계약서 작성 시에 자세하게 알려드립니다.</div>
+        </div>
+        <div class="contract_btn">
+            <div id="btn3_2">이전 &lt; </div>
+            <div id="btn3_3" style="max-width: 250px;">숙지하였음  </div>
+        </div>
+    </div>
+    <script>
+        $("#btn3_2").click(function(){
+            $("#desc1").css('display','block')
+            $("#desc2").css('display','none')
+            $('html').scrollTop(0);
+        });
+        $("#btn3_3").click(function(){
+            $("#desc2").css('display','none')
+            $("#desc3").css('display','block')
+            $('html').scrollTop(0);
+        });
+        var types ="{{type.user_type}}"
+        var type = types.split(',')
+        $("#type1").css('display','none')  
+        $("#type2").css('display','none')  
+        $("#type2_2").css('display','none')  
+
+        $('#'+type[1].trim()).css('display','block')  
+
+    </script>
+    <div id="desc3" class="desc3" style="display: none;">
+        <div class="contract_top">
+            <p>3. <span>전대동의서</span> 전자계약 절차 안내</p>
+        </div>
+        <div class="contract_mid">  
+            <div id="type3">
+                <img src="../static/img/esign_on4.jpg" id="esign_img1">
+                <img src="../static/img/esign_on5.jpg" id="esign_img2">
+                <img src="../static/img/esign_on6.jpg" id="esign_img3">
+                <img src="../static/img/none.png" id="esign_img3">
+            </div>
+            <div id="type4">
+                <img src="../static/img/esign_on4.jpg" id="esign_img1">
+                <img src="../static/img/esign_on5.jpg" id="esign_img2">
+                <img src="../static/img/esign_on6.jpg" id="esign_img3">
+                <img src="../static/img/esign_on7.jpg" id="esign_img3">
+            </div>
+        </div>
+        <div class="contract_btn">
+            <div id="btn3_4">이전 &lt; </div>
+            <div id="btn3_5">다음 단계로 넘어가기 > <br> (전대인 동의서 작성)</div>
+        </div>
+    </div>
+    <script>
+        $("#btn3_4").click(function(){
+            $("#desc2").css('display','block')
+            $("#desc3").css('display','none')
+            $('html').scrollTop(0);
+        });
+        $("#btn3_5").click(function(){
+            $("#desc3").css('display','none')
+            var types ="{{type.user_type}}"
+            var type = types.split(',')
+            if(type[1].trim() == 'type1')
+                $("#desc6").css('display','block')
+            else
+                $("#desc8").css('display','block')
+            $('html').scrollTop(0);
+        });
+        var types ="{{type.user_type}}"
+        var type = types.split(',')
+        if(type[1].trim() === 'type2')
+        {
+            $('#type4').html('')
+            $('#desc4_2').css('display','none')
+            $('#desc4_2').html('')
+            $('#desc5').html('')
+            $('#desc6').html('')
+        }
+        else
+        {
+            $('#type3').html('')
+            $('#desc4_1').css('display','none')
+            $('#desc4_1').html('')
+        }
+    </script>   
+
+    <div id="desc6" class="desc3" style="display:none">
+        <div class="contract_top">
+            <p>3. <span>전대동의서</span> 전자계약 절차 안내</p>
+        </div>
+        <div class="contract_mid">
+            <img src="../static/img/esign_on1.jpg" id="esign_img1">
+            <img src="../static/img/esign_on2.jpg" id="esign_img2">
+            <img src="../static/img/esign_on3.jpg" id="esign_img3">
+        </div>
+        <div class="contract_btn">
+            <div id="btn3_8">다음으로 가기 > </div>
+        </div>        
+    </div>
+    <script>
+        $("#btn3_8").click(function(){
+            $("#desc6").css('display','none')
+            $("#desc8").css('display','block')
+            
+            $('html').scrollTop(0);
+        });
+    </script>
+    <div id="desc8" style="display: none;">
+        <div style="text-align: center;margin-top:50px">나누방 안전계약을 이용하시면서 불편하셨던 점이 있으시면 알려주세요 :)<br>
+        {{request.user.name}}님의 의견이 저희 사이트에 반영됩니다!</div>
+        <div style="margin:0 auto;width:80%;max-width: 700px;margin-top:50px;">
+            <textarea style="width:100%;height:500px" placeholder="내용 입력하기"></textarea>
+        </div>
+        <div class="contract_btn">
+            <div id="btn3_8">마이페이지 계약관리 > </div>
+        </div>
+    </div>
+</div>
+<script>
+    var client_width = document.body.clientWidth;
+
+    $('#desc1 .contract_mid').css('width',client_width);
+    if(client_width > 950) //desc1 상단 설명
+    {
+        $('.contract_desc ul').css('font-size','15px')
+        $('#desc_div1').css('font-size','15px')
+        $('#desc_div2').css('font-size','14px')
+
+        $('.contract_bot p').css('font-size','15px')
+    }
+    else
+    {
+        var num = (1050-client_width)/180;
+        $('.contract_desc ul').css('font-size',(15-num)+'px')
+        $('#desc_div1').css('font-size',(15-num)+'px')
+        $('#desc_div2').css('font-size',(14-num)+'px')    
+
+        $('.contract_bot p').css('font-size',(15-num)+'px')
+    }
+    if(client_width > 800) //desc2 select type2 or type2_2
+    {
+        if($("#type2").css('display') === 'none' && $("#type1").css('display') === 'none')
+        {
+            $("#type2").css('display','block')
+            $("#type2_2").css('display','none')
+        }
+    }
+    else
+    {
+        if($("#type2").css('display') === 'block' && $("#type1").css('display') === 'none')
+        {
+            $("#type2").css('display','none')
+            $("#type2_2").css('display','block')
+        }
+    }
+    if(client_width > 650) //desc1 상단 용어안내
+    {
+        $('#desc_div2 span').text('/')
+        $('#desc_div2 span').html('/')
+    }
+    else
+    {
+        $('#desc_div2 span').text('')
+        $('#desc_div2 span').html('<br>')
+        $('#desc_div1').css('font-size','12px')
+        $('#desc_div2').css('font-size','11px')
+    }
+
+    $(window).resize(function()
+    {
+        client_width = document.body.clientWidth;
+        $('#desc1 .contract_mid').css('width',client_width);
+        if(client_width > 950) //desc1 상단 설명
+        {
+            $('.contract_desc ul').css('font-size','15px')
+            $('#desc_div1').css('font-size','15px')
+            $('#desc_div2').css('font-size','14px')
+
+            $('.contract_bot p').css('font-size','15px')
+        }
+        else
+        {
+            var num = (1050-client_width)/180;
+            $('.contract_desc ul').css('font-size',(15-num)+'px')
+            $('#desc_div1').css('font-size',(15-num)+'px')
+            $('#desc_div2').css('font-size',(14-num)+'px')    
+
+            $('.contract_bot p').css('font-size',(15-num)+'px')
+        }
+        if(client_width > 800) //desc2 select type2 or type2_2
+        {
+            if($("#type2").css('display') === 'none' && $("#type1").css('display') === 'none')
+            {
+                $("#type2").css('display','block')
+                $("#type2_2").css('display','none')
+            }
+        }
+        else
+        {
+            if($("#type2").css('display') === 'block' && $("#type1").css('display') === 'none')
+            {
+                $("#type2").css('display','none')
+                $("#type2_2").css('display','block')
+            }
+        }
+        if(client_width > 650) //desc1 상단 용어안내
+        {
+            $('#desc_div2 span').text('/')
+            $('#desc_div2 span').html('/')
+        }
+        else
+        {
+            $('#desc_div2 span').text('')
+            $('#desc_div2 span').html('<br>')
+            $('#desc_div1').css('font-size','12px')
+            $('#desc_div2').css('font-size','11px')
+        } 
+    });
+
+    if(($('#seller_status').text().trim() === '결제 완료') && ($('#buyer_status').text().trim() === '결제 완료'))
+        $('#contract_form').css('display','block')
+    else
+        $('#contract_form').css('display','none')
+
+  
+    
+</script>
+{% endfor%}
+{% endblock %}

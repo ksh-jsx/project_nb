@@ -1,0 +1,332 @@
+.contract_container{width:100%; max-width: 1440px;margin: 0 auto;}
+.contract_container #desc1 .contract_top{width:90%;margin: 0 auto;}
+.contract_container #desc1 .contract_top ul{background-color:#f2f2f2;border-radius: 20px;margin-top: 50px;padding: 5%;padding-top: 3%;}
+.contract_container #desc1 .contract_top ul li{line-height: 250%;color: #b5b5b5;}
+.contract_container #desc1 .contract_top ul li div{line-height: 150%;}
+.contract_container #desc1 .contract_top  ul li span{font-weight: bold;}
+.contract_container #desc1 .contract_top > div{background-color:#f2f2f2;border-radius: 20px;margin-top: 10px;height: 45px;}
+.contract_container #desc1 .contract_top > div > div{float: left;height: 32px;padding-top: 13px;}
+.contract_container #desc1 .contract_top > div > div:first-child{width: 10%;background-color: #2eae7d;border-radius: 20px 0 0 20px;color: #ffffff;text-align:center}
+.contract_container #desc1 .contract_top > div > div:last-child{padding-left: 2%;font-size: 14px;padding-top: 13px;line-height: 150%;}
+.contract_container #desc1 .contract_mid{width:80%;margin: 0 auto;margin-top: 80px;}
+.contract_container #desc1 .contract_mid > div{float: left;width:45%}
+.contract_container #desc1 .contract_mid .middle_line{width: 0.2%;background: #b5b5b5;height: 100%;margin: 4.9%;margin-top:0;border-radius: 0;}
+.contract_container #desc1 .contract_mid > div img{width: 100%;height: 100%;}
+.contract_container #desc1 .contract_mid > div form{width: 50%; margin: 0 auto;margin-top: 20px;}
+.contract_container #desc1 .contract_mid > div form button{width:100%;background-color:#2eae7d;color: #ffffff;border: 0;outline: 0;height: 40px;box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);font-weight:bold}
+
+.contract_container #desc2 .contract_top{width:70%;margin: 0 auto;}
+.contract_container #desc2 .contract_top > div{text-align: center;background-color:#f2f2f2;border-radius: 20px;margin-top: 50px;padding: 3%;}
+.contract_container #desc2 .contract_top > div span{font-weight: bold;}
+.contract_container #desc2 .contract_check{width:550px;height: 130px;;margin: 0 auto;margin-top:50px}
+.contract_container #desc2 .contract_check .line{background-color: #b3b3b3;float: left;box-shadow:0 0 0 0}
+.contract_container #desc2 .contract_check > div:first-child{width: 3px;height: 100%;}
+.contract_container #desc2 .contract_check .lines{width: 40px;;height: 100%;float: left;}
+.contract_container #desc2 .contract_check .lines .line{width: 100%;height: 3px;margin-bottom: 54.5px;}
+.contract_container #desc2 .contract_check .boxes{width: 15px;;height: 100%;float: left;padding-left: 20px;}
+.contract_container #desc2 .contract_check .boxes .box2{width: 100%;height: 15px;margin-bottom: 45px;border: 1.5px solid #b3b3b3;border-radius: 3px;cursor: pointer;}
+.contract_container #desc2 .contract_check .labels{float: left;padding-left: 10px;}
+.contract_container #desc2 .contract_check .labels .label{font-size: 18px;font-weight: bold;display: block;margin-bottom: 42px;padding-left: 5px;color: #494949;}
+.contract_container #desc2 .btns{width:250px;height: 60px;;margin: 0 auto;margin-top:100px}
+.contract_container #desc2 .btns > div{width:45%;height: 70%;;background-color: #2eae7d;color:#ffffff;border-radius: 12px;font-weight: bold;text-align: center;font-size: 22px;padding-top: 5%;cursor: pointer;}
+.contract_container #desc2 .btns > div:first-child{float: left;}
+.contract_container #desc2 .btns > div:last-child{float: right;}
+
+.contract_container #desc3{width:50%;margin: 0 auto;margin-top: 200px;}
+.contract_container #desc3 > div {text-align: center;font-size: 25px;font-weight: bold;margin-bottom: 30px;line-height: 160%;}
+.contract_container #desc2 .btns{width:250px;height: 60px;;margin: 0 auto;margin-top:100px}
+.contract_container #desc3 .btns > div{width:45%;height: 35px;background-color: #f2f2f2;border-radius: 10px;font-weight: bold;text-align: center;font-size: 15px;padding-top: 15px;cursor: pointer;}
+.contract_container #desc3 .btns > div:first-child{float: left;}
+.contract_container #desc3 .btns > div:last-child{float: right;}
+
+.contract_container2{width:100%; max-width: 1440px;margin: 0 auto;}
+.contract_container2 > div:first-child{width: 500px;margin:0 auto}
+.contract_container2 > div:first-child img{width: 100%;margin-top: 50px;;}
+.contract_container2 .contract2_info{margin-top: 40px;font-weight: bold;line-height: 150%;color:#222222;font-size: 20px;}
+.contract_container2 .user_info{width: 30%;;margin: 0 auto;margin-top: 40px}
+.contract_container2 .user_info > div:first-child{float: left;}
+.contract_container2 .user_info > div:last-child{float: right;}
+.contract_container2 .user_info input{float: left;margin: 0 auto;margin-top: 40px;height: 40px;}
+.contract_container2 .user_info img{margin-top:30px}
+
+.contract_container3{width:100%; max-width: 1440px;margin: 0 auto;}
+.contract_container3 #desc1 .contract_top{max-width:850px;width:90%;margin: 0 auto;margin-bottom: 50px;}
+.contract_container3 #desc1 .contract_top > p{font-weight:bold;font-size:15px;}
+.contract_container3 #desc1 .contract_top > p:first-child{font-size:22px;}
+.contract_container3 #desc1 .contract_top > p span{color:#2eae7d}
+.contract_container3 #desc1 .contract_top > .circles{width:760px;height:180px;margin: 0 auto;}
+.contract_container3 #desc1 .contract_top > .circles > div{background-color: #2eae7d;width: 150px;height: 110px;border-radius: 100px;float:left;margin: 20px;color:#ffffff;text-align: center;padding-top:40px;font-weight: bold;line-height: 150%;}
+.contract_container3 #desc1 .contract_top > .circles .circle_2{padding-top:32px;height:118px}
+.contract_container3 #desc1 .contract_top > div:last-child{width:100%;margin:0 auto;background-color:#f2f2f2;border-radius: 20px;margin-top: 10px;height: 45px;}
+.contract_container3 #desc1 .contract_top > div:last-child > div{float: left;height: 32px;padding-top: 13px;}
+.contract_container3 #desc1 .contract_top > div:last-child > div:first-child{width: 10%;background-color: #2eae7d;border-radius: 20px 0 0 20px;color: #ffffff;text-align:center}
+.contract_container3 #desc1 .contract_top > div:last-child > div:last-child{padding-left: 2%;font-size: 14px;padding-top: 13px;line-height: 150%;}
+.contract_container3 #desc1 .contract_mid{position: absolute;left: 0;background-color: #e6e6e6;height: 600px;}
+.contract_container3 #desc1 .contract_mid > div{max-width:850px;width:90%;margin: 0 auto;padding-top:50px;}
+.contract_container3 #desc1 .contract_mid > div > p{font-weight:bold;font-size:22px;}
+.contract_container3 #desc1 .contract_mid > div > p span{color:#2eae7d}
+.contract_container3 #desc1 .contract_mid > div > div {width: 100%;}
+.contract_container3 #desc1 .contract_mid > div .contract_pc{display:block}
+.contract_container3 #desc1 .contract_mid > div .contract_pc img{width: 100%;height: 100%;}
+.contract_container3 #desc1 .contract_mid > div .contract_mobile{display: none;}
+.contract_container3 #desc1 .contract_mid > div .contract_mobile > div{margin-top:30px;margin-bottom: 30px;}
+.contract_container3 #desc1 .contract_mid > div .contract_mobile > div img{width:100%;max-width: 250px;float:left;position: relative;left:50%;transform: translate(-50%);}
+.contract_container3 #desc1 .contract_mid > div .contract_mobile > div > div{margin-top:20px;width:100%;float:left}
+.contract_container3 #desc1 .contract_mid > div .contract_mobile > div > div div{margin-bottom: 40px;color:#000000;line-height:165%}
+.contract_container3 #desc1 .contract_mid > div .contract_mobile > div > div div span{color:#2eae7d}
+.contract_container3 #desc1 .contract_mid > div .contract_mobile > div > div div:first-child{font-size: 20px;font-weight: bold;}
+.contract_container3 #desc1 .contract_bot{max-width:850px;width:90%;margin: 0 auto;margin-top: 710px;}
+.contract_container3 #desc1 .contract_bot > p{text-align: center;color:#000000;line-height:170%}
+.contract_container3 #desc1 .contract_bot > p span{color: #ed1e79;border-bottom:2px solid #e6e6e6 ;font-weight: bold}
+.contract_container3 #desc1 .contract_btn{width:200px;height: 60px;margin: 0 auto;margin-top:80px}
+.contract_container3 #desc1 .contract_btn > div{width:100%;height: 45px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 25px;padding-top:15px;cursor: pointer;}
+
+.contract_container3 #desc2 .contract_top{max-width:850px;width:90%;margin: 0 auto;}
+.contract_container3 #desc2 .contract_top > p{font-weight:bold;font-size:15px;}
+.contract_container3 #desc2 .contract_top > p:first-child{font-size:22px;}
+.contract_container3 #desc2 .contract_top > p span{color:#2eae7d}
+.contract_container3 #desc2 .contract_top > div:last-child{max-width:250px;width:50%;background-color:#f2f2f2;border-radius: 20px;margin-top: 30px;height: 33px;padding-top:12px;text-align: center;}
+.contract_container3 #desc2 .contract_mid{width:90%;max-width:850px;margin: 0 auto;}
+.contract_container3 #desc2 .contract_mid #type1{display:block}
+.contract_container3 #desc2 .contract_mid #type2{display:none}
+.contract_container3 #desc2 .contract_mid #type3{display:none}
+.contract_container3 #desc2 .contract_mid img{width:45%;padding: 2%;padding-bottom: 0;}
+.contract_container3 #desc2 .contract_mid #contract_img6{position: relative;;padding-top: 0%;top:-25px;float: right;}
+.contract_container3 #desc2 .contract_mid #contract_img5v2{width:22%;position: relative;padding-top: 0%;top:-15px;}
+.contract_container3 #desc2 .contract_mid #contract_img6v2{width:20%;position: relative;padding-top: 0%;top:-5px;left:15px}
+.contract_container3 #desc2 .contract_mid div{color:#ed1e79;text-align:center;padding-top:40px;font-weight: bold;}
+.contract_container3 #desc2 .contract_btn{max-width:750px;width:90%;height: 60px;margin: 0 auto;margin-top:80px}
+.contract_container3 #desc2 .contract_btn > div{height: 45px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 25px;padding-top:15px;cursor: pointer;}
+.contract_container3 #desc2 .contract_btn > div:first-child{max-width:200px;width:25%;float:left}
+.contract_container3 #desc2 .contract_btn > div:last-child{max-width:500px;width:70%;float:right;font-size: 23px;padding-top:18px;height: 42px;}
+
+.contract_container3 .desc3 .contract_top{max-width:850px;width:90%;margin: 0 auto;}
+.contract_container3 .desc3 .contract_top > p{font-weight:bold;font-size:15px;}
+.contract_container3 .desc3 .contract_top > p:first-child{font-size:22px;}
+.contract_container3 .desc3 .contract_top > p span{color:#2eae7d}
+.contract_container3 .desc3 .contract_mid{width:90%;max-width:850px;margin: 0 auto;}
+.contract_container3 .desc3 .contract_mid img{width:45%;padding: 2%;padding-bottom: 0;}
+.contract_container3 .desc3 .contract_mid #contract_img6{position: relative;;padding-top: 0%;top:-25px;float: right;}
+.contract_container3 .desc3 .contract_mid div{text-align:center;padding-top:40px;line-height:150%}
+.contract_container3 .desc3 .contract_mid span{color:#ed1e79;font-weight: bold;padding-top:10px;display:block}
+.contract_container3 .desc3 .contract_btn{max-width:600px;width:90%;height: 60px;margin: 0 auto;margin-top:80px}
+.contract_container3 .desc3 .contract_btn > div{height: 55px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 25px;padding-top:25px;cursor: pointer;}
+.contract_container3 .desc3 .contract_btn > div:first-child{max-width:200px;width:25%;float:left}
+.contract_container3 .desc3 .contract_btn > div:last-child{max-width:400px;width:70%;float:right;font-size: 23px;padding-top:15px;height: 65px;}
+
+.contract_container3 #desc4_1 img{position: relative;left:50%;transform: translateX(-50%);;width:30%; max-width: 100px;top:50px}
+.contract_container3 #desc4_1 div{text-align:center;font-size:12pt;line-height: 140%;}
+.contract_container3 #desc4_1 div span{color:#2eae7d;font-weight: bold;}
+.contract_container3 #desc4_1 .contract_btn{width:200px;height: 60px;margin: 0 auto;margin-top:80px}
+.contract_container3 #desc4_1 .contract_btn > div{width:100%;height: 45px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 25px;padding-top:10px;cursor: pointer;}
+
+.contract_container3 #desc4_2 img{position: relative;left:50%;transform: translateX(-50%);;width:30%; max-width: 150px;top:50px}
+.contract_container3 #desc4_2 div{text-align:center;font-size:12pt;line-height: 170%;}
+.contract_container3 #desc4_2 .desc4_2_inputs{max-width:500px;width:90%;margin:0 auto;margin-top:50px;height:150px}
+.contract_container3 #desc4_2 .desc4_2_inputs > div{float:left;height:50px;margin-bottom:20px}
+.contract_container3 #desc4_2 .desc4_2_inputs .desc4_2_left{width:35%;position: relative;top:12px;text-align:left}
+.contract_container3 #desc4_2 .desc4_2_inputs .desc4_2_right{width:65%}
+.contract_container3 #desc4_2 .desc4_2_inputs .desc4_2_right input{width:95%;height:95%;border: 1px solid #bdbdbd;padding-left:5%}
+.contract_container3 #desc4_2 .contract_btn{width:200px;height: 60px;margin: 0 auto;margin-top:80px}
+.contract_container3 #desc4_2 .contract_btn > div{width:100%;height: 50px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 25px;padding-top:5px;cursor: pointer;}
+
+.contract_container3 .desc5 .contract_mid{width:90%;max-width:650px;margin: 0 auto;margin-top:50px}
+.contract_container3 .desc5 .contract_mid img{width:100%;}
+.contract_container3 .desc5 .contract_btn{width:200px;height: 60px;margin: 0 auto;margin-top:80px}
+.contract_container3 .desc5 .contract_btn > div{width:100%;height: 45px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 25px;padding-top:10px;cursor: pointer;}
+
+.contract_container3 #desc6 .contract_btn{width:400px;height: 60px;margin: 0 auto;margin-top:80px}
+.contract_container3 #desc6 .contract_btn > div{width:100%;height: 45px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 25px;padding-top:10px;cursor: pointer;}
+
+.contract_container3 #desc8 .contract_btn{width:400px;height: 60px;margin: 0 auto;margin-top:80px}
+.contract_container3 #desc8 .contract_btn > div{width:100%;height: 45px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 25px;padding-top:10px;cursor: pointer;}
+
+.tag_br{display: none;}
+
+@media (max-width:950px)
+{
+    .contract_container #desc1  .contract_top > div > div:first-child{padding-top:13px;height: 27px;width: 10%;}
+    .contract_container3 #desc1 .contract_top > div:last-child > div:first-child{padding-top:13px;height: 27px;width: 10%;}
+    
+}
+
+@media (max-width:800px)
+{
+    .contract_container #desc1 .contract_mid > div{width:100%}
+    .contract_container #desc1 .contract_mid > div:last-child{margin-top: 50px;}
+    .contract_container #desc1 .contract_mid .middle_line{display: none;}
+
+    .contract_container3 #desc1 .contract_top > .circles{width:380px;height:360px;}
+    .contract_container3 #desc2 .contract_mid img{width:95%;padding: 2%;padding-bottom: 0;}
+    .contract_container3 .desc3 .contract_mid img{width:95%;padding: 2%;padding-bottom: 0;}
+    .contract_container3 #desc2 .contract_mid #contract_img5v2{width:50%;padding: 2%;padding-bottom: 0;top:-10px}
+    .contract_container3 #desc2 .contract_mid #contract_img6v2{width:95%;padding: 2%;padding-bottom: 0;left:0px}
+}
+@media(max-width:700px)
+{
+    .contract_container3 #desc2 .contract_btn > div:first-child{font-size:20px;height: 40px;}
+    .contract_container3 #desc2 .contract_btn > div:last-child{font-size:18px;height: 38px;} 
+
+    .contract_container3 #desc4_1 div{text-align:center;font-size:10pt;line-height: 140%;}
+    
+}
+@media (max-width:650px)
+{
+    .contract_container #desc1 .contract_top > div{height: 70px;}
+    .contract_container #desc1 .contract_top > div > div:first-child{padding-top:28px;height: 42px;width: 15%;}
+
+    .contract_container3 #desc1 .contract_top > div:last-child > div:first-child{padding-top:28px;height: 42px;width: 15%;}
+    .contract_container3 #desc1 .contract_top > div:last-child{height: 70px;}
+    .contract_container3 #desc1 .contract_mid{height: 1150px;}
+    .contract_container3 #desc1 .contract_mid > div .contract_pc{display:none}
+    .contract_container3 #desc1 .contract_mid > div .contract_mobile{display: block;}
+    .contract_container3 #desc1 .contract_bot{margin-top: 1250px;}
+}
+@media (max-width:600px)
+{
+    .contract_container #desc2 .contract_top{width:85%;}
+    .contract_container #desc2 .contract_top > div{font-size:13px}
+    .contract_container #desc2 .contract_check{width:50%;min-width: 260px;}
+    .contract_container #desc2 .contract_check .line{display:none}
+    .contract_container #desc2 .contract_check .lines{display:none}
+    .contract_container #desc2 .contract_check .boxes .box{margin-bottom: 38px;}
+    .contract_container #desc2 .contract_check .labels .label{font-size: 13px;}
+    
+    .tag_br{display: block;}
+    
+    .contract_container3 #desc1 .contract_mid{height: 1200px;}
+    .contract_container3 #desc1 .contract_bot{margin-top: 1300px;}
+    .contract_container3 #desc2 .contract_btn > div:first-child{font-size:15px;height: 35px;}
+    .contract_container3 #desc2 .contract_btn > div:last-child{font-size:13px;height: 34px;}
+    .contract_container3 .desc3 .contract_btn > div:first-child{font-size:20px;height: 43px;}
+    .contract_container3 .desc3 .contract_btn > div:last-child{font-size:18px;height: 54px;} 
+}
+@media (max-width:500px)
+{
+    .contract_container #desc1 .contract_top ul{padding-left: 10%;}
+    .contract_container #desc1 .contract_top > div > div:first-child{width: 20%;}
+    .contract_container3 #desc1 .contract_top > div:last-child > div:first-child{width: 20%;}
+    .contract_container #desc1 .contract_mid > div form button{font-size: 10px;}
+    .contract_container .desc3{width:85%;margin-top: 100px;}
+    .contract_container .desc3 > div {font-size: 19px;}
+
+    .contract_container3 #desc1 .contract_top > .circles{width:300px;height:270px;}
+    .contract_container3 #desc1 .contract_top > .circles > div{width: 110px;height: 80px;margin:20px;padding-top:30px;font-size:12px}
+    .contract_container3 #desc1 .contract_top > .circles .circle_2{padding-top:25px;height:85px}
+    .contract_container3 #desc1 .contract_mid > div .contract_mobile > div > div div:first-child{font-size: 16.5px;}
+    .contract_container3 #desc1 .contract_mid > div .contract_mobile > div > div div:last-child{font-size: 14px;}
+    .contract_container3 #desc2 .contract_top > div:last-child{font-size:11px;padding-top:20px;margin-top:0px}
+    .contract_container3 #desc2 .contract_btn > div:last-child{font-size:12px;height: 34px;}
+    .contract_container3 .desc3 .contract_mid span{font-size:14px}
+    .contract_container3 .desc3 .contract_btn > div:first-child{font-size:17px;height: 41px;}
+    .contract_container3 .desc3 .contract_btn > div:last-child{font-size:15px;height: 52px;} 
+    .contract_container3 #desc4_1 .contract_btn > div{width:100%;height: 42px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 18px;padding-top:18px;}
+    .contract_container3 #desc4_2 div{font-size:9pt;}
+    .contract_container3 #desc5 .contract_btn{width: 270px;}
+    .contract_container3 #desc5 .contract_btn > div{width:100%;height: 42px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 18px;padding-top:18px;}
+    .contract_container3 #desc6 .contract_btn{width: 270px;}
+    .contract_container3 #desc6 .contract_btn > div{width:100%;height: 42px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 18px;padding-top:18px;}
+    .contract_container3 #desc8 .contract_btn{width: 270px;}
+    .contract_container3 #desc8 .contract_btn > div{width:100%;height: 42px;color:#ffffff;text-align: center;background-color: #2eae7d;font-size: 18px;padding-top:18px;}
+}
+
+@media (max-width:360px)
+{
+    .contract_container #desc1 .contract_top > div > div:first-child{width: 24%;}
+    .contract_container3 #desc1 .contract_top > div:last-child > div:first-child{width: 24%;}
+    .contract_container3 #desc2 .contract_btn > div:last-child{font-size:11px;height: 34px;}
+
+    .contract_container3 .desc3 .contract_mid div{font-size:14px}
+    .contract_container3 .desc3 .contract_mid span{font-size:12px}
+
+    .contract_container3 .desc3 .contract_btn > div:first-child{font-size:15px;height: 40px;padding-top:20px}
+    .contract_container3 .desc3 .contract_btn > div:last-child{font-size:13px;height: 45px;} 
+}
+
+.where {
+  display: block;
+  margin: 25px 15px;
+  font-size: 11px;
+  color: #000;
+  text-decoration: none;
+  font-family: verdana;
+  font-style: italic;
+} 
+
+.filebox input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip:rect(0,0,0,0);
+    border: 0;
+}
+
+.filebox label {
+    display: inline-block;
+    padding: .5em .75em;
+    color: #999;
+    font-size: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    background-color: #fdfdfd;
+    cursor: pointer;
+    border: 1px solid #ebebeb;
+    border-bottom-color: #e2e2e2;
+    border-radius: .25em;
+}
+
+/* named upload */
+.filebox .upload-name {
+    display: inline-block;
+    padding: .5em .75em;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    background-color: #f5f5f5;
+  border: 1px solid #ebebeb;
+  border-bottom-color: #e2e2e2;
+  border-radius: .25em;
+  -webkit-appearance: none; /* 네이티브 외형 감추기 */
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* imaged preview */
+.filebox .upload-display {
+    margin-bottom: 5px;
+}
+
+@media(min-width: 768px) {
+    .filebox .upload-display {
+        display: inline-block;
+        margin-right: 5px;
+        margin-bottom: 0;
+    }
+}
+
+.filebox .upload-thumb-wrap {
+    display: inline-block;
+    width: 54px;
+    padding: 2px;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.filebox .upload-display img {
+    display: block;
+    max-width: 100%;
+    width: 100% \9;
+    height: auto;
+}
+
+.filebox.bs3-primary label {
+    color:#000000;
+  background-color: #bdbdbd;
+    border-color: #bdbdbd;
+}

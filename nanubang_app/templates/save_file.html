@@ -1,0 +1,23 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+<script>
+
+    $.ajax({ 
+        type: "POST", 
+        url: "/contract_send1", 
+        data: {'csrfmiddlewaretoken': '{{ csrf_token }}','type':'type2'}, 
+        dataType: "json", 
+        
+        success: function(response){ 
+            location.href='/contract/4'
+        },
+        error: function(request, status, error){ 
+            console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+        },
+    });
+
+    
+</script>
+<div class="loading"></div>
+{% endblock %}

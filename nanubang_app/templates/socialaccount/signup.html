@@ -1,0 +1,117 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+<div class="mypage_container1" style="max-width: 600px;border-right: 1px solid #e6e6e6;">
+<form class="signup_form" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+                {% csrf_token %}
+                <div class="signup_div">
+                    <div class="signup_left">
+                        <label for="id_username">아이디</label>
+                    </div>
+                    <div class="signup_right">
+                        {{form.username}}
+                    </div>
+                    {% if form.username.errors%}
+                        <script>
+                            $('#id_username').val('')
+                            $('#id_username').attr('placeholder','중복된 아이디입니다.')
+                        </script>
+                    {%endif%}
+                </div>
+                <div class="" id="change_pwd2"></div>
+                <div class="signup_div">
+                    <div class="signup_left">
+                        <label for="id_name">이름</label>
+                    </div>
+                    <div class="signup_right">
+                        <input type="text" name="name" maxlength="255" id="id_name" value="{{user_info.name}}">
+                    </div>
+                </div>
+                <div class="signup_div">
+                    <div class="signup_left">
+                        <label for="id_gender">성별</label>
+                    </div>
+                    <div class="signup_right">
+                        <input type="radio" id="id_gender1" name="gender" value="남자" required checked>
+                        <label class="room-label" for="id_gender1">남자</label>
+                        <input type="radio" id="id_gender2" name="gender" value="여자" required>
+                        <label class="room-label" for="id_gender2">여자</label>
+                    </div>
+                </div>
+                <div class="signup_div">
+                    <div class="signup_left">
+                        <label for="id_meet_path">휴대전화</label>
+                    </div>
+                    <div class="signup_right">
+                            <input type="text" name="phone1" maxlength="140" required id="id_phone1" value="">
+                            <span>-</span>
+                            <input type="text" name="phone2" maxlength="140" required id="id_phone2" value="">
+                            <span>-</span>
+                            <input type="text" name="phone3" maxlength="140" required id="id_phone3" value="">                            
+                    </div>
+                </div>
+                <div class="signup_div" id="signup_div_email">
+                    <div class="signup_left">
+                        <label for="id_meet_path">이메일</label>
+                    </div>
+                    <div class="signup_right">
+                            {{form.email}}
+                    </div>
+                    {{form.email.errors}}
+                    <script> 
+                        $('#id_email').attr('readOnly','true')
+                    </script>
+                </div>
+                <div class="signup_div">
+                    <div class="signup_left">
+                        <label for="id_gender">흡연여부</label>
+                    </div>
+                    <div class="signup_right">
+                        <input type="radio" id="id_ciga1" name="ciga" value="흡연" required checked>
+                        <label class="room-label" for="id_ciga1">흡연</label>
+                        <input type="radio" id="id_ciga2" name="ciga" value="비흡연" required>
+                        <label class="room-label" for="id_ciga2">비흡연</label>
+                    </div>
+                </div>
+                <div class="signup_div">
+                    <div class="signup_left">
+                        <label for="id_gender">이메일수신여부</label>
+                    </div>
+                    <div class="signup_right">
+                        <input type="radio" id="id_mail_agree1" name="mail_agree" value="동의 함" required checked>
+                        <label class="room-label" for="id_mail_agree1">동의 함</label>
+                        <input type="radio" id="id_mail_agree2" name="mail_agree" value="동의 안함" required>
+                        <label class="room-label" for="id_mail_agree2">동의 안함</label>
+                    </div>
+                </div>
+                <div class="signup_div">
+                    <div class="signup_left">
+                        <label for="id_gender">SMS수신여부</label>
+                    </div>
+                    <div class="signup_right">
+                        <input type="radio" id="id_sms_agree1" name="sms_agree" value="동의 함" required checked>
+                        <label class="room-label" for="id_sms_agree1">동의 함</label>
+                        <input type="radio" id="id_sms_agree2" name="sms_agree" value="동의 안함" required>
+                        <label class="room-label" for="id_sms_agree2">동의 안함</label>
+                    </div>
+                </div>
+                <div class="signup_div" id="signup_div_last">
+                    <div class="signup_left">
+                        <label for="id_active">인증</label>
+                    </div>
+                    <div class="signup_right">
+                        {% if user_info.active %}
+                        <input  type="type"  value="인증됨" readonly>    
+                        {% else %}
+                        <input  type="type"  value="인증 필요" readonly>    
+                        {% endif %}
+                        <input name="active" name="active" type="hidden" value="True">
+                    </div>
+                </div>
+                <br>
+                <br>
+        
+        <button type="submit">가입</button>
+      </form>
+    </div>
+{% endblock %}

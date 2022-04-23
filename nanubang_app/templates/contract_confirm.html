@@ -1,0 +1,123 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+<div class="box_wrap" >
+    <div class="box" id="box1">
+        <div class="left">
+            <img src="../static/img/box1.png">    
+        </div>
+        <div class="right">
+            <div class="top"><span>나누방<br class="block">안전계약</span>이란?</div>
+            <div class="mid">안전하고 편리한 전대차거래를<br class="hidden"> 위한  전자계약 서비스입니다.</div>
+            <div class="bot">혹시 전대차 계약서를 쓰는 것이 어려우신가요?<br  class="block">그렇다면 나누방을 통해 전대차 거래에 대해 알아보고 간편하게 계약서를 작성하세요!<br  class="block">전대차 계약에 대해 전혀 모르는 분도 쉽게 작성이 가능합니다.</div>
+        </div>
+    </div>
+</div>
+<div class="box" id="box2">
+    <div class="left"><img class="left_img" src="../static/img/box2_1.png"><div>번거롭게 계약서를 마련하는 대신<br>휴대폰으로 간편하게 전자계약을<br>진행할 수 있습니다.</div></div>
+    <div class="center"><img src="../static/img/box2_2.png"><div>합법적인 전자계약서를 통해<br>전대차거래에서 생길 수 있는 <br>다양한 문제들을 예방할 수 있습니다.</div></div>
+    <div class="right"><img class="right_img1" src="../static/img/box2_3.png"><div>잃어버리거나 훼손되기 쉬운<br>종이계약서 대신 전자파일로<br>편리하게 계약서를 보관해보세요.</div></div>
+</div>
+<div class="box" id="box3">
+    <div class="top">
+        ※ 집주인의 동의, <span>필수</span>입니다!
+    </div>
+    <div class="mid">
+        전대차 거래는 집주인의 동의가 있어야만 안전하게 계약이 가능합니다. 아무리 단기간이라도 무단으로 이루어진다면 민법 제 629조, 630조, 631조에 따라 강제 계약해지 및 퇴실을 당할 수 있습니다.<br>
+        &nbsp;<br>따라서 <span>나누방 전자계약은 집주인의 동의를 명시적으로 확인할 수 있는<br>문자메세지, 통화녹음, 사인 등을 함께 업로드하여야 서비스 이용이 가능합니다.</span>
+    </div>
+</div>
+<div class="box" id="box4">
+    <div class="left"><span>나누방<br class="block">안전계약</span><br class="block">서비스종류</div>
+    <div class="center"><img class="center_img" src="../static/img/box4_1.png"><div>전대동의서를 작성하면 보다 확실하게<br>전대차계약을 보장받을 수 있습니다.</div></div>
+    <div class="right"><img class="right_img2" src="../static/img/box4_2.png"></div>
+    <script>
+   
+    </script>
+</div>
+<div class="box" id="box5">
+    <div>
+        <div class="left"><span>나누방<br class="block">안전계약</span><br  class="block">절차</div>
+        <div class="right"> <img src="../static/img/none.png" alt=""></div>
+    </div>
+    <script>
+        var client_width = document.body.clientWidth;
+        $('#box5').css('width',client_width);
+        
+    </script>
+</div>
+<div class="box" id="box6">
+    <div class="left"><span>나누방<br class="block">안전계약</span><br class="block">주의사항</div>
+    <div class="right"><img src="../static/img/box6_p.png" alt=""></div>
+    <script>
+        
+    </script>
+</div>
+<script>
+    var client_width = document.body.clientWidth;
+    $('#box5').css('width',client_width);
+    var marginTop = $('#box5').css('height').replace('px','')*1;
+    $('#box6').css('margin-top',marginTop+100+'px');
+    var get_height1 = $('.left_img').css('height').replace('px','')
+        
+    $('.right_img1').css('height', get_height1+'px') 
+    if(client_width < 800)
+    {
+        $('.hidden').css('display','block')
+        $('.block').css('display','none')
+        $('#box6 .right img').attr("src", '../../static/img/box6_m.jpg');
+    }
+    else
+    {
+        $('.hidden').css('display','none')
+        $('.block').css('display','block')
+        $('#box6 .right img').attr("src", '../../static/img/box6_p.png');
+    }
+    $(window).resize(function()
+    {
+        var client_width = document.body.clientWidth;
+        $('#box5').css('width',client_width);
+        var marginTop = $('#box5').css('height').replace('px','')*1;
+        $('#box6').css('margin-top',marginTop+100+'px');
+        var get_height1 = $('.left_img').css('height').replace('px','')
+        $('.right_img1').css('height', get_height1+'px') 
+        if(client_width < 800)
+        {
+            $('.hidden').css('display','block')
+            $('.block').css('display','none')
+            $('#box6 .right img').attr("src", '../../static/img/box6_m.jpg');
+        }
+        else
+        {
+            $('.hidden').css('display','none')
+            $('.block').css('display','block')
+            $('#box6 .right img').attr("src", '../../static/img/box6_p.png');
+        }
+    });
+</script>
+
+<div class="box_btn" onclick="$('#contract_confirm_submit1').click()">거래 수락하기</div>
+
+<form action="/contract_confirm" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="">
+    <input type="submit" style="display:none" id="contract_confirm_submit1">
+</form>
+
+{% for room in room%}
+<form action="/contract/1" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="item_id" value={{room.auto_increment_id}}>
+    <input type="submit" style="display:none" id="contract_confirm_submit2">
+</form>
+{% endfor %}
+
+{% if room_state == 2 %}
+<Script>$('#contract_confirm_submit2').trigger('click')</Script>
+{% endif %}
+{% endblock %}
+
+
+
+
+

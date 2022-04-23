@@ -1,0 +1,13 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+<div class="login_container">
+    <div style="text-align: center;font-size:30px">방 등록이 완료되었습니다!</div>
+    <div style="margin: 0 auto; max-width:450px;width:90%">
+        <div style="width:40%;padding-top:15px;height: 35px;margin: 0 auto;text-align: center;margin-top:150px;background-color:#218261;float:left;margin-right: 20px;"><a href="{% url 'index' %}" style="color:#ffffff">홈으로 가기</a></div>
+        {% for room in room %}        
+            <div style="width:40%;padding-top:15px;height: 35px;margin: 0 auto;text-align: center;margin-top:150px;background-color:#218261;float:left;margin-left: 20px"><a href="/room_detail/?item_id={{room.auto_increment_id}}" style="color:#ffffff">내 방 보러가기</a></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+<div id="loading"></div>
+<div id="items">
+    <script>
+        var count = "{{count}}"
+        $('#sale_count').html('<strong>{{info}}</strong> 주변 자취방 {{count}}개')
+    </script>
+    {% for item in item %}
+    <div class="item{{item.auto_increment_id}}" id="item">
+        <div class="item0">
+            <form action="/room_detail" method="get" class="submit_detail_form">
+                <input type="hidden" value="{{item.auto_increment_id}}" readonly name="item_id">
+                <input type="submit" style="display:none" id="get_id{{item.auto_increment_id}}" class="submit_detail">
+            </form>
+            <div class="item-image">
+                <img src="{{item.photo1.url}}" alt="">
+            </div>
+            <div class="item-info">
+                <span class="room">{{item.room_type}}</span>
+                <span class="cost">월세 {{item.desired_monthly}}만원</span>
+                <div class="due">{{ item.start_date | date:"Y" }}.{{ item.start_date | date:"m" }}.{{ item.start_date | date:"d" }}~{{ item.end_date | date:"Y" }}.{{ item.end_date | date:"m"}}.{{ item.end_date | date:"d"}}</div>
+                {% if item.deposit_necessity != 'False'  %}
+                    {% if item.management_cost_include != 'False'  %}
+                        <div class="attr">보증금 필요 | 관리비 포함 </div>
+                    {% else %}    
+                        <div class="attr">보증금 필요 | 관리비 미포함 </div>
+                    {% endif %}
+                {% else %}
+                    {% if item.management_cost_include != 'False'  %}
+                        <div class="attr">보증금 불필요 | 관리비 포함 </div>
+                    {% else %}    
+                        <div class="attr">보증금 불필요 | 관리비 미포함 </div>
+                    {%endif%}
+                {%endif%}
+                <!--<div class="attr">{{item.floor}} |  {{item.room_type}}</div>-->
+                <div class="tag">{{item.tag}}</div>
+                <span class="like" name="{{ item.auto_increment_id }}"></span>
+                {% for like in like %}
+                    {% if like.room_info.auto_increment_id == item.auto_increment_id %}
+                        <script>
+                            $('span[name={{ item.auto_increment_id }}]').attr('class', 'like on');
+                        </script>
+                        {{ "<!--" }}
+                    {% else %}
+                        <script>
+                            $('span[name={{ item.auto_increment_id }}]').attr('class', 'like');
+                        </script>
+                    {% endif %}
+                {% endfor %}
+                <span style="display:none">{{ "-->" }}</span>
+            </div>
+    </div>
+    </div>
+    {%endfor%}
+</div>

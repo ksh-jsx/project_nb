@@ -1,0 +1,129 @@
+.mypage{max-width:1200px;width:90%;margin:0 auto;height: 3000px;}
+.mypage_topBar{max-width:300px;width:20%;height: 50px; margin:0 auto;margin-top:50px;float: left;}
+.mypage_topBar > div{width:115px;margin-left:35px;text-align: center;background-color: #2eae7d;color:#ffffff;border-radius: 10px;height: 25px;font-size:14pt;padding-top:5px;font-family: 'nanum_gothic', sans-serif;}
+.mypage_topBar ul{ width:70%;margin: 0 auto;margin-top:20px}
+.mypage_topBar li{color:#bdbdbd;margin-top:10px}
+.mypage_topBar li div{ width:100%;height:35px;color:#000000;font-weight: bold;cursor: pointer;font-size: 13pt;font-family: 'noto-medium', sans-serif;}
+.mypage_topBar li:first-child div{color: #2eae7d;}
+.mypage_topBar2{width:200px;display:none;position: absolute;top:100px;left:5%;border:2px solid #e2e2e2;background-color:#ffffff;z-index: 99;}
+.mypage_topBar2 > div{font-weight: bold;border-bottom: 2px solid #e2e2e2;width:200px;font-size: 20px;padding-bottom: 5px;padding-top: 5px;font-size: 16px;cursor: pointer;}
+.mypage_containers{float: left;max-width: 900px;width:80%}
+.mobile_list{font-weight: bold;width:170px;font-size: 20px;color: #000000;margin-top: 20px;margin-left: 45px;} 
+.mobile_list > span{display:none;color: #2eae7d;} 
+
+.mypage_container1{display: block;width:90%;margin: 0 auto;}
+.mypage_container1 .signup_form{width: 100%;margin: 0 auto;margin-top: 20px;} 
+.mypage_container1 .signup_form .signup_div{width:100%;height: 38px;border-top:1.5px solid #e2e2e2;margin-top:3px}
+.mypage_container1 .signup_form #signup_div_email{height: 80px;}
+.mypage_container1 .signup_form #signup_div_email .signup_left{height:53px;padding-top:30px}
+.mypage_container1 .signup_form .signup_div .signup_left{width: 31%;height: 31px;float: left;text-align: left;font-weight: bold;padding-top:10px;font-size:13pt;background-color: #f2f2f2;padding-left: 15px;}
+.mypage_container1 .signup_form .signup_div .signup_left label{font-family: 'Noto Sans KR', sans-serif; }
+.mypage_container1 .signup_form .signup_div .signup_right{width: 60%;height: 95%;float: left;text-align: left;padding-left: 15px;} 
+.mypage_container1 .signup_form .signup_div .signup_right input{width: 100%;height: 100%;border: 0;font-weight: bold;font-size: 16px;margin-top:1px} 
+.mypage_container1 .signup_form .signup_div .signup_right input[type=button]{height:65%;width: 150px;border-radius: 4px;margin-top:12px;padding-left:5px;text-align: center;} 
+.mypage_container1 .signup_form .signup_div .signup_right input[type=radio]{appearance: none;height:40%;width: 20px;border-radius: 5px;margin-top:4%;font-size: 10px;background-color: #ffffff;} 
+.mypage_container1 .signup_form .signup_div .signup_right input[type="radio"] { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip:rect(0,0,0,0); border: 0;top:10px }
+.mypage_container1 .signup_form .signup_div .signup_right input[type="radio"] + label { display: inline-block; position: relative; padding-left: 19px; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;top:13px;}
+.mypage_container1 .signup_form .signup_div .signup_right input[type="radio"] + label:before { content: ''; position: absolute; left: 0; top: 1px; width: 12px; height: 12px; text-align: center; background: #fafafa; border: 1px solid #cacece; border-radius: 100%; box-shadow: 0px 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05); }
+.mypage_container1 .signup_form .signup_div .signup_right input[type="radio"] + label:active:before, .mypage_container1 .signup_form .signup_div .signup_right input[type="radio"]:checked + label:active:before { box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1); }
+.mypage_container1 .signup_form .signup_div .signup_right input[type="radio"]:checked + label:before { background: #E9ECEE; border-color: #adb8c0; }
+.mypage_container1 .signup_form .signup_div .signup_right input[type="radio"]:checked + label:after { content: ''; position: absolute; top: 5px; left: 4px; width: 6px; height: 6px; background: #99a1a7; border-radius: 100%; box-shadow: inset 0px 0px 10px rgba(0,0,0,0.3); }
+.mypage_container1 .signup_form .signup_div .signup_right .mypage1_desc{padding-top:7px}
+.mypage_container1 .signup_form .signup_div .signup_right select{height:45px;width: 28%;border:1px solid #e2e2e2;} 
+.mypage_container1 .signup_form .signup_div .signup_right label{position: relative;top:-5px;margin-right: 40px;} 
+.mypage_container1 .signup_form .signup_div .signup_right span{font-size:20px;padding-left:5px;padding-right:5px} 
+.mypage_container1 .signup_form .signup_div .signup_right #id_phone1,.mypage_container1 #id_phone2,.mypage_container1 #id_phone3{width: 23%;border:1px solid #e2e2e2;height:65%;margin-top:7px;padding-left:5px} 
+.mypage_container1 .signup_form .signup_div .signup_right #id_email1,.mypage_container1 #id_email2{width: 23%;border:1px solid #e2e2e2;height:40px;margin-top:2%;padding-left:5px}
+.mypage_container1 .signup_form .signup_div .signup_right br{display:none}
+.mypage_container1 .signup_form #signup_div_last{border-bottom: 1.5px solid #e2e2e2;}
+.mypage_container1 .signup_form #signup_div_last .signup_left{height:28px}
+.mypage_container1 .signup_form #signup_div_last .signup_right{height:33px}
+
+.mypage_container1 .terms{width:90%;max-width:800px;margin:0 auto;margin-top:20px;height:350px}
+.mypage_container1 .terms > p{font-weight: bold;font-size:20px}
+.mypage_container1 .terms > div{border: 2px solid #e8e8e8;height: 250px;margin-top:10px}
+.mypage_container1 .terms .join_info {float:left;width: 95%;height: 250px;overflow-y: scroll;font-size: 12px;color: #666;background: #fff;border: 1px solid #ddd;margin-top: 5px;line-height: 18px;padding: 10px;}
+.mypage_container1 .terms .join_info .table_box{font-size:0.5em;}
+.mypage_container1 .terms .join_info .table_box tbody tr td:first{border-right:1px solid}
+.mypage_container1 .terms > div:last-child{border: 0;width: 100%;height: 50px;float: left}
+.mypage_container1 .terms input,.mypage_container1 .terms label{float: right}
+
+.mypage_container1 #submitDiv{width:150px;height:40px;margin: 0 auto;text-align: center;margin-top:40px;background-color: #218261;color:#ffffff;padding-top:20px;font-weight: bold}
+
+@media (max-width:1100px)
+{
+    .mypage_topBar li div{ font-size: 18px;}
+    
+    .mypage_container1 .signup_form .signup_div .signup_right input{font-size: 14px;} 
+    .mypage_container1 .signup_form .signup_div .signup_right .mypage1_desc{font-size: 13px;padding-top:10px}
+}
+@media (max-width:1000px)
+{
+    .mypage{width:100%;}
+    .mypage_topBar{display:none}
+    .mobile_list{width:170px;margin-left: 0;font-size:15pt;margin-left: 5%;} 
+    .mobile_list > span{display:inline-block;color: #2eae7d;} 
+    .mypage_containers{width:100%}
+    .mypage_container1 .signup_form{width: 100%;padding-left: 0%;padding-right: 0%;} 
+}
+
+@media (max-width:700px)
+{
+}
+@media (max-width:500px)
+{
+    .mypage_containers{width:100%}
+    .mypage_container1 .signup_form .signup_div{height:28px}
+    .mypage_container1 .signup_form .signup_div .signup_left{font-size:9.5pt;height: 23px;padding-top:8px;padding-left: 10px;} 
+    .mypage_container1 .signup_form .signup_div .signup_right{font-size:9.5pt;}
+    .mypage_container1 .signup_form .signup_div .signup_right input{font-size: 9.5pt;padding-top:0px} 
+    .mypage_container1 .signup_form .signup_div .signup_right input[type=button]{height:22px;margin-top:4px;font-size:10pt;width:100px}
+    .mypage_container1 .signup_form .signup_div .signup_right label{margin-right: 15px;font-size: 10pt} 
+    .mypage_container1 .signup_form .signup_div .signup_right input[type="radio"] + label {top:9px }
+    .mypage_container1 .signup_form .signup_div .signup_right #id_phone1,.mypage_container1 #id_phone2,.mypage_container1 #id_phone3{width:21.5%;height: 16px;padding-left: 3%;} 
+    .mypage_container1 .signup_form .signup_div .signup_right #id_email1,.mypage_container1 #id_email2{width: 40.5%;height: 21px;;font-size:8pt;padding-left:3%;margin-top:4%} 
+    .mypage_container1 .signup_form .signup_div .signup_right #id_email2{width: 35%;} 
+    .mypage_container1 .signup_form .signup_div .signup_right select{position:relative;height:25px;width: 45%;top:1px;font-size:8pt;} 
+    .mypage_container1 .signup_form .signup_div .signup_right span{font-size:15px;padding-left:0px;padding-right:0px} 
+    .mypage_container1 .signup_form .signup_div .signup_right .mypage1_desc{font-size: 10pt;padding-top:13px}
+    .mypage_container1 .signup_form .signup_div .signup_right br{display:block}
+    .mypage_container1 .signup_form #signup_div_email{height: 110px;}
+    .mypage_container1 .signup_form #signup_div_email .signup_left{height:83px;padding-top:30px}
+
+    .mypage_container1 .signup_form #signup_div_last .signup_left{height:20px}
+    .mypage_container1 .signup_form #signup_div_last .signup_right{height:27px}
+}
+
+.mypage_container2{display: block}
+.mypage_container2 .register_form{display: block;padding-left: 5%;}
+@media (max-width:800px)
+{
+    .mypage_container2 .register_form{padding-left: 0%;}
+}
+.mypage_container2{display: none}
+.mypage_container3{display: none}
+
+.mypage_container4{display: none;margin-left: 5%;}
+.mypage_container4 .sell_or_buy{margin-top:100px;font-weight: bold;}
+.mypage_container4 .sell_or_buy span{color:#e2e2e2}
+.mypage_container4 .contract_call{width:90%;margin: 0 auto;margin-top:10px;height: 40px;border-top:1px solid #e2e2e2;border-bottom:1px solid #e2e2e2;}
+.mypage_container4 .contract_call > div{float: left;padding-left: 2%;height: 30px;padding-top:10px;font-weight: bold;font-size: 13pt;}
+.mypage_container4 .contract_call .contract_user{width:58%;max-width:300px;background-color: #e2e2e2;}
+.mypage_container4 .contract_call .contract_phone{width:38%;max-width:510px;}
+.mypage_container4 .contract4_btn {width:90%;height:52px;margin: 0 auto;margin-top:30px;}
+.mypage_container4 .contract4_btn div{background-color: #2eae7d;color: #ffffff;border-radius: 5px;float: right;width:176px;height:45px;padding-top:7px;text-align: center;font-size:11pt;line-height: 135%;font-weight: 500;cursor: pointer;}
+
+@media (max-width:1050px)
+{
+    .mypage_container4 .contract_call > div{font-size:11pt;height: 28px;padding-top:12px;}
+}
+@media (max-width:650px)
+{
+    .mypage_container4 .contract_call > div{font-size:8pt;height: 25px;padding-top:15px;}
+    .mypage_container4 .contract_call .contract_user{width:68%;}
+    .mypage_container4 .contract_call .contract_phone{width:28%;}
+}
+
+.mypage_container5{display: none}
+
+

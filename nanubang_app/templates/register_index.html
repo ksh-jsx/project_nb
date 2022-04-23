@@ -1,0 +1,65 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+
+<div class="_container_main">
+    <div>내 방 등록하기 </div>
+    <div><br>안전한 대학생 전대차거래 문화를 위하여
+            나누방을 이용하시는 분들은 아래 항목에 꼭 유의해주셔야 합니다.<br><br> <br> <br></div>
+
+        <div class="_img_comtainer">
+            
+            <div id="_img_comtainer_1">
+                <img src="../static/img/register_index_img2.jpg">
+                <div class="img1_1"><span style="color:#218261;font-family:'nanum_gothic',sans-serif !important;line-height:50px;font-size:20px;">1. 집주인의 동의를 받으셨나요?</span></div>
+                <div class="div1">집주인에게 전대동의서를 받지 않은 무단전대차거래도 <br>
+                계약상으로는 성사가 가능하지만, <span>이를 집주인이 알게 될 경우 <br>
+                계약 위반으로 간주되어 강제 퇴실을 당할 수 있습니다. </span><br>
+                즉 집주인의 동의는 필수라는 것, 잊지마세요!</div>
+            </div>
+            
+            <div id="_img_comtainer_2">
+                <img src="../static/img/register_index_img1.jpg">
+                <div class="img1_1"><span style="color:#218261;font-family:'nanum_gothic',sans-serif !important;line-height:50px;font-size:20px;">2. 문서계약이 안전합니다.</span></div>
+                <div class="div1"><span>안전한 계약을 위해서는 전대차계약서와 집주인동의서를 <br>
+                문서로 작성하여 서로 나워가지는 것이 중요하답니다.</span> <br>
+            계약서 작성은 필수이며, 만약 공인중개사를 통한 안전한 <br>
+                거래를 원한다면 '나누방 안전거래'를 이용해주세요.</div>
+            </div>
+    
+
+
+
+            <div id="_img_comtainer_3">
+                <img src="../static/img/register_index_img3.jpg">
+                <div class="img1_1"><span style="color:#218261;font-family:'nanum_gothic',sans-serif !important;line-height:50px;font-size:20px;">3. 나누방 안전거래란?</span></div>
+                <div class="div1"><span>전대차거래시 생길 수 있는 다양한 문제전들을 방지하고 <br>
+                안전한 거래를 위해 공인중개사가 계약을 도와주는 유료  <br>
+                서비스입니다. </span>별도의 계약서 출력 등의 과정 없이 모바일 <br>
+                단말기나 컴퓨터를 통하여 공인중개사의 인증을 통한 <br>
+                온라인 계약서를 작성하실 수 있습니다.</div>
+            </div>
+        </div>
+
+        <div class="_container_main_bottom">
+                <div> 위의 내용을 숙지하였다면,</div><br>
+                <div class="bottom2" id="goto_register" style="cursor: pointer;"><span style="font-family:'nanum_gothic',sans-serif !important;font-size:20px;font-weight: bold;"> 내 방 등록하러 가기→</span></div>
+        </div>
+
+</div>    
+<script>
+    $('#goto_register').click(function(){
+        var count = '{{room_count}}';
+        if(count != 0)
+        {
+            if(confirm('이미 등록한 방이 있습니다. 방을 삭제하거나 수정하시겠습니까?'))
+                location.href='/mypage'    
+        }
+        else
+            location.href='/register/main'
+    });
+
+    var client_width = document.body.clientWidth;
+            
+</script>
+{% endblock %}

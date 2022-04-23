@@ -3,4 +3,6 @@
 
 # 실행법
 + 가상환경 실행 : myvenv\Scripts\activate
-+ 장고 실행 : cd django_app -> python manage.py runserver
++ 장고 실행 : python manage.py runserver
+
+파이썬 애니웨어 shkim789

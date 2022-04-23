@@ -1,0 +1,552 @@
+{% extends 'frame.html' %}
+
+{% block content %}
+
+<div class="register_container">
+    <h2><span class="head-box">나누방 매물 등록</span></h2>
+    <div class="head-guide">전대차거래는 집주인의 동의가 있어야 합법적으로 보호받을 수 있습니다. <strong>꼭 집주인의 동의를 받아주세요.</strong></div>
+
+    <form method="POST" class="register_form" autocomplete="off" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="room-field">
+            <legend class="required">방 정보</legend>
+            <div class="room-info">
+                <div class="hr-mobile"></div>
+                <div class="box-wrap">
+                        {{ form.address.errors }}
+                    <label class="label-title" for="id_address">주소</label>
+                    <div class="address-wrap">
+                        <!---<input type="text">--->
+                        <input class="address-btn" type="button" onclick="execDaumPostcode()" value="주소 검색">
+                        <input type="text" name="address" id="id_address" style="border: 2px solid #ccc;height:31px;width:65%;margin:0;">
+                    </div>
+                    <input type="hidden" id="id_latitude" name="latitude">
+                    <input type="hidden" id="id_longitude" name="longitude">
+                </div>
+                <div class="box-wrap">
+                    {{ form.address_detail.errors }}
+                    <label class="label-title" for="id_address_detail">상세주소</label>
+                    <input type="text" name="address_detail" maxlength="255" min="0" required id="id_address_detail" placeholder="상세주소를 입력해주세요.">
+                    <div class="map-guide">
+                        <strong>방 주소가 직접적으로 노출되지 않습니다!</strong>
+                        <span>전대차거래 특성상 현재 살고 있는 세입자의 정보가 노출되는 위험이 있으므로 방방은 반경 30m의 원으로 위치를 표시합니다.</span>
+                    </div>
+                </div>
+                <div class="hr"></div>
+                <div class="box-wrap">
+                    {{ form.univ.errors }}
+                    <label class="label-title" for="id_univ">대학교</label>
+                    <div class="form-guide">본인의 방과 가장 가까운 대학교를 골라주세요.</div>
+                    {{ form.univ }}
+                </div>
+                <div class="hr"></div>
+
+                <div class="box-wrap">
+                    <label class="label-title" for="id_tags">태그설정</label>
+                    <div class="form-guide">본인의 방과 가장 가까운 태그를 고르거나 적어주세요.</div>
+                    <label class="label-title" for="id_tags">&nbsp;</label>
+                    {{ form.tag.errors }}
+                    <div><input type="text" name="tag" id="id_tag" placeholder="#ㅇㅇㅇ" required style="padding: 0 0 0 12px;border: 2px solid #ccc;height:26px;width:65%;margin:0;"></div>
+                    <script>
+                        var count_tag = 0;
+                        $('#id_tag').change(function(){
+                            if($('#id_tag').val()[0] != '#')
+                            {
+                                var newString = '#'+$('#id_tag').val()
+                                $('#id_tag').val(newString)
+                            }
+                        })
+                    </script>
+                    <div class="tag-wrap">
+                        {% for tag in tags %}
+                        <span class="tag-radio-span" id="{{tag.univ}}" style="display: none">
+                            <input class="tag-input" type="radio" id="tag_type0" name="tag_type_group" value="{{tag.tag}}">
+                            <label class="tag-label" for="tag_type0">{{tag.tag}}</label>
+                        </span>
+                        <script>
+                            count_tag++;
+                            $('input[id=tag_type0]').attr('id', 'tag_type'+count_tag);
+                            $('label[for=tag_type0]').attr('for', 'tag_type'+count_tag);
+                        </script>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="hr"></div>
+
+                <div class="box-wrap">
+                    <label class="label-title" for="id_room_type">방종류</label>
+                    <div class="room-radio-wrap">
+                        <span class="room-radio-span">
+                            <input type="radio" id="room_type1" name="room_type" value="원룸" required checked>
+                            <label class="room-label" for="room_type1">원룸</label>
+                        </span>
+                        <span class="room-radio-span">
+                            <input type="radio" id="room_type2" name="room_type" value="1.5룸" required>
+                            <label class="room-label" for="room_type2">1.5룸</label>
+                        </span>
+                        <span class="room-radio-span">
+                            <input type="radio" id="room_type3" name="room_type" value="투룸" required>
+                            <label class="room-label" for="room_type3">투룸</label>
+                        </span>
+                        <span class="room-radio-span">
+                            <input type="radio" id="room_type4" name="room_type" value="오피스텔" required>
+                            <label class="room-label" for="room_type4">오피스텔</label>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="map-wrap">
+                <div id="map"></div>
+                <div class="map-guide">
+                    <strong>방 주소가 직접적으로 노출되지 않습니다!</strong>
+                    <span>전대차거래 특성상 현재 살고 있는 세입자의<br> 정보가 노출되는 위험이 있으므로 방방은<br> 반경 30m의 원으로 위치를 표시합니다.</span>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="deal-field">
+
+            <legend class="required">거래 정보</legend>
+            <div class="hr"></div>
+            <div class="box-wrap">
+                <label class="label-title monthly1">현재 내는 월세</label>
+                <label class="label-title monthly2">현재 내는<br> 월세</label>
+
+                <input type="number" id="id_deposit" name="deposit" min="0" placeholder="보증금" required>만원
+                <span class="slash">/</span>
+                <input type="number" id="id_monthly_cost" name="monthly_cost" min="0" placeholder="월세" required>만원
+            </div>
+            <div class="hr"></div>
+            <div class="box-wrap">
+                <label class="label-title deposit1" for="id_deposit_necessity">보증금 여부</label>
+                <label class="label-title deposit2" for="id_deposit_necessity">보증금<br>여부</label>
+                <div class="deposit-wrap">
+                    <span class="radio-span">
+                        <input type="radio" id="deposit_necessity_yes" name="deposit_necessity" value="True" checked required onclick="check2()">
+                        <label class="deal-label" for="deposit_necessity_yes">보증금 필요</label>
+                    </span>
+                    <span class="radio-span">
+                        <input type="radio" id="deposit_necessity_no" name="deposit_necessity" value="False" required onclick="check2()">
+                        <label class="deal-label" for="deposit_necessity_no">보증금 불필요</label>
+                    </span>
+                    <span class="expense">
+                        보증금
+                        <input type="text" name="desired_deposit" value="0" maxlength="1000" min="0" id="id_deposit_take" required>만원
+                    </span>
+                </div>
+            </div>
+            <div class="hr"></div>
+            <div class="box-wrap">
+                <label class="label-title">받을 월세</label>
+                <input type="number" id="id_monthly_cost_take" name="desired_monthly" min="0" placeholder="월세" required>만원
+
+            </div>
+            <div class="hr"></div>
+            <div class="box-wrap">
+                <label class="label-title mancost1" maxlength=6 for="id_management_cost_include" required>관리비 포함 여부</label>
+                <label class="label-title mancost2" maxlength=6 for="id_management_cost_include" required>관리비<br> 포함 여부</label>
+                <div class="management-cost-wrap">
+                    <span class="radio-span">
+                        <input type="radio" id="id_management_cost_include_yes" name="management_cost_include" value="True" checked required onclick="check1()">
+                        <label class="deal-label" for="id_management_cost_include_yes">예</label>
+                    </span>
+                    <span class="radio-span">
+                        <input type="radio" id="id_management_cost_include_no" name="management_cost_include" value="False" required onclick="check1()">
+                        <label class="deal-label" for="id_management_cost_include_no">아니요</label>
+                    </span>
+                    <span class="expense">
+                        관리비
+                        <input type="text" name="management_cost" value="0" maxlength="6" min="0" id="id_management_cost_include" readonly style="background-color: #bdbdbd">만원
+                    </span>
+                </div>
+            </div>
+
+            <div class="hr"></div>
+            <div class="box-wrap">
+                <label class="label-title due1" for="">방을 빌려주는 기간</label>
+                <label class="label-title due2" for="">방을<br> 빌려주는 <br> 기간</label>
+                <div class="term">
+                    <input type="text" name="start_date" maxlength="15" id="id_start_date" required> ~ <input type="text" name="end_date" maxlength="15" id="id_end_date" required>
+                    <span class="term-guide">* 빌려줄 수 있는 기간을 최대로 설정하시면 매칭이 빨라져요!</span>
+                </div>
+            </div>
+
+            <div class="hr"></div>
+            <div class="box-wrap">
+                <label class="label-title" for="id_floor">층수</label>
+                {{form.floor}}
+            </div>
+
+            <div class="hr"></div>
+            <div class="box-wrap">
+                <label class="label-title preference1" for="sublessee_type1">선호하는 방 구매자</label>
+                <label class="label-title preference2" for="sublessee_type1">선호하는<br> 방 구매자</label>
+
+                <div class="radio-span-wrap">
+                    <span class="radio-span">
+                        <input type="radio" id="id_sublessee_type1_yes" name="sublessee_type1" value="흡연자" required>
+                        <label class="deal-label" for="id_sublessee_type1_yes">흡연자</label>
+                    </span>
+                    <span class="radio-span">
+                        <input type="radio" id="id_sublessee_type1_no" name="sublessee_type1" value="비흡연자" required>
+                        <label class="deal-label" for="id_sublessee_type1_no">비흡연자</label>
+                    </span>
+                    <span class="radio-span">
+                        <input type="radio" id="id_sublessee_type1_any" name="sublessee_type1" value="상관없음" required>
+                        <label class="deal-label" for="id_sublessee_type1_any">상관없음</label>
+                    </span>
+                    <div class="hr-light"></div>
+                    <label class="label-title blind" for="sublessee_type2">선호하는 방구매자 성별</label>
+                    <span class="radio-span">
+                        <input type="radio" id="id_sublessee_type2_female" name="sublessee_type2" value="여성" required>
+                        <label class="deal-label" for="id_sublessee_type2_female">여성</label>
+                    </span>
+                    <span class="radio-span">
+                        <input type="radio" id="id_sublessee_type2_male" name="sublessee_type2" value="남성" required>
+                        <label class="deal-label" for="id_sublessee_type2_male">남성</label>
+                    </span>
+                    <span class="radio-span">
+                        <input type="radio" id="id_sublessee_type2_any" name="sublessee_type2" value="상관없음" required>
+                        <label class="deal-label" for="id_sublessee_type2_any">상관없음</label>
+                    </span>
+                </div>
+            </div>
+
+            <div class="hr"></div>
+            <div class="box-wrap">
+                <label class="label-title" for="id_room_options">방 옵션</label>
+                <div class="option">
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_air_conditioner" class="id_room_options" value="에어컨">
+                        <label class="deal-label" for="room_options_air_conditioner">에어컨</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_bed" class="id_room_options" value="침대">
+                        <label class="deal-label" for="room_options_bed">침대</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_chair" class="id_room_options" value="의자">
+                        <label class="deal-label" for="room_options_chair">의자</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_desk" class="id_room_options" value="책상">
+                        <label class="deal-label" for="room_options_desk">책상</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_washer" class="id_room_options" value="세탁기">
+                        <label class="deal-label" for="room_options_washer">세탁기</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_induction" class="id_room_options" value="인덕션">
+                        <label class="deal-label" for="room_options_induction">인덕션</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_refrigerator" class="id_room_options" value="냉장고">
+                        <label class="deal-label" for="room_options_refrigerator">냉장고</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_microwave" class="id_room_options" value="전자레인지">
+                        <label class="deal-label" for="room_options_microwave">전자레인지</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_tv" class="id_room_options" value="TV">
+                        <label class="deal-label" for="room_options_tv">TV</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_wifi" class="id_room_options" value="WI-FI">
+                        <label class="deal-label" for="room_options_wifi">WI-FI</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_veranda" class="id_room_options" value="베란다">
+                        <label class="deal-label" for="room_options_veranda">베란다</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_closet" class="id_room_options" value="옷장">
+                        <label class="deal-label" for="room_options_closet">옷장</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_shoes" class="id_room_options" value="신발장">
+                        <label class="deal-label" for="room_options_shoes">신발장</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_doorlock" class="id_room_options" value="도어락">
+                        <label class="deal-label" for="room_options_doorlock">도어락</label>
+                    </span>
+                    <span class="checkbox-span">
+                        <input type="checkbox" id="room_options_gas" class="id_room_options" value="가스레인지">
+                        <label class="deal-label" for="room_options_gas">가스레인지</label>
+                    </span>
+                </div>
+                <input type="hidden" id="id_room_options" name="room_options">
+            </div>
+
+            <div class="hr"></div>
+            <div class="box-wrap">
+                <label class="label-title seller-view-type1" for="seller-info">판매자 정보 표시 유형</label>
+                <label class="label-title seller-view-type2" for="seller-info">판매자<br>정보 표시<br>유형</label>
+
+                <span class="radio-span">
+                    <input type="radio" id="phone" name="seller-info" value="전화번호" required>
+                    <label class="deal-label" for="phone">전화번호</label>
+                </span>
+                <span class="radio-span">
+                    <input type="radio" id="email" name="seller-info" value="이메일" required>
+                    <label class="deal-label" for="email">이메일</label>
+                </span>
+                <span class="radio-span">
+                    <input type="radio" id="kakao" name="seller-info" value="카톡 아이디" required>
+                    <label class="deal-label" for="kakao">카톡 아이디</label>
+                </span>
+            </div>
+            <input type="hidden" id="id_sublessor_type1" name="sublessor_type1">
+            <div class="hr"></div>
+            <div class="box-wrap">
+                <label class="label-title kakao-pc" for="id_kakaotalk" id="seller-info-val">카카오톡 아이디</label>
+                <label class="label-title kakao-mobile" for="id_kakaotalk" id_kakaotalk>카카오톡<br>아이디</label>
+                <input type="text" name="sublessor_type2" id="id_kakaotalk" placeholder="카카오톡 아이디 입력하기" required>
+            </div>
+            <div class="hr"></div>
+        </fieldset>
+
+        <fieldset class="detail-field">
+            <legend>방 상세 설명(선택)</legend>
+            <textarea class="detail" name="" id="" cols="30" rows="10" placeholder="방에 관한 추가적인 정보들을 자유롭게 적어주세요."></textarea>
+        </fieldset>
+
+        <fieldset class="additional-field">
+            <legend>
+                <button type="button" class="additional-field-btn" onclick="fold()">
+                    방 추가 정보(선택)
+                    <img src="../static/img/icon/fold_btn.png" alt="펼치기 버튼">
+                </button>
+            </legend>
+            <div class="folded">
+                <div class="hr"></div>
+
+                <div class="box-wrap">
+                    <label class="label-title" for="id_room_size">면적</label>
+                    <input type="text" name="room_size" id="id_room_size" placeholder="">
+                    m<sup>2</sup>
+                </div>
+                <div class="hr"></div>
+
+                <div class="box-wrap">
+                    <label class="label-title" for="is_duplex">복층 여부</label>
+                    <span class="radio-span">
+                        <input type="radio" id="id_duplex_yes" name="is_duplex" value="예">
+                        <label class="deal-label" for="id_duplex_yes">예</label>
+                    </span>
+                    <span class="radio-span">
+                        <input type="radio" id="id_duplex_no" name="is_duplex" value="아니요">
+                        <label class="deal-label" for="id_duplex_no">아니요</label>
+                    </span>
+                </div>
+                <input type="hidden" name="is_duplex" id="id_is_duplex">
+                <div class="hr"></div>
+
+                <div class="box-wrap">
+                    <label class="label-title" for="id_window">창문개수</label>
+                    <select name="window" id="id_window">
+                        <option value="" selected></option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="7개 이상">7개 이상</option>
+                    </select>
+                    개
+                </div>
+                <div class="hr"></div>
+            </div>
+        </fieldset>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div id="register_img_form" class="register_img_form" autocomplete="off" >
+        <fieldset class="image-field">
+            <legend class="required">사진 등록</legend>
+            <ul class="tab">
+                <li class="tab1 selected"><a href="#register_img_form" onclick="tab1()">일반 사진</a></li>
+                <li class="tab2"><a href="#register_img_form" onclick="tab2()">파노라마 사진</a></li>
+            </ul>
+            <section class="tab-content">
+                <div class="tab1-content">
+                    <div class="tab-guide">
+                        <ul>
+                            <li>최소 2장, 최대 4장 업로드 가능</li>
+                            <li>방 전체, 화장실, 부엌, 집 외관 순으로 찍는 것을 추천</li>
+                            <li>가로촬영 권장</li>
+                        </ul>
+                    </div>
+
+                    <div class="images_container">
+                        <div class="img-type1">
+                            <div><img src="../static/img/img_icon_temp.png" id="image_section1" width="100%" height="100%"></div>
+                            <input type="file" name="photo1" id="id_photo1">
+                        </div>
+                        <div class="img-type1">
+                            <div><img src="../static/img/img_icon_temp.png" id="image_section2" width="100%" height="100%"></div>
+                            <input type="file" name="photo2" id="id_photo2">
+                        </div>
+                        <div class="img-type1">
+                            <div><img src="../static/img/img_icon_temp.png" id="image_section3" width="100%" height="100%"></div>
+                            <input type="file" name="photo3" id="id_photo3">
+                        </div>
+                        <div class="img-type1">
+                            <div><img src="../static/img/img_icon_temp.png" id="image_section4" width="100%" height="100%"></div>
+                            <input type="file" name="photo4" id="id_photo4">
+                        </div>
+                    </div>
+                    <div class="img-register-btn">
+                        <div id="upload_desc">먼저 1번사진 업로드해주세요!</div>
+                        <div class="reset_img" onclick="img_reset()">이미지 다시 올리기</div>
+                        <div class="file_input_labels">
+                            <label style="display: block" for="id_photo1" id="file-label1" class="img-register"><br>1번사진 업로드</label>
+                            <label style="display: none" for="id_photo2" id="file-label2"><br>2번사진 업로드</label>
+                            <label style="display: none" for="id_photo3" id="file-label3"><br>3번사진 업로드</label>
+                            <label style="display: none" for="id_photo4" id="file-label4"><br>4번사진 업로드</label>                        
+                        </div>
+                    </div>
+                </div>
+                <div class="tab2-content folded">
+                    <dl class="tab-guide">
+                        <dt>파노라마 사진이란?</dt>
+                        <dd>- 스마트폰의 파노라마 기능을 이용해, 회전하며 방안을 둘러볼 수 있는 사진입니다.</dd>
+
+                        <dt>파노라마 사진 제작하기</dt>
+                        <dd>
+                            <ol>
+                                <li>핸드폰의 카메라 어플을 켭니다.</li>
+                                <li>'파노라마 기능'을 선택하여 사진을 찍습니다.</li>
+                                <li>핸드폰으로 찍은 파노라마 사진을 불러옵니다.</li>
+                                <li>파노라마 사진이 잘 찍혔는지(사진의 끝과 끝이 잘 연결되었는지) 확인하고 업로드합니다.</li>
+                            </ol>
+                        </dd>
+                    </dl>
+
+                    <div class="images_container">
+                        <div class="img-type2">
+                            <div><img src="../static/img/img_icon_temp.png" id="image_section5"></div>
+                            <input type="file" name="pano_photo" id="id_photo5">
+                        </div>
+                    </div>
+                    <div class="img-register-btn">
+                        <div class="file_input_labels">
+                            <label style="display: block" for="id_photo5" id="file-label5"><br>파노라마 업로드</label>                        
+                        </div>
+                    </div>
+                    <script>
+                        $('#id_photo1').on('change', function(){
+                            var img1 = $('#id_photo1').val();
+                            var img5 = $('#id_photo5').val();
+                            if(img1 != '' && img5 != ''){
+                                $('#submit_div').html('display','none')
+                                $('#submit_input').css('display','inline')
+                            }
+                        })
+                        
+                        $('#id_photo5').on('change', function(){
+                            var img1 = $('#id_photo1').val();
+                            var img5 = $('#id_photo5').val();
+                            $('.img-type2').css('transform','scaleY(-1)');
+                            if(img1 != '' && img5 != ''){
+                                $('#submit_div').html('display','none')
+                                $('#submit_input').css('display','inline')
+                            }
+                        });
+                    </script>
+                </div>
+            </section>
+        </fieldset>
+        <div class="next-btn">
+            <button type="submit" id="submit_input" class="next">방 등록 완료하기</button>
+            <div id="submit_div">방 등록 완료하기</div>
+        </div>
+    </div>
+    <script>
+        $('#submit_div').click(function(){
+            var img1 = $('#id_photo1').val();
+            var img5 = $('#id_photo5').val();
+            if(img1 === '')
+                alert('일반사진 1장과 파노라마 사진은 필수입니다.')
+            else if(img5 === '')
+                alert('일반사진 1장과 파노라마 사진은 필수입니다.')
+        })
+    </script>
+    </form>
+
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        document.getElementById("id_address").readOnly = true;
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+            mapOption = {
+                center: new daum.maps.LatLng(37.5652153, 126.9693388), // 지도의 중심좌표
+                level: 10 // 지도의 확대 레벨
+            };
+
+        //지도를 미리 생성
+        var map = new daum.maps.Map(mapContainer, mapOption);
+        //주소-좌표 변환 객체를 생성
+        var geocoder = new daum.maps.services.Geocoder();
+        //마커를 미리 생성
+        var marker = new daum.maps.Marker({
+            position: new daum.maps.LatLng(0, 0),
+            map: map
+        });
+        map.setDraggable(false);
+        map.setZoomable(false);
+
+        function execDaumPostcode() {
+            $('.placeholder show').val('geeg')
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var addr = data.address; // 최종 주소 변수
+                    
+                    // 주소 정보를 해당 필드에 넣는다.
+                    document.getElementById("id_address").value = addr;
+                    // 주소로 상세 정보를 검색
+                    geocoder.addressSearch(data.address, function(results, status) {
+                        // 정상적으로 검색이 완료됐으면
+                        if (status === daum.maps.services.Status.OK) {
+
+                            var result = results[0]; //첫번째 결과의 값을 활용
+
+                            // 해당 주소에 대한 좌표를 받아서
+                            var coords = new daum.maps.LatLng(result.y, result.x);
+                            // 지도를 보여준다.
+                            mapContainer.style.display = "block";
+                            document.getElementById('id_latitude').value = result.y;
+                            document.getElementById('id_longitude').value = result.x;
+                            map.relayout();
+                            // 지도 중심을 변경한다.
+                            map.setCenter(coords);
+                            map.setLevel(4)
+                            // 마커를 결과값으로 받은 위치로 옮긴다.
+                            marker.setPosition(coords)
+                        }
+                    });
+                }
+            }).open();
+        }
+
+        $('#id_univ').on('change', function() {
+            var value = $(this).val();
+            var count = "{{count}}"
+            for (var i = 0; i < count; i++) {
+                if (value != document.getElementsByClassName('tag-radio-span')[i].id)
+                    document.getElementsByClassName('tag-radio-span')[i].style.display = "none";
+                else
+                    document.getElementsByClassName('tag-radio-span')[i].style.display = "inline-block";
+            }
+        });
+
+    </script>
+    {% endblock %}
