@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls import url
 from nanubang_app import views
 from django.views.generic import TemplateView
 from allauth.account import views as auth_views

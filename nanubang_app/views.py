@@ -20,13 +20,13 @@ from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_str
 #이메일 인증에 필요한 것들
 
 # Create your views here.
 
 def index(request):
-        print('hi')
+    print('hi')
     get_current_sales = Room_infos.objects.all().order_by('-published_date')[:8]
     get_current_sales1 = Room_infos.objects.all().order_by('-published_date')[0:8:2]
     get_current_sales2 = Room_infos.objects.all().order_by('-published_date')[1:7:2]
@@ -78,7 +78,7 @@ def mail_authenticate(request):
 @login_required
 def activate(request, uid64, token):
 
-    uid = force_text(urlsafe_base64_decode(uid64))
+    uid = force_str(urlsafe_base64_decode(uid64))
     user = User.objects.filter(auto_increment_id=uid).values('active', 'username')
     print(user)
     if user is not None :
