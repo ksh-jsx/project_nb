@@ -5,5 +5,6 @@
 + 가상환경 실행 : myvenv\Scripts\activate
 + 장고 실행 : python manage.py runserver
 
-# 파이썬 애니웨어 shkim789
+# 파이썬 애니웨어 shkim787
 + 장고걸스 참조
++ hosting: http://shkim787.pythonanywhere.com/
